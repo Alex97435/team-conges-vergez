@@ -76,6 +76,7 @@
         .chip-type.formation { background: var(--primary); }
         .no-absences { color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
         .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
+        .main-layout.team-mode { grid-template-columns: 1fr; }
         @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
         .calendar-week { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.5rem; }
         .calendar-week-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 1rem; font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
@@ -129,6 +130,7 @@
         .cell-value.positive { color: var(--success); }
         .cell-value.negative { color: var(--danger); }
         .cell-value.neutral { color: var(--text-muted); }
+        .cell-value.warning { color: var(--warning); }
         .sidebar { display: flex; flex-direction: column; gap: 1rem; }
         .sidebar-card { background: var(--bg-white); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
         .sidebar-card h3 { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem; text-transform: uppercase; }
@@ -172,6 +174,16 @@
         .btn-submit { background: var(--primary); border: none; color: white; }
         .error-msg { color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; text-align: center; }
         .footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 1.5rem; }
+        
+        /* Soldes Table Styles */
+        .soldes-table { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-top: 1.5rem; }
+        .soldes-table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); color: white; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .soldes-table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); align-items: center; }
+        .soldes-table-row:hover { background: rgba(95, 179, 165, 0.05); }
+        .soldes-update { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+        
+        /* Team mode info banner */
+        .team-info-banner { background: linear-gradient(135deg, rgba(95, 179, 165, 0.1) 0%, rgba(95, 179, 165, 0.05) 100%); border: 1px solid rgba(95, 179, 165, 0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--secondary-dark); display: flex; align-items: center; gap: 0.5rem; }
     </style>
 </head>
 <body>
@@ -179,20 +191,19 @@
     <script type="text/babel">
         const { useState, useEffect, useCallback, useMemo } = React;
         
-        const ADMIN_PASSWORD = "vergez2025";
+        const ADMIN_PASSWORD = "vergez2026";
         
-        const EMPLOYEES = [
-            { id: 1, name: "François VERGEZ", isDoctor: true, annualLeave: 35 },
-            { id: 2, name: "Mathilde TSANG-TUNG", isDoctor: false, annualLeave: 25 },
-            { id: 3, name: "Chloé TANGUY", isDoctor: false, annualLeave: 25 },
-            { id: 4, name: "Erika CAPDEBOSCQ", isDoctor: false, annualLeave: 25 },
-            { id: 5, name: "Virginie BLARD", isDoctor: false, annualLeave: 25 },
-            { id: 6, name: "Laurence GIGAN", isDoctor: false, annualLeave: 25 },
-            { id: 7, name: "Cécile GRONDIN", isDoctor: false, annualLeave: 25 },
-            { id: 8, name: "Fabiola TECHER", isDoctor: false, annualLeave: 25 },
-            { id: 9, name: "Sylvie De la Hogue", isDoctor: false, annualLeave: 25 },
-            { id: 10, name: "Elodie Ludovic", isDoctor: false, annualLeave: 25 },
-            { id: 11, name: "Stéphanie MARTIN", isDoctor: false, annualLeave: 25 },
+        // Liste des employés avec soldes initiaux (Février 2026)
+        const INITIAL_EMPLOYEES = [
+            { id: 1, name: "Dr François VERGEZ", isDoctor: true, cpN1: 0, cpN: 35, rcc: 0 },
+            { id: 2, name: "Virginie BLARD", isDoctor: false, cpN1: 8.5, cpN: 36, rcc: 0 },
+            { id: 3, name: "Erika CAPDEBOSCQ", isDoctor: false, cpN1: 0, cpN: 8, rcc: 3.51 },
+            { id: 4, name: "Marie Anne DE LA HOGUE", isDoctor: false, cpN1: 0, cpN: 12.18, rcc: 0 },
+            { id: 5, name: "Laurence GIGAN", isDoctor: false, cpN1: 13.5, cpN: 25.5, rcc: 0.34 },
+            { id: 6, name: "Marie Cécile GRONDIN", isDoctor: false, cpN1: 0, cpN: 3.5, rcc: 0 },
+            { id: 7, name: "Elodie LUDOVIC", isDoctor: false, cpN1: 0, cpN: 15.5, rcc: 0 },
+            { id: 8, name: "Stéphanie MARTIN", isDoctor: false, cpN1: 0, cpN: 9.5, rcc: 0 },
+            { id: 9, name: "Fabiola TECHER", isDoctor: false, cpN1: 0, cpN: 17.5, rcc: 0 },
         ];
         
         const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -242,15 +253,17 @@
         }
 
         function getInitials(name) {
-            return name.split(" ").map(n => n[0]).join("").slice(0, 2);
+            return name.split(" ").filter(n => n.length > 2).map(n => n[0]).join("").slice(0, 2);
         }
 
         function App() {
+            const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
             const [absences, setAbsences] = useState({});
             const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
             const [loading, setLoading] = useState(false);
             const [isAdmin, setIsAdmin] = useState(false);
             const [showLoginModal, setShowLoginModal] = useState(false);
+            const [soldesUpdateDate, setSoldesUpdateDate] = useState("28/02/2026");
             const [weekStart, setWeekStart] = useState(() => {
                 const t = new Date();
                 const d = t.getDay();
@@ -259,45 +272,61 @@
             });
 
             const today = new Date();
-            const selectedYear = 2025;
+            const selectedYear = 2026;
 
             useEffect(() => {
-                const saved = localStorage.getItem("vergez_absences_2025");
-                if (saved) setAbsences(JSON.parse(saved));
+                const savedAbsences = localStorage.getItem("vergez_absences_2026");
+                if (savedAbsences) setAbsences(JSON.parse(savedAbsences));
+                
+                const savedEmployees = localStorage.getItem("vergez_employees_2026");
+                if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
+                
+                const savedSoldesDate = localStorage.getItem("vergez_soldes_date");
+                if (savedSoldesDate) setSoldesUpdateDate(savedSoldesDate);
+                
                 if (sessionStorage.getItem("vergez_admin") === "true") setIsAdmin(true);
             }, []);
 
             useEffect(() => {
                 if (Object.keys(absences).length > 0) {
-                    localStorage.setItem("vergez_absences_2025", JSON.stringify(absences));
+                    localStorage.setItem("vergez_absences_2026", JSON.stringify(absences));
                 }
             }, [absences]);
 
-            const calculateStats = useCallback((empId) => {
+            useEffect(() => {
+                localStorage.setItem("vergez_employees_2026", JSON.stringify(employees));
+            }, [employees]);
+
+            // Calcule les jours de congés pris pour un employé
+            const calculateCongesPris = useCallback((empId) => {
                 const empAbs = absences[empId] || {};
-                let conges = 0, sansSolde = 0, maladie = 0, formation = 0;
+                let conges = 0;
                 Object.values(empAbs).forEach(monthData => {
                     Object.values(monthData).forEach(type => {
                         if (type === "C") conges++;
-                        else if (type === "SS") sansSolde++;
-                        else if (type === "M") maladie++;
-                        else if (type === "F") formation++;
                     });
                 });
-                const emp = EMPLOYEES.find(e => e.id === empId);
-                return { conges, sansSolde, maladie, formation, remaining: (emp?.annualLeave || 25) - conges };
+                return conges;
             }, [absences]);
+
+            // Calcule le solde restant réel
+            const calculateSoldeRestant = useCallback((emp) => {
+                const congesPris = calculateCongesPris(emp.id);
+                const totalDisponible = (emp.cpN1 || 0) + (emp.cpN || 0) + (emp.rcc || 0);
+                return totalDisponible - congesPris;
+            }, [calculateCongesPris]);
 
             const todayAbsences = useMemo(() => {
                 const m = today.getMonth();
                 const d = today.getDate();
-                return EMPLOYEES.filter(emp => absences[emp.id]?.[m]?.[d])
+                return employees.filter(emp => absences[emp.id]?.[m]?.[d])
                     .map(emp => ({ ...emp, type: absences[emp.id][m][d] }));
-            }, [absences, today]);
+            }, [absences, employees, today]);
 
             const isDoctorPresentToday = !absences[1]?.[today.getMonth()]?.[today.getDate()];
 
-            const handleFileImport = async (e) => {
+            // Import du fichier Excel des absences
+            const handleAbsenceFileImport = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
                 setLoading(true);
@@ -309,23 +338,27 @@
                         const sh = wb.Sheets[mn];
                         if (!sh) return;
                         const jd = XLSX.utils.sheet_to_json(sh, { header: 1 });
-                        for (let r = 8; r < 19; r++) {
+                        for (let r = 0; r < jd.length; r++) {
                             const rd = jd[r];
                             if (!rd || !rd[1]) continue;
-                            const emp = EMPLOYEES.find(x => x.name.toLowerCase() === rd[1].toString().toLowerCase());
+                            const empName = rd[1].toString().toLowerCase();
+                            const emp = employees.find(x => 
+                                x.name.toLowerCase().includes(empName.split(" ")[0]) ||
+                                empName.includes(x.name.split(" ")[0].toLowerCase())
+                            );
                             if (!emp) continue;
                             if (!newAbs[emp.id]) newAbs[emp.id] = {};
                             if (!newAbs[emp.id][mi]) newAbs[emp.id][mi] = {};
                             for (let d = 1; d <= 31; d++) {
                                 const cv = rd[d + 1];
-                                if (cv && ["C", "SS", "M", "F"].includes(cv)) {
-                                    newAbs[emp.id][mi][d] = cv;
+                                if (cv && ["C", "SS", "M", "F"].includes(cv.toString().toUpperCase())) {
+                                    newAbs[emp.id][mi][d] = cv.toString().toUpperCase();
                                 }
                             }
                         }
                     });
                     setAbsences(newAbs);
-                    alert("Import réussi !");
+                    alert("Import des absences réussi !");
                 } catch (err) {
                     console.error(err);
                     alert("Erreur lors de l'import");
@@ -334,10 +367,84 @@
                 e.target.value = "";
             };
 
+            // Import du fichier Excel des soldes
+            const handleSoldesFileImport = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                setLoading(true);
+                try {
+                    const data = await file.arrayBuffer();
+                    const wb = XLSX.read(data, { type: "array" });
+                    const sheet = wb.Sheets[wb.SheetNames[0]];
+                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    
+                    // Trouver la ligne d'en-tête
+                    let headerRow = -1;
+                    for (let i = 0; i < json.length; i++) {
+                        if (json[i] && json[i][0] === "Matricule") {
+                            headerRow = i;
+                            break;
+                        }
+                    }
+                    
+                    if (headerRow === -1) {
+                        alert("Format de fichier non reconnu");
+                        setLoading(false);
+                        return;
+                    }
+                    
+                    const headers = json[headerRow];
+                    const colSalarie = 1;
+                    const colCpN1 = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("N-1"));
+                    const colCpN = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("CP N") && !h.toString().includes("N-1"));
+                    const colRcc = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("RCC"));
+                    
+                    const updatedEmployees = [...employees];
+                    
+                    for (let i = headerRow + 1; i < json.length; i++) {
+                        const row = json[i];
+                        if (!row || !row[colSalarie] || row[colSalarie] === "Total général") continue;
+                        
+                        const fullName = row[colSalarie].toString();
+                        const nameParts = fullName.split(" née ")[0].trim().split(" ");
+                        const lastName = nameParts[0].toUpperCase();
+                        
+                        const empIndex = updatedEmployees.findIndex(e => 
+                            e.name.toUpperCase().includes(lastName)
+                        );
+                        
+                        if (empIndex !== -1) {
+                            updatedEmployees[empIndex] = {
+                                ...updatedEmployees[empIndex],
+                                cpN1: parseFloat(row[colCpN1]) || 0,
+                                cpN: parseFloat(row[colCpN]) || 0,
+                                rcc: parseFloat(row[colRcc]) || 0
+                            };
+                        }
+                    }
+                    
+                    setEmployees(updatedEmployees);
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString("fr-FR");
+                    setSoldesUpdateDate(dateStr);
+                    localStorage.setItem("vergez_soldes_date", dateStr);
+                    alert("Import des soldes réussi !");
+                } catch (err) {
+                    console.error(err);
+                    alert("Erreur lors de l'import des soldes");
+                }
+                setLoading(false);
+                e.target.value = "";
+            };
+
             const clearData = () => {
                 if (window.confirm("Supprimer toutes les données ?")) {
                     setAbsences({});
-                    localStorage.removeItem("vergez_absences_2025");
+                    setEmployees(INITIAL_EMPLOYEES);
+                    localStorage.removeItem("vergez_absences_2026");
+                    localStorage.removeItem("vergez_employees_2026");
+                    localStorage.removeItem("vergez_soldes_date");
+                    setSoldesUpdateDate("28/02/2026");
                 }
             };
 
@@ -366,11 +473,6 @@
 
             const weekDates = getWeekDates();
             const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-            
-            const totalStats = EMPLOYEES.reduce((acc, emp) => {
-                const s = calculateStats(emp.id);
-                return { conges: acc.conges + s.conges, sansSolde: acc.sansSolde + s.sansSolde, maladie: acc.maladie + s.maladie };
-            }, { conges: 0, sansSolde: 0, maladie: 0 });
 
             return (
                 <div className="app-container">
@@ -404,11 +506,17 @@
                     </nav>
                     
                     <div className="content-wrapper">
+                        {!isAdmin && (
+                            <div className="team-info-banner">
+                                ℹ️ Mode Équipe : Vue mensuelle des congés uniquement
+                            </div>
+                        )}
+                        
                         <div className={"alert-box" + (isDoctorPresentToday ? "" : " info")}>
                             <div className="alert-icon">{isDoctorPresentToday ? "⚠" : "ℹ"}</div>
                             <div className="alert-content">
                                 <h3>{isDoctorPresentToday ? "Dr VERGEZ Présent" : "Dr VERGEZ Absent"}</h3>
-                                <p>{isDoctorPresentToday ? "Le Dr VERGEZ est présent aujourd'hui. Aucun congé autorisé pour le personnel." : "Le Dr VERGEZ est absent. Les congés sont possibles."}</p>
+                                <p>{isDoctorPresentToday ? "Le Dr VERGEZ est présent aujourd'hui." : "Le Dr VERGEZ est absent. Les congés sont possibles."}</p>
                             </div>
                         </div>
                         
@@ -421,7 +529,7 @@
                                 </div>
                                 <div className="date-item">
                                     <div className="label">Présents</div>
-                                    <div className="value">{EMPLOYEES.length - todayAbsences.length}</div>
+                                    <div className="value">{employees.length - todayAbsences.length}</div>
                                 </div>
                             </div>
                         </div>
@@ -431,22 +539,31 @@
                                 <h2>⚙️ Administration</h2>
                                 <div className="admin-grid">
                                     <div className="admin-card">
-                                        <h4>📤 Importer les données</h4>
-                                        <p>Importez le fichier Excel du calendrier des absences</p>
-                                        <input type="file" accept=".xlsx,.xls" onChange={handleFileImport} className="file-input" id="file-import" />
-                                        <label htmlFor="file-import" className="import-btn">
-                                            {loading ? "⏳ Import..." : "📁 Sélectionner fichier Excel"}
+                                        <h4>📤 Importer les absences</h4>
+                                        <p>Fichier Excel du calendrier des absences</p>
+                                        <input type="file" accept=".xlsx,.xls" onChange={handleAbsenceFileImport} className="file-input" id="file-import-absences" />
+                                        <label htmlFor="file-import-absences" className="import-btn">
+                                            {loading ? "⏳ Import..." : "📁 Sélectionner fichier"}
+                                        </label>
+                                    </div>
+                                    <div className="admin-card">
+                                        <h4>📊 Importer les soldes</h4>
+                                        <p>Fichier Excel "Solde des repos" de la paie</p>
+                                        <input type="file" accept=".xlsx,.xls" onChange={handleSoldesFileImport} className="file-input" id="file-import-soldes" />
+                                        <label htmlFor="file-import-soldes" className="import-btn">
+                                            {loading ? "⏳ Import..." : "📁 Importer soldes Excel"}
                                         </label>
                                     </div>
                                     <div className="admin-card">
                                         <h4>🗑️ Réinitialiser</h4>
-                                        <p>Supprimer toutes les données de congés</p>
+                                        <p>Supprimer toutes les données</p>
                                         <button className="import-btn danger" onClick={clearData}>🗑️ Supprimer les données</button>
                                     </div>
                                 </div>
                             </div>
                         )}
                         
+                        {/* Absents aujourd'hui - visible pour tous */}
                         <div className="today-absences">
                             <h3 className="section-title">👤 Qui est absent aujourd'hui ?</h3>
                             {todayAbsences.length > 0 ? (
@@ -464,51 +581,55 @@
                             )}
                         </div>
                         
-                        <div className="main-layout">
+                        <div className={"main-layout" + (isAdmin ? "" : " team-mode")}>
                             <div className="main-section">
-                                <div className="calendar-week">
-                                    <div className="calendar-week-header">
-                                        <span>Semaine du {weekStart.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</span>
-                                        <div className="week-nav">
-                                            <button onClick={() => navigateWeek(-1)}>◀</button>
-                                            <button onClick={goToCurrentWeek}>Auj.</button>
-                                            <button onClick={() => navigateWeek(1)}>▶</button>
+                                {/* Vue semaine - Admin seulement */}
+                                {isAdmin && (
+                                    <div className="calendar-week">
+                                        <div className="calendar-week-header">
+                                            <span>Semaine du {weekStart.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</span>
+                                            <div className="week-nav">
+                                                <button onClick={() => navigateWeek(-1)}>◀</button>
+                                                <button onClick={goToCurrentWeek}>Auj.</button>
+                                                <button onClick={() => navigateWeek(1)}>▶</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="calendar-week-grid">
-                                        <div className="calendar-week-days">
-                                            <div>Employé</div>
-                                            {weekDates.map((date, i) => (
-                                                <div key={i} className="day-header">
-                                                    <span className="day-name">{DAYS[date.getDay()]}</span>
-                                                    <span className={"day-num" + (date.toDateString() === today.toDateString() ? " today" : "")}>{date.getDate()}</span>
+                                        <div className="calendar-week-grid">
+                                            <div className="calendar-week-days">
+                                                <div>Employé</div>
+                                                {weekDates.map((date, i) => (
+                                                    <div key={i} className="day-header">
+                                                        <span className="day-name">{DAYS[date.getDay()]}</span>
+                                                        <span className={"day-num" + (date.toDateString() === today.toDateString() ? " today" : "")}>{date.getDate()}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {employees.map(emp => (
+                                                <div key={emp.id} className="calendar-week-row">
+                                                    <div>
+                                                        <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")}>{getInitials(emp.name)}</div>
+                                                        <span>{emp.name.split(" ")[0]}</span>
+                                                    </div>
+                                                    {weekDates.map((date, i) => {
+                                                        const m = date.getMonth();
+                                                        const d = date.getDate();
+                                                        const isWe = date.getDay() === 0 || date.getDay() === 6;
+                                                        const at = absences[emp.id]?.[m]?.[d];
+                                                        const cls = at ? ABSENCE_TYPES[at]?.cls : (isWe ? "weekend" : "");
+                                                        return (
+                                                            <div key={i}>
+                                                                <div className={"week-cell " + cls}>{at || ""}</div>
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
                                             ))}
                                         </div>
-                                        {EMPLOYEES.map(emp => (
-                                            <div key={emp.id} className="calendar-week-row">
-                                                <div>
-                                                    <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")}>{getInitials(emp.name)}</div>
-                                                    <span>{emp.name.split(" ")[0]}</span>
-                                                </div>
-                                                {weekDates.map((date, i) => {
-                                                    const m = date.getMonth();
-                                                    const d = date.getDate();
-                                                    const isWe = date.getDay() === 0 || date.getDay() === 6;
-                                                    const at = absences[emp.id]?.[m]?.[d];
-                                                    const cls = at ? ABSENCE_TYPES[at]?.cls : (isWe ? "weekend" : "");
-                                                    return (
-                                                        <div key={i}>
-                                                            <div className={"week-cell " + cls}>{at || ""}</div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        ))}
                                     </div>
-                                </div>
+                                )}
                                 
-                                <h3 className="section-title" style={{ marginTop: "1rem" }}>
+                                {/* Vue mensuelle - visible pour tous */}
+                                <h3 className="section-title" style={{ marginTop: isAdmin ? "1rem" : "0" }}>
                                     📅 Vue mensuelle <span className="section-badge">{selectedYear}</span>
                                 </h3>
                                 <div className="month-tabs">
@@ -527,7 +648,7 @@
                                             return <div key={i + 1}>{i + 1}<br /><small>{DAYS[d.getDay()].slice(0, 1)}</small></div>;
                                         })}
                                     </div>
-                                    {EMPLOYEES.map(emp => (
+                                    {employees.map(emp => (
                                         <div key={emp.id} className="calendar-full-row">
                                             <div>
                                                 <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")} style={{ width: 20, height: 20, fontSize: "0.55rem" }}>{getInitials(emp.name)}</div>
@@ -545,86 +666,77 @@
                                     ))}
                                 </div>
                                 
-                                <h3 className="section-title" style={{ marginTop: "1.5rem" }}>📊 Soldes des Congés</h3>
-                                <div className="employees-table">
-                                    <div className="table-header">
-                                        <div>Employé</div>
-                                        <div>Congés</div>
-                                        <div>SS</div>
-                                        <div>Maladie</div>
-                                        <div>Formation</div>
-                                        <div>Solde</div>
-                                    </div>
-                                    {EMPLOYEES.map(emp => {
-                                        const s = calculateStats(emp.id);
-                                        return (
-                                            <div key={emp.id} className="table-row">
-                                                <div className="employee-name">
-                                                    <div className={"employee-avatar" + (emp.isDoctor ? " doctor" : "")}>{getInitials(emp.name)}</div>
-                                                    <span>{emp.name}</span>
-                                                </div>
-                                                <div className="cell-value">{s.conges}</div>
-                                                <div className="cell-value neutral">{s.sansSolde}</div>
-                                                <div className="cell-value negative">{s.maladie}</div>
-                                                <div className="cell-value">{s.formation}</div>
-                                                <div className={"cell-value " + (s.remaining > 10 ? "positive" : s.remaining > 0 ? "warning" : "negative")}>{s.remaining}</div>
+                                {/* Tableau des soldes - Admin seulement */}
+                                {isAdmin && (
+                                    <>
+                                        <h3 className="section-title" style={{ marginTop: "1.5rem" }}>📊 Soldes des Congés</h3>
+                                        <div className="soldes-table">
+                                            <div className="soldes-table-header">
+                                                <div>Employé</div>
+                                                <div>CP N-1</div>
+                                                <div>CP N</div>
+                                                <div>RCC</div>
+                                                <div>Solde restant</div>
                                             </div>
-                                        );
-                                    })}
-                                </div>
+                                            {employees.filter(e => !e.isDoctor).map(emp => {
+                                                const soldeRestant = calculateSoldeRestant(emp);
+                                                return (
+                                                    <div key={emp.id} className="soldes-table-row">
+                                                        <div className="employee-name">
+                                                            <div className="employee-avatar">{getInitials(emp.name)}</div>
+                                                            <span>{emp.name}</span>
+                                                        </div>
+                                                        <div className="cell-value">{(emp.cpN1 || 0).toFixed(1)}</div>
+                                                        <div className="cell-value">{(emp.cpN || 0).toFixed(1)}</div>
+                                                        <div className="cell-value">{(emp.rcc || 0).toFixed(1)}</div>
+                                                        <div className={"cell-value " + (soldeRestant > 10 ? "positive" : soldeRestant > 5 ? "warning" : "negative")}>
+                                                            {soldeRestant.toFixed(1)} j
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="soldes-update">Soldes mis à jour le {soldesUpdateDate}</div>
+                                    </>
+                                )}
                             </div>
                             
-                            <div className="sidebar">
-                                <div className="sidebar-card">
-                                    <h3>📊 Statistiques {selectedYear}</h3>
-                                    <div style={{ display: "grid", gap: "0.75rem" }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <span>Total congés</span>
-                                            <strong style={{ color: "var(--primary)" }}>{totalStats.conges}</strong>
+                            {/* Sidebar - Admin seulement */}
+                            {isAdmin && (
+                                <div className="sidebar">
+                                    <div className="sidebar-card">
+                                        <h3>🎨 Légende</h3>
+                                        <div className="legend-grid">
+                                            <div className="legend-item"><div className="legend-color conge"></div><span>C - Congé</span></div>
+                                            <div className="legend-item"><div className="legend-color ss"></div><span>SS - Sans solde</span></div>
+                                            <div className="legend-item"><div className="legend-color maladie"></div><span>M - Maladie</span></div>
+                                            <div className="legend-item"><div className="legend-color formation"></div><span>F - Formation</span></div>
                                         </div>
-                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <span>Sans solde</span>
-                                            <strong style={{ color: "var(--warning)" }}>{totalStats.sansSolde}</strong>
-                                        </div>
-                                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <span>Maladie</span>
-                                            <strong style={{ color: "var(--danger)" }}>{totalStats.maladie}</strong>
+                                    </div>
+                                    
+                                    <div className="sidebar-card">
+                                        <h3>📋 Règles</h3>
+                                        <ul className="rules-list">
+                                            <li><div className="rule-icon danger">!</div><span>Max <strong>3 semaines</strong> consécutives/an</span></li>
+                                            <li><div className="rule-icon warning">⚠</div><span>Pas de congé si <strong>Dr VERGEZ présent</strong></span></li>
+                                            <li><div className="rule-icon info">i</div><span>Congés payés : <strong>25j/an</strong></span></li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="sidebar-card">
+                                        <h3>👨‍⚕️ Dr VERGEZ</h3>
+                                        <div className={"doctor-status " + (isDoctorPresentToday ? "present" : "absent")}>
+                                            <div className={"status-dot " + (isDoctorPresentToday ? "present" : "absent")}></div>
+                                            <span>{isDoctorPresentToday ? "Présent aujourd'hui" : "Absent aujourd'hui"}</span>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div className="sidebar-card">
-                                    <h3>🎨 Légende</h3>
-                                    <div className="legend-grid">
-                                        <div className="legend-item"><div className="legend-color conge"></div><span>C - Congé</span></div>
-                                        <div className="legend-item"><div className="legend-color ss"></div><span>SS - Sans solde</span></div>
-                                        <div className="legend-item"><div className="legend-color maladie"></div><span>M - Maladie</span></div>
-                                        <div className="legend-item"><div className="legend-color formation"></div><span>F - Formation</span></div>
-                                    </div>
-                                </div>
-                                
-                                <div className="sidebar-card">
-                                    <h3>📋 Règles</h3>
-                                    <ul className="rules-list">
-                                        <li><div className="rule-icon danger">!</div><span>Max <strong>3 semaines</strong> consécutives/an</span></li>
-                                        <li><div className="rule-icon warning">⚠</div><span>Pas de congé si <strong>Dr VERGEZ présent</strong></span></li>
-                                        <li><div className="rule-icon info">i</div><span>Solde: <strong>25j</strong> (35j docteur)</span></li>
-                                    </ul>
-                                </div>
-                                
-                                <div className="sidebar-card">
-                                    <h3>👨‍⚕️ Dr VERGEZ</h3>
-                                    <div className={"doctor-status " + (isDoctorPresentToday ? "present" : "absent")}>
-                                        <div className={"status-dot " + (isDoctorPresentToday ? "present" : "absent")}></div>
-                                        <span>{isDoctorPresentToday ? "Présent aujourd'hui" : "Absent aujourd'hui"}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                     
                     <footer className="footer">
-                        © 2025 Cabinet d'Orthodontie du Dr François VERGEZ - Saint Paul, La Réunion
+                        © 2026 Cabinet d'Orthodontie du Dr François VERGEZ - Saint Paul, La Réunion
                     </footer>
                 </div>
             );
