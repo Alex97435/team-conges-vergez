@@ -34,17 +34,18 @@
         body { font-family: 'Open Sans', sans-serif; background: var(--bg-light); color: var(--text-primary); min-height: 100vh; }
         .app-container { max-width: 1400px; margin: 0 auto; }
         .top-bar { background: var(--bg-white); padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem; }
-        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 0.5rem; }
         .header-main { background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.98) 100%); padding: 1.5rem 2rem; text-align: center; border-bottom: 1px solid var(--border); }
         .header-main h1 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.25rem; }
         .header-main p { font-size: 0.9rem; color: var(--secondary); letter-spacing: 1px; text-transform: uppercase; }
         .nav-bar { background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); padding: 0 1rem; display: flex; justify-content: center; align-items: center; gap: 0.25rem; flex-wrap: wrap; }
-        .nav-item { padding: 0.875rem 1.25rem; color: white; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; }
+        .nav-item { padding: 0.875rem 1.25rem; color: white; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; position: relative; }
         .nav-item:hover { background: rgba(255,255,255,0.15); }
         .nav-item.active { background: rgba(255,255,255,0.25); border-bottom: 3px solid white; }
         .nav-item.admin-btn { background: var(--primary); margin-left: auto; border-radius: 4px; }
         .nav-item.admin-btn:hover { background: var(--primary-dark); }
         .nav-item.admin-btn.logged { background: var(--accent); }
+        .nav-badge { position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 10px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         .content-wrapper { padding: 1.5rem; }
         .alert-box { background: linear-gradient(135deg, rgba(199, 90, 90, 0.1) 0%, rgba(199, 90, 90, 0.05) 100%); border: 1px solid rgba(199, 90, 90, 0.3); border-left: 4px solid var(--danger); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
         .alert-box.info { background: linear-gradient(135deg, rgba(95, 179, 165, 0.1) 0%, rgba(95, 179, 165, 0.05) 100%); border: 1px solid rgba(95, 179, 165, 0.3); border-left: 4px solid var(--secondary); }
@@ -78,30 +79,6 @@
         .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
         .main-layout.team-mode { grid-template-columns: 1fr; }
         @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
-        .calendar-week { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.5rem; }
-        .calendar-week-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 1rem; font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-        .week-nav { display: flex; gap: 0.5rem; }
-        .week-nav button { background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
-        .week-nav button:hover { background: rgba(255,255,255,0.3); }
-        .calendar-week-grid { display: grid; grid-template-columns: 140px repeat(7, 1fr); }
-        .calendar-week-days { display: contents; }
-        .calendar-week-days > div { padding: 0.75rem 0.5rem; text-align: center; font-weight: 600; font-size: 0.8rem; background: rgba(123, 107, 141, 0.1); border-bottom: 1px solid var(--border); }
-        .calendar-week-days > div:first-child { text-align: left; padding-left: 1rem; }
-        .day-header { display: flex; flex-direction: column; align-items: center; }
-        .day-name { font-size: 0.7rem; color: var(--text-secondary); }
-        .day-num { font-size: 1rem; color: var(--primary); }
-        .day-num.today { background: var(--secondary); color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-        .calendar-week-row { display: contents; }
-        .calendar-week-row > div { padding: 0.6rem 0.4rem; text-align: center; border-bottom: 1px solid var(--border-light); font-size: 0.75rem; display: flex; align-items: center; justify-content: center; }
-        .calendar-week-row > div:first-child { justify-content: flex-start; padding-left: 0.75rem; gap: 0.5rem; font-weight: 500; }
-        .week-cell { min-height: 36px; width: 100%; border-radius: 4px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-        .week-cell.conge { background: rgba(95, 179, 165, 0.3); color: var(--secondary-dark); }
-        .week-cell.ss { background: rgba(212, 168, 83, 0.3); color: #9a7a2a; }
-        .week-cell.maladie { background: rgba(199, 90, 90, 0.3); color: var(--danger); }
-        .week-cell.formation { background: rgba(123, 107, 141, 0.3); color: var(--primary-dark); }
-        .week-cell.weekend { background: rgba(0,0,0,0.03); }
-        .mini-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 600; color: white; flex-shrink: 0; }
-        .mini-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
         .month-tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
         .month-tab { padding: 0.4rem 0.8rem; background: var(--bg-white); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem; font-weight: 500; }
         .month-tab:hover { border-color: var(--secondary); color: var(--secondary); }
@@ -119,18 +96,9 @@
         .full-cell.maladie { background: rgba(199, 90, 90, 0.3); color: var(--danger); }
         .full-cell.formation { background: rgba(123, 107, 141, 0.3); color: var(--primary-dark); }
         .full-cell.weekend { background: rgba(0,0,0,0.03); }
-        .employees-table { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        .table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); align-items: center; }
-        .table-row:hover { background: rgba(123, 107, 141, 0.05); }
-        .employee-name { font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-dark); font-size: 0.9rem; }
-        .employee-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: white; }
-        .employee-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
-        .cell-value { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; }
-        .cell-value.positive { color: var(--success); }
-        .cell-value.negative { color: var(--danger); }
-        .cell-value.neutral { color: var(--text-muted); }
-        .cell-value.warning { color: var(--warning); }
+        .full-cell.pending { background: repeating-linear-gradient(45deg, rgba(212,168,83,0.2), rgba(212,168,83,0.2) 2px, transparent 2px, transparent 4px); border: 1px dashed var(--warning); color: var(--warning); }
+        .mini-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 600; color: white; flex-shrink: 0; }
+        .mini-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
         .sidebar { display: flex; flex-direction: column; gap: 1rem; }
         .sidebar-card { background: var(--bg-white); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
         .sidebar-card h3 { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem; text-transform: uppercase; }
@@ -146,7 +114,6 @@
         .rule-icon { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.6rem; font-weight: 600; }
         .rule-icon.info { background: rgba(95, 179, 165, 0.2); color: var(--secondary-dark); }
         .rule-icon.warning { background: rgba(212, 168, 83, 0.2); color: var(--warning); }
-        .rule-icon.danger { background: rgba(199, 90, 90, 0.2); color: var(--danger); }
         .doctor-status { padding: 0.6rem 0.875rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.8rem; }
         .doctor-status.present { background: rgba(95, 179, 165, 0.15); border: 1px solid rgba(95, 179, 165, 0.3); }
         .doctor-status.absent { background: rgba(199, 90, 90, 0.15); border: 1px solid rgba(199, 90, 90, 0.3); }
@@ -155,34 +122,76 @@
         .status-dot.absent { background: var(--danger); }
         .admin-section { background: linear-gradient(135deg, rgba(123, 107, 141, 0.05) 0%, rgba(123, 107, 141, 0.02) 100%); border: 1px solid rgba(123, 107, 141, 0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
         .admin-section h2 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
         .admin-card { background: var(--bg-white); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
         .admin-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem; }
         .admin-card p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; }
         .import-btn { width: 100%; padding: 0.875rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); border: none; border-radius: 8px; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .import-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(95, 179, 165, 0.3); }
         .import-btn.danger { background: linear-gradient(135deg, var(--danger) 0%, #a84a4a 100%); }
+        .import-btn.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); }
         .file-input { display: none; }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal { background: var(--bg-white); border-radius: 16px; padding: 2rem; width: 90%; max-width: 400px; }
+        .modal { background: var(--bg-white); border-radius: 16px; padding: 2rem; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .modal h2 { font-family: 'Montserrat', sans-serif; font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem; text-align: center; }
         .modal p { color: var(--text-secondary); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem; }
-        .modal input { width: 100%; padding: 0.875rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; }
+        .modal input, .modal select, .modal textarea { width: 100%; padding: 0.875rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; font-family: inherit; }
+        .modal textarea { resize: vertical; min-height: 80px; }
         .modal-buttons { display: flex; gap: 0.75rem; }
         .modal-buttons button { flex: 1; padding: 0.875rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
         .btn-cancel { background: var(--bg-light); border: 1px solid var(--border); color: var(--text-secondary); }
         .btn-submit { background: var(--primary); border: none; color: white; }
+        .btn-success { background: var(--success); border: none; color: white; }
+        .btn-danger { background: var(--danger); border: none; color: white; }
         .error-msg { color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; text-align: center; }
         .footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem; }
         
-        /* Soldes Table Styles */
+        /* Requests styles */
+        .requests-section { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; }
+        .request-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-white); cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; }
+        .filter-btn:hover { border-color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-btn .count { background: rgba(0,0,0,0.1); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.3rem; font-size: 0.7rem; }
+        .filter-btn.active .count { background: rgba(255,255,255,0.3); }
+        .request-card { background: var(--bg-light); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--warning); }
+        .request-card.validated { border-left-color: var(--success); background: rgba(95, 179, 165, 0.05); }
+        .request-card.refused { border-left-color: var(--danger); background: rgba(199, 90, 90, 0.05); }
+        .request-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+        .request-employee { font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 0.5rem; }
+        .request-status { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600; }
+        .request-status.pending { background: rgba(212, 168, 83, 0.2); color: #9a7a2a; }
+        .request-status.validated { background: rgba(95, 179, 165, 0.2); color: var(--secondary-dark); }
+        .request-status.refused { background: rgba(199, 90, 90, 0.2); color: var(--danger); }
+        .request-details { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .request-details span { display: block; margin-bottom: 0.25rem; }
+        .request-comment { background: var(--bg-white); padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.75rem; border: 1px solid var(--border); }
+        .request-comment strong { color: var(--text-secondary); font-size: 0.75rem; display: block; margin-bottom: 0.25rem; }
+        .request-actions { display: flex; gap: 0.5rem; }
+        .request-actions button { padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+        .request-actions .btn-validate { background: var(--success); color: white; }
+        .request-actions .btn-refuse { background: var(--danger); color: white; }
+        .request-response { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+        .request-response strong { font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem; }
+        .request-response p { font-size: 0.85rem; color: var(--text-primary); }
+        .no-requests { text-align: center; color: var(--text-muted); padding: 2rem; }
+        
+        /* Soldes Table */
         .soldes-table { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-top: 1.5rem; }
         .soldes-table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); color: white; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
         .soldes-table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); align-items: center; }
         .soldes-table-row:hover { background: rgba(95, 179, 165, 0.05); }
+        .employee-name { font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-dark); font-size: 0.9rem; }
+        .employee-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: white; }
+        .employee-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
+        .cell-value { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; }
+        .cell-value.positive { color: var(--success); }
+        .cell-value.negative { color: var(--danger); }
+        .cell-value.warning { color: var(--warning); }
         .soldes-update { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
         
-        /* Team mode info banner */
         .team-info-banner { background: linear-gradient(135deg, rgba(95, 179, 165, 0.1) 0%, rgba(95, 179, 165, 0.05) 100%); border: 1px solid rgba(95, 179, 165, 0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--secondary-dark); display: flex; align-items: center; gap: 0.5rem; }
     </style>
 </head>
@@ -193,7 +202,6 @@
         
         const ADMIN_PASSWORD = "vergez2026";
         
-        // Liste des employés avec soldes initiaux (Février 2026)
         const INITIAL_EMPLOYEES = [
             { id: 1, name: "Dr François VERGEZ", isDoctor: true, cpN1: 0, cpN: 35, rcc: 0 },
             { id: 2, name: "Virginie BLARD", isDoctor: false, cpN1: 8.5, cpN: 36, rcc: 0 },
@@ -252,6 +260,131 @@
             );
         }
 
+        function RequestModal({ employees, onSubmit, onClose }) {
+            const [employeeId, setEmployeeId] = useState("");
+            const [type, setType] = useState("C");
+            const [startDate, setStartDate] = useState("");
+            const [endDate, setEndDate] = useState("");
+            const [comment, setComment] = useState("");
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!employeeId || !startDate || !endDate) {
+                    alert("Veuillez remplir tous les champs obligatoires");
+                    return;
+                }
+                onSubmit({
+                    id: Date.now(),
+                    employeeId: parseInt(employeeId),
+                    type,
+                    startDate,
+                    endDate,
+                    comment,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                });
+            };
+            
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h2>📝 Nouvelle demande de congé</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Employé *</label>
+                                <select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} required>
+                                    <option value="">-- Sélectionner --</option>
+                                    {employees.filter(e => !e.isDoctor).map(emp => (
+                                        <option key={emp.id} value={emp.id}>{emp.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Type d'absence *</label>
+                                <select value={type} onChange={(e) => setType(e.target.value)}>
+                                    <option value="C">Congé payé</option>
+                                    <option value="SS">Sans solde</option>
+                                    <option value="M">Maladie</option>
+                                    <option value="F">Formation</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Date de début *</label>
+                                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Date de fin *</label>
+                                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Motif / Commentaire</label>
+                                <textarea 
+                                    value={comment} 
+                                    onChange={(e) => setComment(e.target.value)}
+                                    placeholder="Ex: Vacances familiales, RDV médical, etc."
+                                />
+                            </div>
+                            <div className="modal-buttons">
+                                <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
+                                <button type="submit" className="btn-submit">Soumettre la demande</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        function ResponseModal({ request, employees, onSubmit, onClose }) {
+            const [response, setResponse] = useState("");
+            const [action, setAction] = useState("");
+            
+            const emp = employees.find(e => e.id === request.employeeId);
+            
+            const handleSubmit = () => {
+                if (!action) return;
+                onSubmit(request.id, action, response);
+            };
+            
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h2>{action === "validate" ? "✅ Valider" : action === "refuse" ? "❌ Refuser" : "📋 "} la demande</h2>
+                        <div style={{ background: "var(--bg-light)", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>
+                            <p style={{ textAlign: "left", margin: 0 }}>
+                                <strong>{emp?.name}</strong><br />
+                                {ABSENCE_TYPES[request.type]?.label} du {new Date(request.startDate).toLocaleDateString("fr-FR")} au {new Date(request.endDate).toLocaleDateString("fr-FR")}
+                                {request.comment && <><br /><em>Motif : {request.comment}</em></>}
+                            </p>
+                        </div>
+                        <div className="form-group">
+                            <label>Réponse de la direction (optionnel)</label>
+                            <textarea 
+                                value={response} 
+                                onChange={(e) => setResponse(e.target.value)}
+                                placeholder="Ajouter un commentaire..."
+                            />
+                        </div>
+                        <div className="modal-buttons">
+                            <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
+                            <button type="button" className="btn-danger" onClick={() => { setAction("refuse"); }}>❌ Refuser</button>
+                            <button type="button" className="btn-success" onClick={() => { setAction("validate"); }}>✅ Valider</button>
+                        </div>
+                        {action && (
+                            <div style={{ marginTop: "1rem", textAlign: "center" }}>
+                                <button 
+                                    className="import-btn" 
+                                    style={{ background: action === "validate" ? "var(--success)" : "var(--danger)" }}
+                                    onClick={handleSubmit}
+                                >
+                                    Confirmer : {action === "validate" ? "Valider" : "Refuser"}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
         function getInitials(name) {
             return name.split(" ").filter(n => n.length > 2).map(n => n[0]).join("").slice(0, 2);
         }
@@ -259,17 +392,16 @@
         function App() {
             const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
             const [absences, setAbsences] = useState({});
+            const [requests, setRequests] = useState([]);
             const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
             const [loading, setLoading] = useState(false);
             const [isAdmin, setIsAdmin] = useState(false);
             const [showLoginModal, setShowLoginModal] = useState(false);
+            const [showRequestModal, setShowRequestModal] = useState(false);
+            const [showResponseModal, setShowResponseModal] = useState(null);
+            const [activeTab, setActiveTab] = useState("planning");
+            const [requestFilter, setRequestFilter] = useState("all");
             const [soldesUpdateDate, setSoldesUpdateDate] = useState("28/02/2026");
-            const [weekStart, setWeekStart] = useState(() => {
-                const t = new Date();
-                const d = t.getDay();
-                const diff = t.getDate() - d + (d === 0 ? -6 : 1);
-                return new Date(t.getFullYear(), t.getMonth(), diff);
-            });
 
             const today = new Date();
             const selectedYear = 2026;
@@ -281,6 +413,9 @@
                 const savedEmployees = localStorage.getItem("vergez_employees_2026");
                 if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
                 
+                const savedRequests = localStorage.getItem("vergez_requests_2026");
+                if (savedRequests) setRequests(JSON.parse(savedRequests));
+                
                 const savedSoldesDate = localStorage.getItem("vergez_soldes_date");
                 if (savedSoldesDate) setSoldesUpdateDate(savedSoldesDate);
                 
@@ -288,16 +423,19 @@
             }, []);
 
             useEffect(() => {
-                if (Object.keys(absences).length > 0) {
-                    localStorage.setItem("vergez_absences_2026", JSON.stringify(absences));
-                }
+                localStorage.setItem("vergez_absences_2026", JSON.stringify(absences));
             }, [absences]);
 
             useEffect(() => {
                 localStorage.setItem("vergez_employees_2026", JSON.stringify(employees));
             }, [employees]);
 
-            // Calcule les jours de congés pris pour un employé
+            useEffect(() => {
+                localStorage.setItem("vergez_requests_2026", JSON.stringify(requests));
+            }, [requests]);
+
+            const pendingCount = useMemo(() => requests.filter(r => r.status === "pending").length, [requests]);
+
             const calculateCongesPris = useCallback((empId) => {
                 const empAbs = absences[empId] || {};
                 let conges = 0;
@@ -309,7 +447,6 @@
                 return conges;
             }, [absences]);
 
-            // Calcule le solde restant réel
             const calculateSoldeRestant = useCallback((emp) => {
                 const congesPris = calculateCongesPris(emp.id);
                 const totalDisponible = (emp.cpN1 || 0) + (emp.cpN || 0) + (emp.rcc || 0);
@@ -321,53 +458,26 @@
                 const d = today.getDate();
                 return employees.filter(emp => absences[emp.id]?.[m]?.[d])
                     .map(emp => ({ ...emp, type: absences[emp.id][m][d] }));
-            }, [absences, employees, today]);
+            }, [absences, employees]);
 
             const isDoctorPresentToday = !absences[1]?.[today.getMonth()]?.[today.getDate()];
 
-            // Import du fichier Excel des absences
-            const handleAbsenceFileImport = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                setLoading(true);
-                try {
-                    const data = await file.arrayBuffer();
-                    const wb = XLSX.read(data, { type: "array" });
-                    const newAbs = {};
-                    MONTHS.forEach((mn, mi) => {
-                        const sh = wb.Sheets[mn];
-                        if (!sh) return;
-                        const jd = XLSX.utils.sheet_to_json(sh, { header: 1 });
-                        for (let r = 0; r < jd.length; r++) {
-                            const rd = jd[r];
-                            if (!rd || !rd[1]) continue;
-                            const empName = rd[1].toString().toLowerCase();
-                            const emp = employees.find(x => 
-                                x.name.toLowerCase().includes(empName.split(" ")[0]) ||
-                                empName.includes(x.name.split(" ")[0].toLowerCase())
-                            );
-                            if (!emp) continue;
-                            if (!newAbs[emp.id]) newAbs[emp.id] = {};
-                            if (!newAbs[emp.id][mi]) newAbs[emp.id][mi] = {};
-                            for (let d = 1; d <= 31; d++) {
-                                const cv = rd[d + 1];
-                                if (cv && ["C", "SS", "M", "F"].includes(cv.toString().toUpperCase())) {
-                                    newAbs[emp.id][mi][d] = cv.toString().toUpperCase();
-                                }
-                            }
-                        }
-                    });
-                    setAbsences(newAbs);
-                    alert("Import des absences réussi !");
-                } catch (err) {
-                    console.error(err);
-                    alert("Erreur lors de l'import");
-                }
-                setLoading(false);
-                e.target.value = "";
+            // Check if a date has a pending request
+            const getPendingForDate = (empId, month, day) => {
+                return requests.find(r => 
+                    r.employeeId === empId && 
+                    r.status === "pending" &&
+                    isDateInRange(selectedYear, month, day, r.startDate, r.endDate)
+                );
             };
 
-            // Import du fichier Excel des soldes
+            const isDateInRange = (year, month, day, startStr, endStr) => {
+                const date = new Date(year, month, day);
+                const start = new Date(startStr);
+                const end = new Date(endStr);
+                return date >= start && date <= end;
+            };
+
             const handleSoldesFileImport = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -378,7 +488,6 @@
                     const sheet = wb.Sheets[wb.SheetNames[0]];
                     const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
                     
-                    // Trouver la ligne d'en-tête
                     let headerRow = -1;
                     for (let i = 0; i < json.length; i++) {
                         if (json[i] && json[i][0] === "Matricule") {
@@ -394,7 +503,6 @@
                     }
                     
                     const headers = json[headerRow];
-                    const colSalarie = 1;
                     const colCpN1 = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("N-1"));
                     const colCpN = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("CP N") && !h.toString().includes("N-1"));
                     const colRcc = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("RCC"));
@@ -403,9 +511,9 @@
                     
                     for (let i = headerRow + 1; i < json.length; i++) {
                         const row = json[i];
-                        if (!row || !row[colSalarie] || row[colSalarie] === "Total général") continue;
+                        if (!row || !row[1] || row[1] === "Total général") continue;
                         
-                        const fullName = row[colSalarie].toString();
+                        const fullName = row[1].toString();
                         const nameParts = fullName.split(" née ")[0].trim().split(" ");
                         const lastName = nameParts[0].toUpperCase();
                         
@@ -424,8 +532,7 @@
                     }
                     
                     setEmployees(updatedEmployees);
-                    const now = new Date();
-                    const dateStr = now.toLocaleDateString("fr-FR");
+                    const dateStr = new Date().toLocaleDateString("fr-FR");
                     setSoldesUpdateDate(dateStr);
                     localStorage.setItem("vergez_soldes_date", dateStr);
                     alert("Import des soldes réussi !");
@@ -437,54 +544,84 @@
                 e.target.value = "";
             };
 
+            const handleNewRequest = (request) => {
+                setRequests([...requests, request]);
+                setShowRequestModal(false);
+                alert("Demande enregistrée !");
+            };
+
+            const handleRequestResponse = (requestId, action, response) => {
+                const updatedRequests = requests.map(r => {
+                    if (r.id === requestId) {
+                        return {
+                            ...r,
+                            status: action === "validate" ? "validated" : "refused",
+                            response,
+                            respondedAt: new Date().toISOString()
+                        };
+                    }
+                    return r;
+                });
+                
+                // If validated, update absences
+                if (action === "validate") {
+                    const request = requests.find(r => r.id === requestId);
+                    if (request) {
+                        const newAbsences = { ...absences };
+                        const start = new Date(request.startDate);
+                        const end = new Date(request.endDate);
+                        
+                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                            const month = d.getMonth();
+                            const day = d.getDate();
+                            const dayOfWeek = d.getDay();
+                            
+                            // Skip weekends
+                            if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+                            
+                            if (!newAbsences[request.employeeId]) newAbsences[request.employeeId] = {};
+                            if (!newAbsences[request.employeeId][month]) newAbsences[request.employeeId][month] = {};
+                            newAbsences[request.employeeId][month][day] = request.type;
+                        }
+                        
+                        setAbsences(newAbsences);
+                    }
+                }
+                
+                setRequests(updatedRequests);
+                setShowResponseModal(null);
+            };
+
             const clearData = () => {
-                if (window.confirm("Supprimer toutes les données ?")) {
+                if (window.confirm("Supprimer toutes les données de congés ?")) {
                     setAbsences({});
-                    setEmployees(INITIAL_EMPLOYEES);
                     localStorage.removeItem("vergez_absences_2026");
-                    localStorage.removeItem("vergez_employees_2026");
-                    localStorage.removeItem("vergez_soldes_date");
-                    setSoldesUpdateDate("28/02/2026");
                 }
             };
 
-            const getWeekDates = () => {
-                const dates = [];
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(weekStart);
-                    d.setDate(d.getDate() + i);
-                    dates.push(d);
+            const clearRequests = () => {
+                if (window.confirm("Supprimer toutes les demandes ?")) {
+                    setRequests([]);
+                    localStorage.removeItem("vergez_requests_2026");
                 }
-                return dates;
             };
 
-            const navigateWeek = (dir) => {
-                const newStart = new Date(weekStart);
-                newStart.setDate(newStart.getDate() + dir * 7);
-                setWeekStart(newStart);
-            };
-
-            const goToCurrentWeek = () => {
-                const t = new Date();
-                const d = t.getDay();
-                const diff = t.getDate() - d + (d === 0 ? -6 : 1);
-                setWeekStart(new Date(t.getFullYear(), t.getMonth(), diff));
-            };
-
-            const weekDates = getWeekDates();
             const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+
+            const filteredRequests = useMemo(() => {
+                if (requestFilter === "all") return requests;
+                return requests.filter(r => r.status === requestFilter);
+            }, [requests, requestFilter]);
 
             return (
                 <div className="app-container">
                     {showLoginModal && <LoginModal onLogin={() => { setIsAdmin(true); sessionStorage.setItem("vergez_admin", "true"); setShowLoginModal(false); }} onClose={() => setShowLoginModal(false)} />}
+                    {showRequestModal && <RequestModal employees={employees} onSubmit={handleNewRequest} onClose={() => setShowRequestModal(false)} />}
+                    {showResponseModal && <ResponseModal request={showResponseModal} employees={employees} onSubmit={handleRequestResponse} onClose={() => setShowResponseModal(null)} />}
                     
                     <div className="top-bar">
-                        <div className="top-bar-left">
-                            <span>📍 38 route de Savanna, 97460 Saint Paul - La Réunion</span>
-                        </div>
-                        <div className="top-bar-right">
-                            <span>📞 +262 262 22 55 50</span>
-                        </div>
+                        <span>📍 38 route de Savanna, 97460 Saint Paul - La Réunion</span>
+                        <span>📞 +262 262 22 55 50</span>
                     </div>
                     
                     <div className="header-main">
@@ -493,9 +630,22 @@
                     </div>
                     
                     <nav className="nav-bar">
-                        <span className="nav-item active">📅 Planning</span>
+                        <button className={"nav-item" + (activeTab === "planning" ? " active" : "")} onClick={() => setActiveTab("planning")}>
+                            📅 Planning
+                        </button>
+                        {isAdmin && (
+                            <>
+                                <button className={"nav-item" + (activeTab === "requests" ? " active" : "")} onClick={() => setActiveTab("requests")}>
+                                    📋 Demandes
+                                    {pendingCount > 0 && <span className="nav-badge">{pendingCount}</span>}
+                                </button>
+                                <button className={"nav-item" + (activeTab === "admin" ? " active" : "")} onClick={() => setActiveTab("admin")}>
+                                    ⚙️ Administration
+                                </button>
+                            </>
+                        )}
                         {isAdmin ? (
-                            <button className="nav-item admin-btn logged" onClick={() => { setIsAdmin(false); sessionStorage.removeItem("vergez_admin"); }}>
+                            <button className="nav-item admin-btn logged" onClick={() => { setIsAdmin(false); sessionStorage.removeItem("vergez_admin"); setActiveTab("planning"); }}>
                                 🔓 Déconnexion Admin
                             </button>
                         ) : (
@@ -506,238 +656,279 @@
                     </nav>
                     
                     <div className="content-wrapper">
-                        {!isAdmin && (
-                            <div className="team-info-banner">
-                                ℹ️ Mode Équipe : Vue mensuelle des congés uniquement
+                        {activeTab === "planning" && (
+                            <>
+                                {!isAdmin && (
+                                    <div className="team-info-banner">
+                                        ℹ️ Mode Équipe : Vue mensuelle des congés uniquement
+                                    </div>
+                                )}
+                                
+                                <div className={"alert-box" + (isDoctorPresentToday ? "" : " info")}>
+                                    <div className="alert-icon">{isDoctorPresentToday ? "⚠" : "ℹ"}</div>
+                                    <div className="alert-content">
+                                        <h3>{isDoctorPresentToday ? "Dr VERGEZ Présent" : "Dr VERGEZ Absent"}</h3>
+                                        <p>{isDoctorPresentToday ? "Le Dr VERGEZ est présent aujourd'hui." : "Le Dr VERGEZ est absent."}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="date-banner">
+                                    <h2>📆 {today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</h2>
+                                    <div className="date-info">
+                                        <div className="date-item">
+                                            <div className="label">Absents</div>
+                                            <div className="value">{todayAbsences.length}</div>
+                                        </div>
+                                        <div className="date-item">
+                                            <div className="label">Présents</div>
+                                            <div className="value">{employees.length - todayAbsences.length}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="today-absences">
+                                    <h3 className="section-title">👤 Qui est absent aujourd'hui ?</h3>
+                                    {todayAbsences.length > 0 ? (
+                                        <div className="absent-list">
+                                            {todayAbsences.map(emp => (
+                                                <div key={emp.id} className={"absent-chip " + ABSENCE_TYPES[emp.type]?.cls}>
+                                                    <div className="chip-avatar">{getInitials(emp.name)}</div>
+                                                    <span>{emp.name}</span>
+                                                    <span className={"chip-type " + ABSENCE_TYPES[emp.type]?.cls}>{ABSENCE_TYPES[emp.type]?.label}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="no-absences">✅ Toute l'équipe est présente aujourd'hui !</div>
+                                    )}
+                                </div>
+                                
+                                <div className={"main-layout" + (isAdmin ? "" : " team-mode")}>
+                                    <div className="main-section">
+                                        <h3 className="section-title">
+                                            📅 Vue mensuelle <span className="section-badge">{selectedYear}</span>
+                                        </h3>
+                                        <div className="month-tabs">
+                                            {MONTHS.map((m, i) => (
+                                                <button key={m} className={"month-tab" + (selectedMonth === i ? " active" : "")} onClick={() => setSelectedMonth(i)}>
+                                                    {m.slice(0, 3)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        
+                                        <div className="calendar-full">
+                                            <div className="calendar-full-header">
+                                                <div>Employé</div>
+                                                {Array.from({ length: daysInMonth }, (_, i) => {
+                                                    const d = new Date(selectedYear, selectedMonth, i + 1);
+                                                    return <div key={i + 1}>{i + 1}<br /><small>{DAYS[d.getDay()].slice(0, 1)}</small></div>;
+                                                })}
+                                            </div>
+                                            {employees.map(emp => (
+                                                <div key={emp.id} className="calendar-full-row">
+                                                    <div>
+                                                        <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")} style={{ width: 20, height: 20, fontSize: "0.55rem" }}>{getInitials(emp.name)}</div>
+                                                        <span>{emp.name.split(" ")[0]}</span>
+                                                    </div>
+                                                    {Array.from({ length: daysInMonth }, (_, i) => {
+                                                        const day = i + 1;
+                                                        const date = new Date(selectedYear, selectedMonth, day);
+                                                        const isWe = date.getDay() === 0 || date.getDay() === 6;
+                                                        const at = absences[emp.id]?.[selectedMonth]?.[day];
+                                                        const pending = isAdmin && getPendingForDate(emp.id, selectedMonth, day);
+                                                        
+                                                        let cls = "";
+                                                        let content = "";
+                                                        
+                                                        if (at) {
+                                                            cls = ABSENCE_TYPES[at]?.cls || "";
+                                                            content = at;
+                                                        } else if (pending) {
+                                                            cls = "pending";
+                                                            content = "?";
+                                                        } else if (isWe) {
+                                                            cls = "weekend";
+                                                        }
+                                                        
+                                                        return <div key={day} className={"full-cell " + cls}>{content}</div>;
+                                                    })}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        
+                                        {isAdmin && (
+                                            <>
+                                                <h3 className="section-title" style={{ marginTop: "1.5rem" }}>📊 Soldes des Congés</h3>
+                                                <div className="soldes-table">
+                                                    <div className="soldes-table-header">
+                                                        <div>Employé</div>
+                                                        <div>CP N-1</div>
+                                                        <div>CP N</div>
+                                                        <div>RCC</div>
+                                                        <div>Solde restant</div>
+                                                    </div>
+                                                    {employees.filter(e => !e.isDoctor).map(emp => {
+                                                        const soldeRestant = calculateSoldeRestant(emp);
+                                                        return (
+                                                            <div key={emp.id} className="soldes-table-row">
+                                                                <div className="employee-name">
+                                                                    <div className="employee-avatar">{getInitials(emp.name)}</div>
+                                                                    <span>{emp.name}</span>
+                                                                </div>
+                                                                <div className="cell-value">{(emp.cpN1 || 0).toFixed(1)}</div>
+                                                                <div className="cell-value">{(emp.cpN || 0).toFixed(1)}</div>
+                                                                <div className="cell-value">{(emp.rcc || 0).toFixed(1)}</div>
+                                                                <div className={"cell-value " + (soldeRestant > 10 ? "positive" : soldeRestant > 5 ? "warning" : "negative")}>
+                                                                    {soldeRestant.toFixed(1)} j
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                                <div className="soldes-update">Soldes mis à jour le {soldesUpdateDate}</div>
+                                            </>
+                                        )}
+                                    </div>
+                                    
+                                    {isAdmin && (
+                                        <div className="sidebar">
+                                            <div className="sidebar-card">
+                                                <h3>🎨 Légende</h3>
+                                                <div className="legend-grid">
+                                                    <div className="legend-item"><div className="legend-color conge"></div><span>C - Congé</span></div>
+                                                    <div className="legend-item"><div className="legend-color ss"></div><span>SS - Sans solde</span></div>
+                                                    <div className="legend-item"><div className="legend-color maladie"></div><span>M - Maladie</span></div>
+                                                    <div className="legend-item"><div className="legend-color formation"></div><span>F - Formation</span></div>
+                                                </div>
+                                                <div style={{ marginTop: "0.75rem", padding: "0.5rem", background: "repeating-linear-gradient(45deg, rgba(212,168,83,0.2), rgba(212,168,83,0.2) 2px, transparent 2px, transparent 4px)", borderRadius: "4px", fontSize: "0.75rem", color: "var(--warning)", textAlign: "center" }}>
+                                                    ? = En attente de validation
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="sidebar-card">
+                                                <h3>📋 Règles</h3>
+                                                <ul className="rules-list">
+                                                    <li><div className="rule-icon warning">⚠</div><span>Pas de congé si <strong>Dr VERGEZ présent</strong></span></li>
+                                                    <li><div className="rule-icon info">i</div><span>Si 3 semaines consécutives acceptées, valable <strong>1 seule fois/an</strong></span></li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div className="sidebar-card">
+                                                <h3>👨‍⚕️ Dr VERGEZ</h3>
+                                                <div className={"doctor-status " + (isDoctorPresentToday ? "present" : "absent")}>
+                                                    <div className={"status-dot " + (isDoctorPresentToday ? "present" : "absent")}></div>
+                                                    <span>{isDoctorPresentToday ? "Présent aujourd'hui" : "Absent aujourd'hui"}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                        
+                        {activeTab === "requests" && isAdmin && (
+                            <div className="requests-section">
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
+                                    <h3 className="section-title" style={{ margin: 0 }}>📋 Demandes de congés</h3>
+                                    <button className="import-btn primary" style={{ width: "auto" }} onClick={() => setShowRequestModal(true)}>
+                                        ➕ Nouvelle demande
+                                    </button>
+                                </div>
+                                
+                                <div className="request-filters">
+                                    <button className={"filter-btn" + (requestFilter === "all" ? " active" : "")} onClick={() => setRequestFilter("all")}>
+                                        Toutes <span className="count">{requests.length}</span>
+                                    </button>
+                                    <button className={"filter-btn" + (requestFilter === "pending" ? " active" : "")} onClick={() => setRequestFilter("pending")}>
+                                        En attente <span className="count">{requests.filter(r => r.status === "pending").length}</span>
+                                    </button>
+                                    <button className={"filter-btn" + (requestFilter === "validated" ? " active" : "")} onClick={() => setRequestFilter("validated")}>
+                                        Validées <span className="count">{requests.filter(r => r.status === "validated").length}</span>
+                                    </button>
+                                    <button className={"filter-btn" + (requestFilter === "refused" ? " active" : "")} onClick={() => setRequestFilter("refused")}>
+                                        Refusées <span className="count">{requests.filter(r => r.status === "refused").length}</span>
+                                    </button>
+                                </div>
+                                
+                                {filteredRequests.length === 0 ? (
+                                    <div className="no-requests">Aucune demande</div>
+                                ) : (
+                                    filteredRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(request => {
+                                        const emp = employees.find(e => e.id === request.employeeId);
+                                        return (
+                                            <div key={request.id} className={"request-card " + request.status}>
+                                                <div className="request-header">
+                                                    <div className="request-employee">
+                                                        <div className="chip-avatar">{emp ? getInitials(emp.name) : "?"}</div>
+                                                        {emp?.name || "Employé inconnu"}
+                                                    </div>
+                                                    <span className={"request-status " + request.status}>
+                                                        {request.status === "pending" ? "⏳ En attente" : request.status === "validated" ? "✅ Validée" : "❌ Refusée"}
+                                                    </span>
+                                                </div>
+                                                <div className="request-details">
+                                                    <span><strong>Type :</strong> {ABSENCE_TYPES[request.type]?.label}</span>
+                                                    <span><strong>Période :</strong> du {new Date(request.startDate).toLocaleDateString("fr-FR")} au {new Date(request.endDate).toLocaleDateString("fr-FR")}</span>
+                                                    <span><strong>Demandé le :</strong> {new Date(request.createdAt).toLocaleDateString("fr-FR")}</span>
+                                                </div>
+                                                {request.comment && (
+                                                    <div className="request-comment">
+                                                        <strong>Motif :</strong>
+                                                        {request.comment}
+                                                    </div>
+                                                )}
+                                                {request.status === "pending" && (
+                                                    <div className="request-actions">
+                                                        <button className="btn-validate" onClick={() => setShowResponseModal(request)}>✅ Valider</button>
+                                                        <button className="btn-refuse" onClick={() => setShowResponseModal(request)}>❌ Refuser</button>
+                                                    </div>
+                                                )}
+                                                {request.response && (
+                                                    <div className="request-response">
+                                                        <strong>Réponse direction :</strong>
+                                                        <p>{request.response}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })
+                                )}
                             </div>
                         )}
                         
-                        <div className={"alert-box" + (isDoctorPresentToday ? "" : " info")}>
-                            <div className="alert-icon">{isDoctorPresentToday ? "⚠" : "ℹ"}</div>
-                            <div className="alert-content">
-                                <h3>{isDoctorPresentToday ? "Dr VERGEZ Présent" : "Dr VERGEZ Absent"}</h3>
-                                <p>{isDoctorPresentToday ? "Le Dr VERGEZ est présent aujourd'hui." : "Le Dr VERGEZ est absent. Les congés sont possibles."}</p>
-                            </div>
-                        </div>
-                        
-                        <div className="date-banner">
-                            <h2>📆 {today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</h2>
-                            <div className="date-info">
-                                <div className="date-item">
-                                    <div className="label">Absents</div>
-                                    <div className="value">{todayAbsences.length}</div>
-                                </div>
-                                <div className="date-item">
-                                    <div className="label">Présents</div>
-                                    <div className="value">{employees.length - todayAbsences.length}</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {isAdmin && (
+                        {activeTab === "admin" && isAdmin && (
                             <div className="admin-section">
                                 <h2>⚙️ Administration</h2>
                                 <div className="admin-grid">
                                     <div className="admin-card">
-                                        <h4>📤 Importer les absences</h4>
-                                        <p>Fichier Excel du calendrier des absences</p>
-                                        <input type="file" accept=".xlsx,.xls" onChange={handleAbsenceFileImport} className="file-input" id="file-import-absences" />
-                                        <label htmlFor="file-import-absences" className="import-btn">
-                                            {loading ? "⏳ Import..." : "📁 Sélectionner fichier"}
-                                        </label>
-                                    </div>
-                                    <div className="admin-card">
                                         <h4>📊 Importer les soldes</h4>
-                                        <p>Fichier Excel "Solde des repos" de la paie</p>
+                                        <p>Fichier Excel "Solde des repos"</p>
                                         <input type="file" accept=".xlsx,.xls" onChange={handleSoldesFileImport} className="file-input" id="file-import-soldes" />
                                         <label htmlFor="file-import-soldes" className="import-btn">
                                             {loading ? "⏳ Import..." : "📁 Importer soldes Excel"}
                                         </label>
                                     </div>
                                     <div className="admin-card">
-                                        <h4>🗑️ Réinitialiser</h4>
-                                        <p>Supprimer toutes les données</p>
-                                        <button className="import-btn danger" onClick={clearData}>🗑️ Supprimer les données</button>
+                                        <h4>➕ Saisir une demande</h4>
+                                        <p>Créer une demande de congé</p>
+                                        <button className="import-btn primary" onClick={() => setShowRequestModal(true)}>📝 Nouvelle demande</button>
+                                    </div>
+                                    <div className="admin-card">
+                                        <h4>🗑️ Réinitialiser congés</h4>
+                                        <p>Supprimer les absences</p>
+                                        <button className="import-btn danger" onClick={clearData}>🗑️ Supprimer congés</button>
+                                    </div>
+                                    <div className="admin-card">
+                                        <h4>🗑️ Réinitialiser demandes</h4>
+                                        <p>Supprimer les demandes</p>
+                                        <button className="import-btn danger" onClick={clearRequests}>🗑️ Supprimer demandes</button>
                                     </div>
                                 </div>
                             </div>
                         )}
-                        
-                        {/* Absents aujourd'hui - visible pour tous */}
-                        <div className="today-absences">
-                            <h3 className="section-title">👤 Qui est absent aujourd'hui ?</h3>
-                            {todayAbsences.length > 0 ? (
-                                <div className="absent-list">
-                                    {todayAbsences.map(emp => (
-                                        <div key={emp.id} className={"absent-chip " + ABSENCE_TYPES[emp.type]?.cls}>
-                                            <div className="chip-avatar">{getInitials(emp.name)}</div>
-                                            <span>{emp.name}</span>
-                                            <span className={"chip-type " + ABSENCE_TYPES[emp.type]?.cls}>{ABSENCE_TYPES[emp.type]?.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="no-absences">✅ Toute l'équipe est présente aujourd'hui !</div>
-                            )}
-                        </div>
-                        
-                        <div className={"main-layout" + (isAdmin ? "" : " team-mode")}>
-                            <div className="main-section">
-                                {/* Vue semaine - Admin seulement */}
-                                {isAdmin && (
-                                    <div className="calendar-week">
-                                        <div className="calendar-week-header">
-                                            <span>Semaine du {weekStart.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</span>
-                                            <div className="week-nav">
-                                                <button onClick={() => navigateWeek(-1)}>◀</button>
-                                                <button onClick={goToCurrentWeek}>Auj.</button>
-                                                <button onClick={() => navigateWeek(1)}>▶</button>
-                                            </div>
-                                        </div>
-                                        <div className="calendar-week-grid">
-                                            <div className="calendar-week-days">
-                                                <div>Employé</div>
-                                                {weekDates.map((date, i) => (
-                                                    <div key={i} className="day-header">
-                                                        <span className="day-name">{DAYS[date.getDay()]}</span>
-                                                        <span className={"day-num" + (date.toDateString() === today.toDateString() ? " today" : "")}>{date.getDate()}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                            {employees.map(emp => (
-                                                <div key={emp.id} className="calendar-week-row">
-                                                    <div>
-                                                        <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")}>{getInitials(emp.name)}</div>
-                                                        <span>{emp.name.split(" ")[0]}</span>
-                                                    </div>
-                                                    {weekDates.map((date, i) => {
-                                                        const m = date.getMonth();
-                                                        const d = date.getDate();
-                                                        const isWe = date.getDay() === 0 || date.getDay() === 6;
-                                                        const at = absences[emp.id]?.[m]?.[d];
-                                                        const cls = at ? ABSENCE_TYPES[at]?.cls : (isWe ? "weekend" : "");
-                                                        return (
-                                                            <div key={i}>
-                                                                <div className={"week-cell " + cls}>{at || ""}</div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                
-                                {/* Vue mensuelle - visible pour tous */}
-                                <h3 className="section-title" style={{ marginTop: isAdmin ? "1rem" : "0" }}>
-                                    📅 Vue mensuelle <span className="section-badge">{selectedYear}</span>
-                                </h3>
-                                <div className="month-tabs">
-                                    {MONTHS.map((m, i) => (
-                                        <button key={m} className={"month-tab" + (selectedMonth === i ? " active" : "")} onClick={() => setSelectedMonth(i)}>
-                                            {m.slice(0, 3)}
-                                        </button>
-                                    ))}
-                                </div>
-                                
-                                <div className="calendar-full">
-                                    <div className="calendar-full-header">
-                                        <div>Employé</div>
-                                        {Array.from({ length: daysInMonth }, (_, i) => {
-                                            const d = new Date(selectedYear, selectedMonth, i + 1);
-                                            return <div key={i + 1}>{i + 1}<br /><small>{DAYS[d.getDay()].slice(0, 1)}</small></div>;
-                                        })}
-                                    </div>
-                                    {employees.map(emp => (
-                                        <div key={emp.id} className="calendar-full-row">
-                                            <div>
-                                                <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")} style={{ width: 20, height: 20, fontSize: "0.55rem" }}>{getInitials(emp.name)}</div>
-                                                <span>{emp.name.split(" ")[0]}</span>
-                                            </div>
-                                            {Array.from({ length: daysInMonth }, (_, i) => {
-                                                const day = i + 1;
-                                                const date = new Date(selectedYear, selectedMonth, day);
-                                                const isWe = date.getDay() === 0 || date.getDay() === 6;
-                                                const at = absences[emp.id]?.[selectedMonth]?.[day];
-                                                const cls = at ? ABSENCE_TYPES[at]?.cls : (isWe ? "weekend" : "");
-                                                return <div key={day} className={"full-cell " + cls}>{at || ""}</div>;
-                                            })}
-                                        </div>
-                                    ))}
-                                </div>
-                                
-                                {/* Tableau des soldes - Admin seulement */}
-                                {isAdmin && (
-                                    <>
-                                        <h3 className="section-title" style={{ marginTop: "1.5rem" }}>📊 Soldes des Congés</h3>
-                                        <div className="soldes-table">
-                                            <div className="soldes-table-header">
-                                                <div>Employé</div>
-                                                <div>CP N-1</div>
-                                                <div>CP N</div>
-                                                <div>RCC</div>
-                                                <div>Solde restant</div>
-                                            </div>
-                                            {employees.filter(e => !e.isDoctor).map(emp => {
-                                                const soldeRestant = calculateSoldeRestant(emp);
-                                                return (
-                                                    <div key={emp.id} className="soldes-table-row">
-                                                        <div className="employee-name">
-                                                            <div className="employee-avatar">{getInitials(emp.name)}</div>
-                                                            <span>{emp.name}</span>
-                                                        </div>
-                                                        <div className="cell-value">{(emp.cpN1 || 0).toFixed(1)}</div>
-                                                        <div className="cell-value">{(emp.cpN || 0).toFixed(1)}</div>
-                                                        <div className="cell-value">{(emp.rcc || 0).toFixed(1)}</div>
-                                                        <div className={"cell-value " + (soldeRestant > 10 ? "positive" : soldeRestant > 5 ? "warning" : "negative")}>
-                                                            {soldeRestant.toFixed(1)} j
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                        <div className="soldes-update">Soldes mis à jour le {soldesUpdateDate}</div>
-                                    </>
-                                )}
-                            </div>
-                            
-                            {/* Sidebar - Admin seulement */}
-                            {isAdmin && (
-                                <div className="sidebar">
-                                    <div className="sidebar-card">
-                                        <h3>🎨 Légende</h3>
-                                        <div className="legend-grid">
-                                            <div className="legend-item"><div className="legend-color conge"></div><span>C - Congé</span></div>
-                                            <div className="legend-item"><div className="legend-color ss"></div><span>SS - Sans solde</span></div>
-                                            <div className="legend-item"><div className="legend-color maladie"></div><span>M - Maladie</span></div>
-                                            <div className="legend-item"><div className="legend-color formation"></div><span>F - Formation</span></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="sidebar-card">
-                                        <h3>📋 Règles</h3>
-                                        <ul className="rules-list">
-                                            <li><div className="rule-icon danger">!</div><span>Max <strong>3 semaines</strong> consécutives/an</span></li>
-                                            <li><div className="rule-icon warning">⚠</div><span>Pas de congé si <strong>Dr VERGEZ présent</strong></span></li>
-                                            <li><div className="rule-icon info">i</div><span>Congés payés : <strong>25j/an</strong></span></li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <div className="sidebar-card">
-                                        <h3>👨‍⚕️ Dr VERGEZ</h3>
-                                        <div className={"doctor-status " + (isDoctorPresentToday ? "present" : "absent")}>
-                                            <div className={"status-dot " + (isDoctorPresentToday ? "present" : "absent")}></div>
-                                            <span>{isDoctorPresentToday ? "Présent aujourd'hui" : "Absent aujourd'hui"}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
                     </div>
                     
-                    <footer className="footer">
-                        © 2026 Cabinet d'Orthodontie du Dr François VERGEZ - Saint Paul, La Réunion
-                    </footer>
+                    <footer className="footer">© 2026 Cabinet d'Orthodontie du Dr François VERGEZ - Saint Paul, La Réunion</footer>
                 </div>
             );
         }
