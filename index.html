@@ -14,6 +14,7 @@
    VARIABLES & RESET
    ═══════════════════════════════════════════════════ */
 :root {
+  /* — palette Cabinet Vergez — */
   --violet:     #7b6b8d;
   --violet-lt:  #9d8fb0;
   --violet-dk:  #5a4d6b;
@@ -29,6 +30,7 @@
   --red:        #c75a5a;
   --red-dk:     #a84a4a;
   --red-bg:     rgba(199,90,90,.08);
+  /* — neutrals — */
   --bg:         #f5f5fa;
   --white:      #ffffff;
   --t1:         #2d2d3d;
@@ -37,6 +39,7 @@
   --t4:         #adadba;
   --bd:         #e4e4ef;
   --bd-lt:      #eeeef5;
+  /* — shadows — */
   --sh-sm:  0 1px 4px rgba(45,45,61,.05);
   --sh-md:  0 4px 16px rgba(45,45,61,.07);
   --sh-lg:  0 8px 30px rgba(45,45,61,.1);
@@ -85,8 +88,8 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   border-bottom:2px solid var(--bd); box-shadow:var(--sh-sm); flex-wrap:wrap;
 }
 .ntab {
-  padding:.85rem 1.15rem; color:var(--t3); font-size:.78rem; font-weight:600;
-  text-transform:uppercase; letter-spacing:.5px; cursor:pointer; border:none;
+  padding:.85rem 1.15rem; color:var(--t3); font-size:.84rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.4px; cursor:pointer; border:none;
   background:transparent; border-bottom:2.5px solid transparent; margin-bottom:-2px;
   transition:color .2s,border-color .2s; position:relative; font-family:inherit;
 }
@@ -155,7 +158,7 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   text-align:center; background:rgba(255,255,255,.14); border-radius:8px; padding:.4rem .85rem;
 }
 .dstat .dl { font-size:.6rem; opacity:.75; text-transform:uppercase; letter-spacing:.5px; }
-.dstat .dv { font-size:1.25rem; font-weight:800; font-family:'Playfair Display',serif; }
+.dstat .dv { font-size:1.3rem; font-weight:800; font-family:'DM Sans',sans-serif; }
 
 /* ═══════════════════════════════════════════════════
    TODAY ABSENCES
@@ -165,9 +168,9 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   border:1px solid var(--bd); margin-bottom:1.4rem; box-shadow:var(--sh-sm);
 }
 .sec-title {
-  font-family:'Playfair Display',serif; font-size:.84rem; font-weight:700;
+  font-family:'Playfair Display',serif; font-size:.92rem; font-weight:700;
   color:var(--violet); margin-bottom:.85rem; display:flex; align-items:center; gap:.5rem;
-  text-transform:uppercase; letter-spacing:.7px;
+  text-transform:uppercase; letter-spacing:.6px;
 }
 .sbadge {
   background:var(--teal); color:#fff; font-size:.58rem; padding:.12rem .45rem;
@@ -226,34 +229,34 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   overflow-x:auto; box-shadow:var(--sh-sm);
 }
 .cal-hdr {
-  display:grid; grid-template-columns:155px repeat(31,minmax(27px,1fr));
+  display:grid; grid-template-columns:170px repeat(31,minmax(28px,1fr));
   background:linear-gradient(135deg,var(--violet-dk),var(--violet));
-  color:#fff; font-size:.58rem; font-weight:700; min-width:1060px;
+  color:#fff; font-size:.62rem; font-weight:700; min-width:1080px;
   position:sticky; top:0; z-index:10;
 }
 .cal-hdr > div {
-  padding:.48rem .06rem; text-align:center;
+  padding:.5rem .06rem; text-align:center;
   border-right:1px solid rgba(255,255,255,.07);
 }
 .cal-hdr > div:first-child {
   text-align:left; padding-left:.85rem; border-right:1px solid rgba(255,255,255,.13);
-  font-size:.7rem; display:flex; align-items:center;
+  font-size:.76rem; display:flex; align-items:center;
 }
 .d-hd { display:flex; flex-direction:column; align-items:center; gap:1px; }
-.d-num { font-size:.66rem; font-weight:800; }
-.d-ltr { font-size:.54rem; opacity:.6; font-weight:400; }
+.d-num { font-size:.7rem; font-weight:800; }
+.d-ltr { font-size:.58rem; opacity:.6; font-weight:400; }
 .wk-hd { background:rgba(0,0,0,.16); }
 .td-hd { background:rgba(212,168,83,.45) !important; }
 
 .cal-row {
-  display:grid; grid-template-columns:155px repeat(31,minmax(27px,1fr));
-  border-bottom:1px solid var(--bd-lt); min-width:1060px; transition:background .12s;
+  display:grid; grid-template-columns:170px repeat(31,minmax(28px,1fr));
+  border-bottom:1px solid var(--bd-lt); min-width:1080px; transition:background .12s;
 }
 .cal-row:hover { background:rgba(123,107,141,.02); }
 .cal-row:last-child { border-bottom:none; }
 .cal-emp {
-  padding:.35rem .5rem; display:flex; align-items:center; gap:.4rem;
-  border-right:1px solid var(--bd); font-size:.69rem; font-weight:600; color:var(--t1);
+  padding:.4rem .55rem; display:flex; align-items:center; gap:.45rem;
+  border-right:1px solid var(--bd); font-size:.76rem; font-weight:600; color:var(--t1);
 }
 .emp-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .mini-av {
@@ -265,15 +268,16 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
 .mini-av.dr { background:linear-gradient(135deg,var(--violet),var(--violet-lt)); }
 
 .cal-cell {
-  padding:.2rem .06rem; text-align:center; border-right:1px solid var(--bd-lt);
-  display:flex; align-items:center; justify-content:center; min-height:30px;
+  padding:.22rem .06rem; text-align:center; border-right:1px solid var(--bd-lt);
+  display:flex; align-items:center; justify-content:center; min-height:34px;
 }
 .cal-cell.we { background:rgba(0,0,0,.02); }
 .cal-cell.td { background:rgba(212,168,83,.06); border-right-color:rgba(212,168,83,.2); }
 
+/* absence badges */
 .abg {
   display:inline-flex; align-items:center; justify-content:center;
-  width:21px; height:21px; border-radius:5px; font-size:.56rem; font-weight:800; color:#fff;
+  width:24px; height:24px; border-radius:5px; font-size:.62rem; font-weight:800; color:#fff;
 }
 .abg.conge    { background:linear-gradient(135deg,var(--teal),var(--teal-dk));    box-shadow:0 1px 4px rgba(95,179,165,.45); }
 .abg.ss       { background:linear-gradient(135deg,var(--gold),var(--gold-dk));    box-shadow:0 1px 4px rgba(212,168,83,.45); }
@@ -292,20 +296,20 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   overflow:hidden; margin-top:1.5rem; box-shadow:var(--sh-sm);
 }
 .sol-hdr {
-  display:grid; grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;
-  padding:.65rem 1.2rem; background:linear-gradient(135deg,var(--teal),var(--teal-dk));
-  color:#fff; font-weight:700; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px;
+  display:grid; grid-template-columns:2.5fr 1fr 1fr 1fr 1.4fr;
+  padding:.7rem 1.2rem; background:linear-gradient(135deg,var(--teal),var(--teal-dk));
+  color:#fff; font-weight:700; font-size:.75rem; text-transform:uppercase; letter-spacing:.3px;
 }
 .sol-row {
-  display:grid; grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;
-  padding:.65rem 1.2rem; border-bottom:1px solid var(--bd-lt); align-items:center;
+  display:grid; grid-template-columns:2.5fr 1fr 1fr 1fr 1.4fr;
+  padding:.75rem 1.2rem; border-bottom:1px solid var(--bd-lt); align-items:center;
   transition:background .12s;
 }
 .sol-row:hover { background:var(--teal-bg); }
 .sol-row:last-child { border-bottom:none; }
 .emp-info {
   font-weight:600; display:flex; align-items:center; gap:.5rem;
-  color:var(--t1); font-size:.82rem;
+  color:var(--t1); font-size:.9rem;
 }
 .emp-av {
   width:28px; height:28px; border-radius:50%;
@@ -314,11 +318,11 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   font-weight:700; font-size:.64rem; color:#fff; flex-shrink:0;
 }
 .c-val {
-  font-family:'Playfair Display',serif; font-size:.85rem; font-weight:700; color:var(--t2);
+  font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:700; color:var(--t1);
 }
 .sol-chip {
-  display:inline-flex; align-items:center; gap:.25rem; padding:.2rem .5rem;
-  border-radius:20px; font-size:.74rem; font-weight:700; font-family:'Playfair Display',serif;
+  display:inline-flex; align-items:center; gap:.25rem; padding:.25rem .6rem;
+  border-radius:20px; font-size:.82rem; font-weight:700; font-family:'DM Sans',sans-serif;
 }
 .sol-chip.ok { background:rgba(95,179,165,.12); color:var(--teal-dk); border:1px solid rgba(95,179,165,.22); }
 .sol-chip.wa { background:var(--gold-bg);       color:#9a7a2a;        border:1px solid rgba(212,168,83,.22); }
@@ -503,6 +507,8 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
 .btn-cancel:hover { border-color:var(--t3); }
 .btn-submit { background:linear-gradient(135deg,var(--violet),var(--violet-dk)); border:none; color:#fff; }
 .btn-submit:hover { box-shadow:0 4px 16px rgba(123,107,141,.35); }
+.btn-ok  { background:linear-gradient(135deg,var(--teal),var(--teal-dk)); border:none; color:#fff; }
+.btn-bad { background:linear-gradient(135deg,var(--red),var(--red-dk)); border:none; color:#fff; }
 .err-msg {
   color:var(--red); font-size:.78rem; margin-bottom:.85rem;
   background:var(--red-bg); padding:.4rem .7rem; border-radius:6px; border:1px solid rgba(199,90,90,.18);
@@ -528,6 +534,9 @@ body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:v
   border-top:1px solid var(--bd); margin-top:1.5rem;
 }
 
+/* ═══════════════════════════════════════════════════
+   STRUCTURE INFO
+   ═══════════════════════════════════════════════════ */
 .struct-info {
   margin-top:1.5rem; background:var(--teal-bg); border:1px solid rgba(95,179,165,.2);
   border-radius:10px; padding:.95rem 1.2rem; font-size:.76rem; color:var(--t3);
@@ -772,6 +781,7 @@ function Toast({message, type, onDone}) {
    APP PRINCIPALE
    ══════════════════════════════════════════════════════ */
 function App() {
+  /* — State — */
   const [employees, setEmployees] = useState(() => lsGet("vz_emp_26", INIT_EMPLOYEES));
   const [absences, setAbsences]   = useState(() => lsGet("vz_abs_26", {}));
   const [requests, setRequests]   = useState(() => lsGet("vz_req_26", []));
@@ -782,20 +792,24 @@ function App() {
   const [reqFilter, setReqFilter] = useState("all");
   const [toast, setToast]         = useState(null);
 
+  /* — Modal states — */
   const [showLogin, setShowLogin]   = useState(false);
   const [showReqModal, setShowReqModal] = useState(false);
   const [showRespModal, setShowRespModal] = useState(null);
 
+  /* — Import dates — */
   const [planDate, setPlanDate] = useState(() => localStorage.getItem("vz_plan_dt") || null);
   const [solDate, setSolDate]   = useState(() => localStorage.getItem("vz_sol_dt") || null);
   const [importMsg, setImportMsg] = useState({plan:null, sol:null});
 
   const today = new Date();
 
+  /* — Persist — */
   useEffect(() => { lsSet("vz_abs_26", absences); },  [absences]);
   useEffect(() => { lsSet("vz_emp_26", employees); }, [employees]);
   useEffect(() => { lsSet("vz_req_26", requests); },  [requests]);
 
+  /* — Computed — */
   const pendingCount = useMemo(() => requests.filter(r => r.status === "pending").length, [requests]);
 
   const cpTaken = useCallback((empId) => {
@@ -828,9 +842,10 @@ function App() {
     );
   };
 
+  /* — Toast helper — */
   const showToast = (message, type = "ok") => setToast({message, type});
 
-  /* ── Import Planning ── */
+  /* ── Import Planning ────────────────────────────── */
   const importPlanning = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -849,6 +864,7 @@ function App() {
         const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:null});
         if (!rows || rows.length < 9) continue;
 
+        /* En-tête : ligne 7 (index 7) = numéros des jours */
         const hRow = rows[7];
         if (!hRow) continue;
 
@@ -903,7 +919,7 @@ function App() {
     e.target.value = "";
   };
 
-  /* ── Import Soldes ── */
+  /* ── Import Soldes ──────────────────────────────── */
   const importSoldes = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -914,6 +930,7 @@ function App() {
       const sheet = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:null});
 
+      /* Trouver l'en-tête "Matricule" */
       let headerIdx = -1;
       for (let i = 0; i < rows.length; i++) {
         if (rows[i]?.[0] != null && rows[i][0].toString().trim() === "Matricule") {
@@ -933,6 +950,7 @@ function App() {
         else if (h.includes("solde") && h.includes("cp") && !h.includes("n-1") && !h.includes("rcc")) cN = c;
         else if (h.includes("solde") && h.includes("rcc")) cRcc = c;
       }
+      /* Fallback sur positions connues du fichier paie */
       if (cN1 === -1) cN1 = 5;
       if (cN === -1)  cN = 9;
       if (cRcc === -1) cRcc = 15;
@@ -975,7 +993,7 @@ function App() {
     e.target.value = "";
   };
 
-  /* ── Demandes ── */
+  /* ── Demandes ───────────────────────────────────── */
   const addRequest = (req) => {
     setRequests(prev => [...prev, req]);
     setShowReqModal(false);
@@ -993,13 +1011,14 @@ function App() {
       }
     );
 
+    /* Si validé → injecter dans le calendrier (jours ouvrés uniquement) */
     if (action === "validate" && req) {
       const newAbs = {...absences};
       const start = new Date(req.startDate);
       const end   = new Date(req.endDate);
       for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         const dow = d.getDay();
-        if (dow === 0 || dow === 6) continue;
+        if (dow === 0 || dow === 6) continue; /* sauter week-ends */
         const m = d.getMonth(), day = d.getDate();
         if (!newAbs[req.employeeId]) newAbs[req.employeeId] = {};
         if (!newAbs[req.employeeId][m]) newAbs[req.employeeId][m] = {};
@@ -1013,7 +1032,7 @@ function App() {
     showToast(action === "validate" ? "Demande validée ✅" : "Demande refusée ❌");
   };
 
-  /* ── Calendrier ── */
+  /* ── Calendrier ─────────────────────────────────── */
   const daysInMonth = new Date(YEAR, month + 1, 0).getDate();
 
   const renderCell = (emp, day) => {
@@ -1040,6 +1059,7 @@ function App() {
     return <div key={day} className={cls}>{badge}</div>;
   };
 
+  /* ── Filtrage demandes ──────────────────────────── */
   const filteredReqs = useMemo(() =>
     reqFilter === "all" ? requests : requests.filter(r => r.status === reqFilter),
     [requests, reqFilter]
@@ -1050,21 +1070,25 @@ function App() {
      ══════════════════════════════════════════════════ */
   return (
     <div className="app">
+      {/* — Modals — */}
       {showLogin     && <LoginModal onLogin={() => {setAdmin(true);sessionStorage.setItem("vz_admin","true");setShowLogin(false);}} onClose={() => setShowLogin(false)} />}
       {showReqModal  && <ReqModal employees={employees.filter(e => !e.isDoc)} onSubmit={addRequest} onClose={() => setShowReqModal(false)} />}
       {showRespModal && <RespModal req={showRespModal} employees={employees} onSubmit={handleResponse} onClose={() => setShowRespModal(null)} />}
       {toast         && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />}
 
+      {/* — Top bar — */}
       <div className="topbar">
         <span>📍 38 route de Savanna, 97460 Saint-Paul – La Réunion</span>
         <span>📞 +262 262 22 55 50</span>
       </div>
 
+      {/* — Header — */}
       <div className="hdr">
         <h1>Cabinet d'Orthodontie Dr François Vergez</h1>
         <p>Planning des Congés · Équipe {YEAR}</p>
       </div>
 
+      {/* — Navigation — */}
       <nav className="nav">
         <button className={"ntab" + (tab === "planning" ? " on" : "")} onClick={() => setTab("planning")}>📅 Planning</button>
         {admin && <>
@@ -1080,12 +1104,14 @@ function App() {
         }
       </nav>
 
+      {/* — Content — */}
       <div className="wrap">
 
         {/* ═══ TAB : PLANNING ═══ */}
         {tab === "planning" && <>
           {!admin && <div className="team-banner">ℹ️ Mode Équipe · Vue mensuelle en lecture seule</div>}
 
+          {/* Dr VERGEZ banner */}
           <div className={"dr-banner " + (drPresent ? "present" : "absent")}>
             <div className={"dr-icon " + (drPresent ? "present" : "absent")}>{drPresent ? "🩺" : "🏖️"}</div>
             <div>
@@ -1096,6 +1122,7 @@ function App() {
             </div>
           </div>
 
+          {/* Date + stats */}
           <div className="date-banner">
             <h2>📆 {today.toLocaleDateString("fr-FR", {weekday:"long",day:"numeric",month:"long",year:"numeric"})}</h2>
             <div className="dstats">
@@ -1104,6 +1131,7 @@ function App() {
             </div>
           </div>
 
+          {/* Today absences */}
           <div className="today-abs">
             <h3 className="sec-title">👥 Absents aujourd'hui <span className="sbadge">{todayAbsents.length}</span></h3>
             {todayAbsents.length > 0 ? (
@@ -1124,10 +1152,12 @@ function App() {
             )}
           </div>
 
+          {/* Main layout */}
           <div className={"main-layout" + (admin ? "" : " team-only")}>
             <div>
               <h3 className="sec-title">📅 Calendrier mensuel <span className="sbadge">{YEAR}</span></h3>
 
+              {/* Month tabs */}
               <div className="month-tabs">
                 {MONTHS.map((m, i) => (
                   <button key={m} className={"mtab" + (month === i ? " on" : "")} onClick={() => setMonth(i)}>
@@ -1136,6 +1166,7 @@ function App() {
                 ))}
               </div>
 
+              {/* Calendar grid */}
               <div className="cal-wrap">
                 <div className="cal-hdr">
                   <div>Employé · {MONTHS[month]}</div>
@@ -1163,6 +1194,7 @@ function App() {
                 ))}
               </div>
 
+              {/* Soldes table (admin only) */}
               {admin && <>
                 <h3 className="sec-title" style={{marginTop:"1.7rem"}}>📊 Soldes des Congés</h3>
                 <div className="sol-wrap">
@@ -1191,6 +1223,7 @@ function App() {
               </>}
             </div>
 
+            {/* Sidebar (admin only) */}
             {admin && (
               <div className="sidebar">
                 <div className="scard">
