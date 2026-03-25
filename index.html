@@ -4,936 +4,923 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEAM Cabinet VERGEZ - Gestion des Congés</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        :root {
-            --primary: #7b6b8d;
-            --primary-light: #9d8fb0;
-            --primary-dark: #5a4d6b;
-            --secondary: #5fb3a5;
-            --secondary-light: #7ecec0;
-            --secondary-dark: #4a9a8c;
-            --accent: #d4a853;
-            --danger: #c75a5a;
-            --warning: #d4a853;
-            --success: #5fb3a5;
-            --bg-light: #f8f9fa;
-            --bg-white: #ffffff;
-            --text-dark: #3a3a4a;
-            --text-primary: #4a4a5a;
-            --text-secondary: #7a7a8a;
-            --text-muted: #9a9aaa;
-            --border: #e8e8f0;
-            --border-light: #f0f0f5;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--bg-light); color: var(--text-primary); min-height: 100vh; }
-        .app-container { max-width: 1400px; margin: 0 auto; }
-        .top-bar { background: var(--bg-white); padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem; }
-        .header-main { background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.98) 100%); padding: 1.5rem 2rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .header-main h1 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.25rem; }
-        .header-main p { font-size: 0.9rem; color: var(--secondary); letter-spacing: 1px; text-transform: uppercase; }
-        .nav-bar { background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); padding: 0 1rem; display: flex; justify-content: center; align-items: center; gap: 0.25rem; flex-wrap: wrap; }
-        .nav-item { padding: 0.875rem 1.25rem; color: white; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; position: relative; }
-        .nav-item:hover { background: rgba(255,255,255,0.15); }
-        .nav-item.active { background: rgba(255,255,255,0.25); border-bottom: 3px solid white; }
-        .nav-item.admin-btn { background: var(--primary); margin-left: auto; border-radius: 4px; }
-        .nav-item.admin-btn:hover { background: var(--primary-dark); }
-        .nav-item.admin-btn.logged { background: var(--accent); }
-        .nav-badge { position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 10px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .content-wrapper { padding: 1.5rem; }
-        .alert-box { background: linear-gradient(135deg, rgba(199, 90, 90, 0.1) 0%, rgba(199, 90, 90, 0.05) 100%); border: 1px solid rgba(199, 90, 90, 0.3); border-left: 4px solid var(--danger); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
-        .alert-box.info { background: linear-gradient(135deg, rgba(95, 179, 165, 0.1) 0%, rgba(95, 179, 165, 0.05) 100%); border: 1px solid rgba(95, 179, 165, 0.3); border-left: 4px solid var(--secondary); }
-        .alert-icon { width: 36px; height: 36px; background: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-size: 1rem; }
-        .alert-box.info .alert-icon { background: var(--secondary); }
-        .alert-content h3 { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--danger); margin-bottom: 0.15rem; }
-        .alert-box.info .alert-content h3 { color: var(--secondary-dark); }
-        .alert-content p { font-size: 0.8rem; color: var(--text-secondary); }
-        .date-banner { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 1rem 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .date-banner h2 { font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 600; }
-        .date-banner .date-info { display: flex; gap: 2rem; }
-        .date-banner .date-item { text-align: center; }
-        .date-banner .date-item .label { font-size: 0.7rem; opacity: 0.8; text-transform: uppercase; }
-        .date-banner .date-item .value { font-size: 1.1rem; font-weight: 600; }
-        .today-absences { background: var(--bg-white); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
-        .section-title { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-        .section-badge { background: var(--secondary); color: white; font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 500; }
-        .absent-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
-        .absent-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 25px; font-size: 0.85rem; }
-        .absent-chip.conge { background: rgba(95, 179, 165, 0.15); border: 1px solid rgba(95, 179, 165, 0.3); }
-        .absent-chip.ss { background: rgba(212, 168, 83, 0.15); border: 1px solid rgba(212, 168, 83, 0.3); }
-        .absent-chip.maladie { background: rgba(199, 90, 90, 0.15); border: 1px solid rgba(199, 90, 90, 0.3); }
-        .absent-chip.formation { background: rgba(123, 107, 141, 0.15); border: 1px solid rgba(123, 107, 141, 0.3); }
-        .chip-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 600; color: white; }
-        .chip-type { font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600; color: white; }
-        .chip-type.conge { background: var(--secondary); }
-        .chip-type.ss { background: var(--warning); }
-        .chip-type.maladie { background: var(--danger); }
-        .chip-type.formation { background: var(--primary); }
-        .no-absences { color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
-        .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
-        .main-layout.team-mode { grid-template-columns: 1fr; }
-        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
-        .month-tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
-        .month-tab { padding: 0.4rem 0.8rem; background: var(--bg-white); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem; font-weight: 500; }
-        .month-tab:hover { border-color: var(--secondary); color: var(--secondary); }
-        .month-tab.active { background: var(--secondary); border-color: var(--secondary); color: white; }
-        .calendar-full { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; }
-        .calendar-full-header { display: grid; grid-template-columns: 150px repeat(31, minmax(26px, 1fr)); background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; font-size: 0.65rem; font-weight: 600; min-width: 1000px; }
-        .calendar-full-header > div { padding: 0.5rem 0.15rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
-        .calendar-full-header > div:first-child { text-align: left; padding-left: 0.75rem; }
-        .calendar-full-row { display: grid; grid-template-columns: 150px repeat(31, minmax(26px, 1fr)); border-bottom: 1px solid var(--border-light); min-width: 1000px; }
-        .calendar-full-row > div { padding: 0.35rem 0.15rem; text-align: center; border-right: 1px solid var(--border-light); font-size: 0.65rem; }
-        .calendar-full-row > div:first-child { text-align: left; padding-left: 0.5rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; }
-        .full-cell { min-height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 600; border-radius: 3px; }
-        .full-cell.conge { background: rgba(95, 179, 165, 0.3); color: var(--secondary-dark); }
-        .full-cell.ss { background: rgba(212, 168, 83, 0.3); color: #9a7a2a; }
-        .full-cell.maladie { background: rgba(199, 90, 90, 0.3); color: var(--danger); }
-        .full-cell.formation { background: rgba(123, 107, 141, 0.3); color: var(--primary-dark); }
-        .full-cell.weekend { background: rgba(0,0,0,0.03); }
-        .full-cell.pending { background: repeating-linear-gradient(45deg, rgba(212,168,83,0.2), rgba(212,168,83,0.2) 2px, transparent 2px, transparent 4px); border: 1px dashed var(--warning); color: var(--warning); }
-        .mini-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 600; color: white; flex-shrink: 0; }
-        .mini-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
-        .sidebar { display: flex; flex-direction: column; gap: 1rem; }
-        .sidebar-card { background: var(--bg-white); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
-        .sidebar-card h3 { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem; text-transform: uppercase; }
-        .legend-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-        .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-secondary); }
-        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
-        .legend-color.conge { background: var(--secondary); }
-        .legend-color.ss { background: var(--warning); }
-        .legend-color.maladie { background: var(--danger); }
-        .legend-color.formation { background: var(--primary); }
-        .rules-list { list-style: none; }
-        .rules-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--border-light); font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 0.6rem; }
-        .rule-icon { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.6rem; font-weight: 600; }
-        .rule-icon.info { background: rgba(95, 179, 165, 0.2); color: var(--secondary-dark); }
-        .rule-icon.warning { background: rgba(212, 168, 83, 0.2); color: var(--warning); }
-        .doctor-status { padding: 0.6rem 0.875rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.8rem; }
-        .doctor-status.present { background: rgba(95, 179, 165, 0.15); border: 1px solid rgba(95, 179, 165, 0.3); }
-        .doctor-status.absent { background: rgba(199, 90, 90, 0.15); border: 1px solid rgba(199, 90, 90, 0.3); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .status-dot.present { background: var(--success); }
-        .status-dot.absent { background: var(--danger); }
-        .admin-section { background: linear-gradient(135deg, rgba(123, 107, 141, 0.05) 0%, rgba(123, 107, 141, 0.02) 100%); border: 1px solid rgba(123, 107, 141, 0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .admin-section h2 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
-        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-        .admin-card { background: var(--bg-white); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border); }
-        .admin-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem; }
-        .admin-card p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; }
-        .import-btn { width: 100%; padding: 0.875rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); border: none; border-radius: 8px; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .import-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(95, 179, 165, 0.3); }
-        .import-btn.danger { background: linear-gradient(135deg, var(--danger) 0%, #a84a4a 100%); }
-        .import-btn.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); }
-        .file-input { display: none; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal { background: var(--bg-white); border-radius: 16px; padding: 2rem; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-        .modal h2 { font-family: 'Montserrat', sans-serif; font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem; text-align: center; }
-        .modal p { color: var(--text-secondary); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem; }
-        .modal input, .modal select, .modal textarea { width: 100%; padding: 0.875rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; font-family: inherit; }
-        .modal textarea { resize: vertical; min-height: 80px; }
-        .modal-buttons { display: flex; gap: 0.75rem; }
-        .modal-buttons button { flex: 1; padding: 0.875rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-cancel { background: var(--bg-light); border: 1px solid var(--border); color: var(--text-secondary); }
-        .btn-submit { background: var(--primary); border: none; color: white; }
-        .btn-success { background: var(--success); border: none; color: white; }
-        .btn-danger { background: var(--danger); border: none; color: white; }
-        .error-msg { color: var(--danger); font-size: 0.85rem; margin-bottom: 1rem; text-align: center; }
-        .footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 1.5rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem; }
-        
-        /* Requests styles */
-        .requests-section { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; }
-        .request-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .filter-btn { padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-white); cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; }
-        .filter-btn:hover { border-color: var(--primary); }
-        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .filter-btn .count { background: rgba(0,0,0,0.1); padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.3rem; font-size: 0.7rem; }
-        .filter-btn.active .count { background: rgba(255,255,255,0.3); }
-        .request-card { background: var(--bg-light); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; border-left: 4px solid var(--warning); }
-        .request-card.validated { border-left-color: var(--success); background: rgba(95, 179, 165, 0.05); }
-        .request-card.refused { border-left-color: var(--danger); background: rgba(199, 90, 90, 0.05); }
-        .request-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
-        .request-employee { font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 0.5rem; }
-        .request-status { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600; }
-        .request-status.pending { background: rgba(212, 168, 83, 0.2); color: #9a7a2a; }
-        .request-status.validated { background: rgba(95, 179, 165, 0.2); color: var(--secondary-dark); }
-        .request-status.refused { background: rgba(199, 90, 90, 0.2); color: var(--danger); }
-        .request-details { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
-        .request-details span { display: block; margin-bottom: 0.25rem; }
-        .request-comment { background: var(--bg-white); padding: 0.75rem; border-radius: 6px; font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.75rem; border: 1px solid var(--border); }
-        .request-comment strong { color: var(--text-secondary); font-size: 0.75rem; display: block; margin-bottom: 0.25rem; }
-        .request-actions { display: flex; gap: 0.5rem; }
-        .request-actions button { padding: 0.5rem 1rem; border-radius: 6px; border: none; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
-        .request-actions .btn-validate { background: var(--success); color: white; }
-        .request-actions .btn-refuse { background: var(--danger); color: white; }
-        .request-response { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
-        .request-response strong { font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem; }
-        .request-response p { font-size: 0.85rem; color: var(--text-primary); }
-        .no-requests { text-align: center; color: var(--text-muted); padding: 2rem; }
-        
-        /* Soldes Table */
-        .soldes-table { background: var(--bg-white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-top: 1.5rem; }
-        .soldes-table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); color: white; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        .soldes-table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--border-light); align-items: center; }
-        .soldes-table-row:hover { background: rgba(95, 179, 165, 0.05); }
-        .employee-name { font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-dark); font-size: 0.9rem; }
-        .employee-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: white; }
-        .employee-avatar.doctor { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
-        .cell-value { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; }
-        .cell-value.positive { color: var(--success); }
-        .cell-value.negative { color: var(--danger); }
-        .cell-value.warning { color: var(--warning); }
-        .soldes-update { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
-        
-        .team-info-banner { background: linear-gradient(135deg, rgba(95, 179, 165, 0.1) 0%, rgba(95, 179, 165, 0.05) 100%); border: 1px solid rgba(95, 179, 165, 0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--secondary-dark); display: flex; align-items: center; gap: 0.5rem; }
+/* ── VARIABLES ── */
+:root{
+  --p:#7b6b8d;--pl:#9d8fb0;--pd:#5a4d6b;
+  --s:#5fb3a5;--sl:#7ecec0;--sd:#4a9a8c;
+  --a:#d4a853;--al:#e8c27a;--ad:#c49040;
+  --danger:#c75a5a;--warn:#d4a853;--ok:#5fb3a5;
+  --bg:#f4f5f8;--white:#fff;
+  --t1:#2d2d3d;--t2:#4d4d5d;--t3:#7d7d8d;--t4:#adadba;
+  --bd:#e4e4ef;--bdl:#eeeeF5;
+  --sh1:0 1px 4px rgba(0,0,0,.06);
+  --sh2:0 4px 16px rgba(0,0,0,.08);
+  --sh3:0 8px 32px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t2);min-height:100vh}
+.app{max-width:1500px;margin:0 auto}
+
+/* TOP BAR */
+.topbar{background:var(--pd);padding:.45rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:rgba(255,255,255,.65)}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--pd) 0%,var(--p) 55%,var(--pl) 100%);padding:1.75rem 2rem 1.35rem;text-align:center;position:relative;overflow:hidden}
+.hdr::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='%23ffffff' stroke-width='0.5' opacity='0.06'/%3E%3C/svg%3E");background-size:80px 80px}
+.hdr h1{font-family:'Montserrat',sans-serif;font-size:1.45rem;font-weight:800;color:#fff;letter-spacing:2.5px;text-transform:uppercase;position:relative;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+.hdr p{font-size:.78rem;color:rgba(255,255,255,.72);letter-spacing:2.5px;text-transform:uppercase;position:relative;margin-top:.3rem}
+
+/* NAV */
+.nav{background:var(--white);padding:0 1.5rem;display:flex;align-items:center;gap:.1rem;border-bottom:2px solid var(--bd);box-shadow:var(--sh1);flex-wrap:wrap}
+.ntab{padding:.9rem 1.2rem;color:var(--t3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s;position:relative}
+.ntab:hover{color:var(--p);background:rgba(123,107,141,.04)}
+.ntab.on{color:var(--p);border-bottom-color:var(--p)}
+.nadm{margin-left:auto;background:var(--p);color:#fff;border-radius:6px;padding:.55rem 1rem;border:none;margin-bottom:0;border-bottom:none;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s}
+.nadm:hover{background:var(--pd)}
+.nadm.out{background:var(--a)}
+.nbadge{position:absolute;top:8px;right:8px;background:var(--danger);color:#fff;font-size:.58rem;font-weight:800;padding:.1rem .35rem;border-radius:10px;animation:pulseB 2s infinite}
+@keyframes pulseB{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* CONTENT */
+.wrap{padding:1.5rem 2rem}
+
+/* BANNERS */
+.tbanner{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.3);border-left:4px solid var(--s);border-radius:8px;padding:.7rem 1.25rem;margin-bottom:1.25rem;font-size:.83rem;color:var(--sd);font-weight:500;display:flex;align-items:center;gap:.5rem}
+
+.drbanner{border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem}
+.drbanner.pr{background:rgba(95,179,165,.08);border:1px solid rgba(95,179,165,.3)}
+.drbanner.ab{background:rgba(199,90,90,.08);border:1px solid rgba(199,90,90,.3)}
+.dricon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.dricon.pr{background:rgba(95,179,165,.18)}
+.dricon.ab{background:rgba(199,90,90,.18)}
+.drbanner h3{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700}
+.drbanner h3.pr{color:var(--sd)}
+.drbanner h3.ab{color:var(--danger)}
+.drbanner p{font-size:.78rem;color:var(--t3);margin-top:.15rem}
+
+.datebanner{background:linear-gradient(135deg,var(--p) 0%,var(--pl) 100%);color:#fff;padding:1rem 1.5rem;border-radius:12px;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;box-shadow:0 4px 20px rgba(123,107,141,.3)}
+.datebanner h2{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;text-transform:capitalize}
+.dstats{display:flex;gap:1.25rem}
+.dstat{text-align:center;background:rgba(255,255,255,.15);border-radius:8px;padding:.4rem .875rem}
+.dstat .dl{font-size:.63rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+.dstat .dv{font-size:1.25rem;font-weight:800;font-family:'Montserrat',sans-serif}
+
+/* TODAY ABS */
+.todayabs{background:var(--white);border-radius:12px;padding:1.25rem 1.5rem;border:1px solid var(--bd);margin-bottom:1.5rem;box-shadow:var(--sh1)}
+.sectitle{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--p);margin-bottom:.875rem;display:flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.8px}
+.sbadge{background:var(--s);color:#fff;font-size:.6rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+.ablist{display:flex;flex-wrap:wrap;gap:.6rem}
+.abchip{display:flex;align-items:center;gap:.45rem;padding:.42rem .875rem;border-radius:20px;font-size:.81rem;font-weight:500}
+.abchip.conge{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.3)}
+.abchip.ss{background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.3)}
+.abchip.maladie{background:rgba(199,90,90,.1);border:1px solid rgba(199,90,90,.3)}
+.abchip.formation{background:rgba(123,107,141,.1);border:1px solid rgba(123,107,141,.3)}
+.chav{width:22px;height:22px;border-radius:50%;background:var(--s);display:flex;align-items:center;justify-content:center;font-size:.53rem;font-weight:800;color:#fff}
+.chtag{font-size:.67rem;padding:.1rem .42rem;border-radius:4px;font-weight:700;color:#fff}
+.chtag.conge{background:var(--s)}
+.chtag.ss{background:var(--a)}
+.chtag.maladie{background:var(--danger)}
+.chtag.formation{background:var(--p)}
+.noabs{color:var(--ok);font-weight:600;display:flex;align-items:center;gap:.5rem;font-size:.86rem}
+
+/* LAYOUT */
+.mlayout{display:grid;grid-template-columns:1fr 275px;gap:1.5rem}
+.mlayout.team{grid-template-columns:1fr}
+@media(max-width:1100px){.mlayout{grid-template-columns:1fr}}
+
+/* MONTH TABS */
+.mtabs{display:flex;gap:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.mtab{padding:.35rem .7rem;background:var(--white);border:1px solid var(--bd);border-radius:6px;color:var(--t3);cursor:pointer;font-size:.73rem;font-weight:600;transition:all .15s}
+.mtab:hover{border-color:var(--s);color:var(--s);background:rgba(95,179,165,.04)}
+.mtab.on{background:var(--s);border-color:var(--s);color:#fff;box-shadow:0 2px 8px rgba(95,179,165,.3)}
+
+/* CALENDAR */
+.calwrap{background:var(--white);border-radius:12px;border:1px solid var(--bd);overflow-x:auto;box-shadow:var(--sh1)}
+.calhdr{display:grid;grid-template-columns:158px repeat(31,minmax(27px,1fr));background:linear-gradient(135deg,var(--pd) 0%,var(--p) 100%);color:#fff;font-size:.6rem;font-weight:700;min-width:1050px;position:sticky;top:0;z-index:10}
+.calhdr>div{padding:.5rem .08rem;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.calhdr>div:first-child{text-align:left;padding-left:.875rem;border-right:1px solid rgba(255,255,255,.15);font-size:.72rem}
+.dhd{display:flex;flex-direction:column;align-items:center;gap:1px}
+.dnum{font-size:.68rem;font-weight:800}
+.dltr{font-size:.56rem;opacity:.65;font-weight:500}
+.wkhd{background:rgba(0,0,0,.18)}
+.thd{background:rgba(212,168,83,.45)!important}
+
+.calrow{display:grid;grid-template-columns:158px repeat(31,minmax(27px,1fr));border-bottom:1px solid var(--bdl);min-width:1050px;transition:background .15s}
+.calrow:hover{background:rgba(123,107,141,.025)}
+.calrow:last-child{border-bottom:none}
+.calemp{padding:.38rem .5rem;display:flex;align-items:center;gap:.4rem;border-right:1px solid var(--bd);font-size:.7rem;font-weight:600;color:var(--t1)}
+.ename{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--sl));display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:800;color:#fff;flex-shrink:0}
+.mav.dr{background:linear-gradient(135deg,var(--p),var(--pl))}
+
+.ccell{padding:.22rem .08rem;text-align:center;border-right:1px solid var(--bdl);display:flex;align-items:center;justify-content:center;min-height:31px}
+.ccell.we{background:rgba(0,0,0,.022)}
+.ccell.td{background:rgba(212,168,83,.06);border-right:1px solid rgba(212,168,83,.22)}
+.ccell.off{background:rgba(0,0,0,.014)}
+
+/* ABSENCE BADGES */
+.abg{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:5px;font-size:.58rem;font-weight:800;color:#fff}
+.abg.conge{background:linear-gradient(135deg,var(--s),var(--sd));box-shadow:0 1px 4px rgba(95,179,165,.5)}
+.abg.ss{background:linear-gradient(135deg,var(--a),var(--ad));box-shadow:0 1px 4px rgba(212,168,83,.5)}
+.abg.maladie{background:linear-gradient(135deg,var(--danger),#a84a4a);box-shadow:0 1px 4px rgba(199,90,90,.5)}
+.abg.formation{background:linear-gradient(135deg,var(--p),var(--pd));box-shadow:0 1px 4px rgba(123,107,141,.5)}
+.abg.pend{background:repeating-linear-gradient(45deg,rgba(212,168,83,.25),rgba(212,168,83,.25) 2px,transparent 2px,transparent 5px);border:1.5px dashed var(--warn);color:var(--warn);box-shadow:none;font-weight:900}
+
+/* SOLDES */
+.solwrap{background:var(--white);border-radius:12px;border:1px solid var(--bd);overflow:hidden;margin-top:1.5rem;box-shadow:var(--sh1)}
+.solhdr{display:grid;grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;padding:.7rem 1.25rem;background:linear-gradient(135deg,var(--s),var(--sd));color:#fff;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.4px}
+.solrow{display:grid;grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;padding:.7rem 1.25rem;border-bottom:1px solid var(--bdl);align-items:center;transition:background .15s}
+.solrow:hover{background:rgba(95,179,165,.04)}
+.solrow:last-child{border-bottom:none}
+.empinfo{font-weight:600;display:flex;align-items:center;gap:.55rem;color:var(--t1);font-size:.83rem}
+.empav{width:29px;height:29px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--sl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.67rem;color:#fff;flex-shrink:0}
+.cval{font-family:'Montserrat',sans-serif;font-size:.86rem;font-weight:700;color:var(--t2)}
+.schip{display:inline-flex;align-items:center;gap:.28rem;padding:.22rem .55rem;border-radius:20px;font-size:.76rem;font-weight:700;font-family:'Montserrat',sans-serif}
+.schip.ok{background:rgba(95,179,165,.12);color:var(--sd);border:1px solid rgba(95,179,165,.25)}
+.schip.wa{background:rgba(212,168,83,.12);color:#9a7a2a;border:1px solid rgba(212,168,83,.25)}
+.schip.ba{background:rgba(199,90,90,.12);color:var(--danger);border:1px solid rgba(199,90,90,.25)}
+.solupd{font-size:.7rem;color:var(--t4);margin-top:.4rem;text-align:right;padding-right:1.25rem;padding-bottom:.4rem}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:1rem}
+.scard{background:var(--white);border-radius:10px;padding:1.1rem 1.2rem;border:1px solid var(--bd);box-shadow:var(--sh1)}
+.scard h3{font-family:'Montserrat',sans-serif;font-size:.74rem;font-weight:700;color:var(--p);margin-bottom:.7rem;text-transform:uppercase;letter-spacing:.4px}
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.litem{display:flex;align-items:center;gap:.45rem;font-size:.77rem;color:var(--t3)}
+.ldot{width:20px;height:13px;border-radius:4px;flex-shrink:0}
+.ldot.conge{background:linear-gradient(135deg,var(--s),var(--sd))}
+.ldot.ss{background:linear-gradient(135deg,var(--a),var(--ad))}
+.ldot.maladie{background:linear-gradient(135deg,var(--danger),#a84a4a)}
+.ldot.formation{background:linear-gradient(135deg,var(--p),var(--pd))}
+.lpend{margin-top:.55rem;padding:.38rem .6rem;background:repeating-linear-gradient(45deg,rgba(212,168,83,.12),rgba(212,168,83,.12) 2px,transparent 2px,transparent 5px);border:1px dashed var(--warn);border-radius:5px;font-size:.7rem;color:#9a7a2a;text-align:center;font-weight:600}
+.rlist{list-style:none}
+.rlist li{padding:.45rem 0;border-bottom:1px solid var(--bdl);font-size:.77rem;color:var(--t3);display:flex;align-items:flex-start;gap:.45rem;line-height:1.4}
+.rlist li:last-child{border-bottom:none}
+.rico{width:17px;height:17px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.58rem;margin-top:1px}
+.rico.inf{background:rgba(95,179,165,.2);color:var(--sd)}
+.rico.war{background:rgba(212,168,83,.2);color:var(--a)}
+.drpill{padding:.48rem .75rem;border-radius:6px;display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:600;margin-top:.25rem}
+.drpill.pr{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.28);color:var(--sd)}
+.drpill.ab{background:rgba(199,90,90,.1);border:1px solid rgba(199,90,90,.28);color:var(--danger)}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot.pr{background:var(--ok);box-shadow:0 0 0 3px rgba(95,179,165,.22)}
+.sdot.ab{background:var(--danger);box-shadow:0 0 0 3px rgba(199,90,90,.22)}
+
+/* ADMIN */
+.adminsec{background:var(--white);border-radius:12px;padding:1.5rem;border:1px solid var(--bd);margin-bottom:1.5rem;box-shadow:var(--sh1)}
+.adminsec h2{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;color:var(--p);margin-bottom:1.25rem}
+.agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.acard{background:var(--bg);border-radius:10px;padding:1.2rem;border:1px solid var(--bd);display:flex;flex-direction:column;gap:.5rem}
+.acard h4{font-size:.86rem;font-weight:700;color:var(--t1)}
+.acard p{font-size:.77rem;color:var(--t3);flex:1}
+.ibtn{width:100%;padding:.72rem;border:none;border-radius:8px;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,var(--s),var(--sd))}
+.ibtn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(95,179,165,.35)}
+.ibtn.pri{background:linear-gradient(135deg,var(--p),var(--pd))}
+.ibtn.pri:hover{box-shadow:0 6px 20px rgba(123,107,141,.35)}
+.ibtn.acc{background:linear-gradient(135deg,var(--a),var(--ad))}
+.ibtn.acc:hover{box-shadow:0 6px 20px rgba(212,168,83,.35)}
+.ibtn.dan{background:linear-gradient(135deg,var(--danger),#a84a4a)}
+.ibtn.dan:hover{box-shadow:0 6px 20px rgba(199,90,90,.35)}
+.fi{display:none}
+.imsg{margin-top:.45rem;padding:.45rem .7rem;border-radius:6px;font-size:.74rem;font-weight:600}
+.imsg.ok{background:rgba(95,179,165,.1);color:var(--sd);border:1px solid rgba(95,179,165,.22)}
+.imsg.er{background:rgba(199,90,90,.1);color:var(--danger);border:1px solid rgba(199,90,90,.22)}
+
+/* REQUESTS */
+.reqsec{background:var(--white);border-radius:12px;border:1px solid var(--bd);padding:1.5rem;box-shadow:var(--sh1)}
+.rfilt{display:flex;gap:.38rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.rfbtn{padding:.42rem .875rem;border-radius:20px;border:1px solid var(--bd);background:var(--white);cursor:pointer;font-size:.77rem;font-weight:600;transition:all .2s;color:var(--t3);font-family:'DM Sans',sans-serif}
+.rfbtn:hover{border-color:var(--p);color:var(--p)}
+.rfbtn.on{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 2px 8px rgba(123,107,141,.3)}
+.rfbtn .cnt{background:rgba(0,0,0,.1);padding:.07rem .33rem;border-radius:10px;margin-left:.28rem;font-size:.68rem}
+.rfbtn.on .cnt{background:rgba(255,255,255,.25)}
+.rcard{background:var(--bg);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:.875rem;border:1px solid var(--bd);border-left:4px solid var(--warn);transition:box-shadow .15s}
+.rcard:hover{box-shadow:var(--sh2)}
+.rcard.validated{border-left-color:var(--ok);background:rgba(95,179,165,.04)}
+.rcard.refused{border-left-color:var(--danger);background:rgba(199,90,90,.04)}
+.rchdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.7rem;gap:1rem}
+.rcemp{font-weight:700;color:var(--t1);display:flex;align-items:center;gap:.45rem;font-size:.88rem}
+.rcst{font-size:.7rem;padding:.2rem .55rem;border-radius:12px;font-weight:700;white-space:nowrap}
+.rcst.pending{background:rgba(212,168,83,.15);color:#9a7a2a;border:1px solid rgba(212,168,83,.28)}
+.rcst.validated{background:rgba(95,179,165,.15);color:var(--sd);border:1px solid rgba(95,179,165,.28)}
+.rcst.refused{background:rgba(199,90,90,.15);color:var(--danger);border:1px solid rgba(199,90,90,.28)}
+.rcdet{font-size:.8rem;color:var(--t3);margin-bottom:.7rem;display:flex;flex-wrap:wrap;gap:.35rem 1.4rem}
+.rccmt{background:var(--white);padding:.6rem .85rem;border-radius:6px;font-size:.8rem;color:var(--t2);margin-bottom:.7rem;border:1px solid var(--bd)}
+.rccmt .lb{font-size:.68rem;font-weight:700;color:var(--t3);display:block;margin-bottom:.18rem;text-transform:uppercase;letter-spacing:.4px}
+.rcact{display:flex;gap:.45rem;margin-top:.5rem}
+.rcact button{padding:.42rem .85rem;border-radius:6px;border:none;font-weight:700;font-size:.77rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.rcact .bv{background:var(--ok);color:#fff}
+.rcact .bv:hover{background:var(--sd)}
+.rcact .br{background:var(--danger);color:#fff}
+.rcact .br:hover{background:#a84a4a}
+.rcresp{margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--bd);font-size:.8rem}
+.rcresp .lb{font-size:.68rem;font-weight:700;color:var(--t3);display:block;margin-bottom:.22rem;text-transform:uppercase}
+.noreq{text-align:center;color:var(--t4);padding:3rem 2rem;font-size:.88rem}
+
+/* MODAL */
+.movl{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(3px)}
+.modal{background:var(--white);border-radius:16px;padding:2rem;width:90%;max-width:470px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.modal h2{font-family:'Montserrat',sans-serif;font-size:1.1rem;color:var(--p);margin-bottom:.35rem;font-weight:700}
+.msub{color:var(--t3);font-size:.83rem;margin-bottom:1.4rem}
+.fg{margin-bottom:.95rem}
+.fg label{display:block;font-size:.8rem;font-weight:700;color:var(--t2);margin-bottom:.32rem}
+.modal input,.modal select,.modal textarea{width:100%;padding:.72rem .85rem;border:1.5px solid var(--bd);border-radius:8px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:var(--t1);transition:border-color .15s;outline:none;background:var(--white)}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(123,107,141,.1)}
+.modal textarea{resize:vertical;min-height:76px}
+.mbtns{display:flex;gap:.7rem;margin-top:.5rem}
+.mbtns button{flex:1;padding:.78rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.86rem;transition:all .15s}
+.bcnc{background:var(--bg);border:1.5px solid var(--bd);color:var(--t3)}
+.bcnc:hover{border-color:var(--t3)}
+.bsub{background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff}
+.bsub:hover{box-shadow:0 4px 16px rgba(123,107,141,.4)}
+.bok{background:linear-gradient(135deg,var(--ok),var(--sd));border:none;color:#fff}
+.bdng{background:linear-gradient(135deg,var(--danger),#a84a4a);border:none;color:#fff}
+.errmsg{color:var(--danger);font-size:.8rem;margin-bottom:.9rem;background:rgba(199,90,90,.07);padding:.45rem .72rem;border-radius:6px;border:1px solid rgba(199,90,90,.2)}
+
+/* FOOTER */
+.footer{text-align:center;padding:1.2rem;color:var(--t4);font-size:.73rem;border-top:1px solid var(--bd);margin-top:1.5rem}
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect, useCallback, useMemo } = React;
-        
-        const ADMIN_PASSWORD = "vergez2026";
-        
-        const INITIAL_EMPLOYEES = [
-            { id: 1, name: "Dr François VERGEZ", isDoctor: true, cpN1: 0, cpN: 35, rcc: 0 },
-            { id: 2, name: "Virginie BLARD", isDoctor: false, cpN1: 8.5, cpN: 36, rcc: 0 },
-            { id: 3, name: "Erika CAPDEBOSCQ", isDoctor: false, cpN1: 0, cpN: 8, rcc: 3.51 },
-            { id: 4, name: "Marie Anne DE LA HOGUE", isDoctor: false, cpN1: 0, cpN: 12.18, rcc: 0 },
-            { id: 5, name: "Laurence GIGAN", isDoctor: false, cpN1: 13.5, cpN: 25.5, rcc: 0.34 },
-            { id: 6, name: "Marie Cécile GRONDIN", isDoctor: false, cpN1: 0, cpN: 3.5, rcc: 0 },
-            { id: 7, name: "Elodie LUDOVIC", isDoctor: false, cpN1: 0, cpN: 15.5, rcc: 0 },
-            { id: 8, name: "Stéphanie MARTIN", isDoctor: false, cpN1: 0, cpN: 9.5, rcc: 0 },
-            { id: 9, name: "Fabiola TECHER", isDoctor: false, cpN1: 0, cpN: 17.5, rcc: 0 },
-        ];
-        
-        const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-        const DAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
-        const ABSENCE_TYPES = { 
-            C: { label: "Congé", cls: "conge" }, 
-            SS: { label: "Sans solde", cls: "ss" }, 
-            M: { label: "Maladie", cls: "maladie" }, 
-            F: { label: "Formation", cls: "formation" } 
-        };
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useMemo } = React;
 
-        function LoginModal({ onLogin, onClose }) {
-            const [password, setPassword] = useState("");
-            const [error, setError] = useState("");
-            
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (password === ADMIN_PASSWORD) {
-                    onLogin();
-                } else {
-                    setError("Mot de passe incorrect");
-                }
-            };
-            
-            return (
-                <div className="modal-overlay" onClick={onClose}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                        <h2>Accès Administration</h2>
-                        <p>Entrez le mot de passe pour accéder à la gestion</p>
-                        <form onSubmit={handleSubmit}>
-                            {error && <div className="error-msg">{error}</div>}
-                            <input 
-                                type="password" 
-                                placeholder="Mot de passe" 
-                                value={password}
-                                onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                                autoFocus
-                            />
-                            <div className="modal-buttons">
-                                <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
-                                <button type="submit" className="btn-submit">Connexion</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            );
+const ADMIN_PW = "vergez2026";
+const YEAR = 2026;
+const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const MSHORT = ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+const DLTR   = ["D","L","M","M","J","V","S"];
+
+const ABS = {
+  C:  { label:"Congé payé",  cls:"conge",    s:"C" },
+  SS: { label:"Sans solde",  cls:"ss",       s:"SS" },
+  M:  { label:"Maladie",     cls:"maladie",  s:"M" },
+  F:  { label:"Formation",   cls:"formation",s:"F" },
+};
+
+const INIT_EMP = [
+  { id:1,  name:"Dr François VERGEZ",  isDoc:true,  cpN1:0,    cpN:35,    rcc:0 },
+  { id:2,  name:"Mathilde TSANG-TUNG", isDoc:false, cpN1:0,    cpN:0,     rcc:0 },
+  { id:3,  name:"Chloé TANGUY",        isDoc:false, cpN1:0,    cpN:0,     rcc:0 },
+  { id:4,  name:"Erika CAPDEBOSCQ",    isDoc:false, cpN1:0,    cpN:8,     rcc:3.51 },
+  { id:5,  name:"Virginie BLARD",      isDoc:false, cpN1:8.5,  cpN:36,    rcc:0 },
+  { id:6,  name:"Laurence GIGAN",      isDoc:false, cpN1:13.5, cpN:25.5,  rcc:0.34 },
+  { id:7,  name:"Cécile GRONDIN",      isDoc:false, cpN1:0,    cpN:3.5,   rcc:0 },
+  { id:8,  name:"Fabiola TECHER",      isDoc:false, cpN1:0,    cpN:17.5,  rcc:0 },
+  { id:9,  name:"Sylvie De la Hogue",  isDoc:false, cpN1:0,    cpN:12.18, rcc:0 },
+  { id:10, name:"Elodie Ludovic",      isDoc:false, cpN1:0,    cpN:15.5,  rcc:0 },
+  { id:11, name:"Stéphanie MARTIN",    isDoc:false, cpN1:0,    cpN:9.5,   rcc:0 },
+];
+
+function initials(n){
+  const p = n.replace(/^Dr\s+/i,"").split(/[\s\-]+/).filter(x=>x.length>1);
+  if(!p.length) return "?";
+  if(p.length===1) return p[0].slice(0,2).toUpperCase();
+  return (p[0][0]+p[p.length-1][0]).toUpperCase();
+}
+
+function norm(s){ return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g," ").replace(/\s+/g," ").trim(); }
+
+function matchEmp(excelName, emps){
+  const n = norm(excelName);
+  const parts = n.split(" ").filter(p=>p.length>2);
+  let best=null, score=0;
+  for(const e of emps){
+    const en = norm(e.name);
+    let s=0;
+    for(const p of parts) if(en.includes(p)) s++;
+    if(s>score){ score=s; best=e; }
+  }
+  return score>=1 ? best : null;
+}
+
+function lsGet(k,def){
+  try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch{ return def; }
+}
+
+/* ─── LOGIN MODAL ─── */
+function LoginModal({onLogin, onClose}){
+  const [pw,setPw]=useState("");
+  const [err,setErr]=useState("");
+  const sub = e=>{
+    e.preventDefault();
+    if(pw===ADMIN_PW) onLogin();
+    else setErr("Mot de passe incorrect");
+  };
+  return (
+    <div className="movl" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <h2>🔐 Accès Administration</h2>
+        <p className="msub">Entrez le mot de passe de la direction pour accéder à la gestion complète</p>
+        <form onSubmit={sub}>
+          {err && <div className="errmsg">{err}</div>}
+          <div className="fg"><label>Mot de passe</label>
+            <input type="password" placeholder="••••••••" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}} autoFocus />
+          </div>
+          <div className="mbtns">
+            <button type="button" className="bcnc" onClick={onClose}>Annuler</button>
+            <button type="submit" className="bsub">Se connecter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ─── REQUEST MODAL ─── */
+function ReqModal({emps, onSub, onClose}){
+  const [eid,setEid]=useState("");
+  const [tp,setTp]=useState("C");
+  const [sd,setSd]=useState("");
+  const [ed,setEd]=useState("");
+  const [cmt,setCmt]=useState("");
+  const sub = e=>{
+    e.preventDefault();
+    if(!eid||!sd||!ed){alert("Champs obligatoires manquants");return;}
+    if(new Date(ed)<new Date(sd)){alert("Date de fin avant date de début");return;}
+    onSub({id:Date.now(),employeeId:parseInt(eid),type:tp,startDate:sd,endDate:ed,comment:cmt,status:"pending",createdAt:new Date().toISOString()});
+  };
+  return (
+    <div className="movl" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <h2>📝 Nouvelle demande de congé</h2>
+        <p className="msub">Remplissez les informations ci-dessous</p>
+        <form onSubmit={sub}>
+          <div className="fg"><label>Employé *</label>
+            <select value={eid} onChange={e=>setEid(e.target.value)} required>
+              <option value="">-- Sélectionner un employé --</option>
+              {emps.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}
+            </select>
+          </div>
+          <div className="fg"><label>Type d'absence *</label>
+            <select value={tp} onChange={e=>setTp(e.target.value)}>
+              <option value="C">Congé payé</option>
+              <option value="SS">Sans solde</option>
+              <option value="M">Maladie</option>
+              <option value="F">Formation</option>
+            </select>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
+            <div className="fg"><label>Date de début *</label>
+              <input type="date" value={sd} onChange={e=>setSd(e.target.value)} required/>
+            </div>
+            <div className="fg"><label>Date de fin *</label>
+              <input type="date" value={ed} onChange={e=>setEd(e.target.value)} required/>
+            </div>
+          </div>
+          <div className="fg"><label>Motif / Commentaire</label>
+            <textarea value={cmt} onChange={e=>setCmt(e.target.value)} placeholder="Ex: Vacances, RDV médical, congé parental…"/>
+          </div>
+          <div className="mbtns">
+            <button type="button" className="bcnc" onClick={onClose}>Annuler</button>
+            <button type="submit" className="bsub">Soumettre la demande</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ─── RESPONSE MODAL ─── */
+function RespModal({req, emps, onSub, onClose}){
+  const [resp,setResp]=useState("");
+  const [act,setAct]=useState(null);
+  const emp=emps.find(e=>e.id===req.employeeId);
+  return (
+    <div className="movl" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <h2>📋 Traiter la demande</h2>
+        <div style={{background:"var(--bg)",padding:".875rem",borderRadius:"8px",marginBottom:"1rem",border:"1px solid var(--bd)"}}>
+          <div style={{fontWeight:700,color:"var(--t1)",marginBottom:".22rem"}}>{emp?.name}</div>
+          <div style={{fontSize:".8rem",color:"var(--t3)"}}>{ABS[req.type]?.label} · du {new Date(req.startDate).toLocaleDateString("fr-FR")} au {new Date(req.endDate).toLocaleDateString("fr-FR")}</div>
+          {req.comment&&<div style={{fontSize:".78rem",fontStyle:"italic",marginTop:".35rem",color:"var(--t2)"}}>"{req.comment}"</div>}
+        </div>
+        <div className="fg"><label>Réponse de la direction <span style={{fontWeight:400,color:"var(--t4)"}}>(optionnel)</span></label>
+          <textarea value={resp} onChange={e=>setResp(e.target.value)} placeholder="Ajouter un commentaire à la décision…"/>
+        </div>
+        <div style={{display:"flex",gap:".5rem"}}>
+          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"1.5px solid var(--bd)",background:"var(--bg)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",color:"var(--t3)"}} onClick={onClose}>Annuler</button>
+          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"none",background:act==="refuse"?"linear-gradient(135deg,var(--danger),#a84a4a)":"rgba(199,90,90,.15)",color:act==="refuse"?"#fff":"var(--danger)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"all .2s"}} onClick={()=>setAct("refuse")}>❌ Refuser</button>
+          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"none",background:act==="validate"?"linear-gradient(135deg,var(--ok),var(--sd))":"rgba(95,179,165,.15)",color:act==="validate"?"#fff":"var(--sd)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"all .2s"}} onClick={()=>setAct("validate")}>✅ Valider</button>
+        </div>
+        {act&&(
+          <button style={{marginTop:".875rem",width:"100%",padding:".85rem",borderRadius:"8px",border:"none",fontWeight:700,fontSize:".88rem",cursor:"pointer",fontFamily:"DM Sans,sans-serif",color:"#fff",background:act==="validate"?"linear-gradient(135deg,var(--ok),var(--sd))":"linear-gradient(135deg,var(--danger),#a84a4a)",boxShadow:act==="validate"?"0 4px 16px rgba(95,179,165,.4)":"0 4px 16px rgba(199,90,90,.4)"}} onClick={()=>onSub(req.id,act,resp)}>
+            Confirmer : {act==="validate"?"Valider la demande ✅":"Refuser la demande ❌"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── APP ─── */
+function App(){
+  const [emps,  setEmps]  = useState(()=>lsGet("vz_emps_26",INIT_EMP));
+  const [abs,   setAbs]   = useState(()=>lsGet("vz_abs_26",{}));
+  const [reqs,  setReqs]  = useState(()=>lsGet("vz_reqs_26",[]));
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [loading, setLoading] = useState(false);
+  const [admin,  setAdmin]  = useState(()=>sessionStorage.getItem("vz_admin")==="true");
+  const [showLogin,  setShowLogin]  = useState(false);
+  const [showReqM,   setShowReqM]   = useState(false);
+  const [showRespM,  setShowRespM]  = useState(null);
+  const [tab,    setTab]    = useState("planning");
+  const [rfilt,  setRfilt]  = useState("all");
+  const [solDate,setSolDate]= useState(()=>localStorage.getItem("vz_sol_date")||null);
+  const [plDate, setPlDate] = useState(()=>localStorage.getItem("vz_pl_date")||null);
+  const [imsg,   setImsg]   = useState({pl:null,sol:null});
+
+  const today = new Date();
+
+  useEffect(()=>{ localStorage.setItem("vz_abs_26",  JSON.stringify(abs));  },[abs]);
+  useEffect(()=>{ localStorage.setItem("vz_emps_26", JSON.stringify(emps)); },[emps]);
+  useEffect(()=>{ localStorage.setItem("vz_reqs_26", JSON.stringify(reqs)); },[reqs]);
+
+  const pendingN = useMemo(()=>reqs.filter(r=>r.status==="pending").length,[reqs]);
+
+  const cpris = useCallback((eid)=>{
+    const ea=abs[eid]||{};
+    let n=0;
+    Object.values(ea).forEach(md=>Object.values(md).forEach(t=>{if(t==="C")n++;}));
+    return n;
+  },[abs]);
+
+  const solde = useCallback((emp)=>(emp.cpN1||0)+(emp.cpN||0)+(emp.rcc||0)-cpris(emp.id),[cpris]);
+
+  const todayAbs = useMemo(()=>{
+    const m=today.getMonth(),d=today.getDate();
+    return emps.filter(e=>abs[e.id]?.[m]?.[d]).map(e=>({...e,at:abs[e.id][m][d]}));
+  },[abs,emps]);
+
+  const drPresent = !abs[1]?.[today.getMonth()]?.[today.getDate()];
+
+  const inRange=(m,d,s,e)=>{
+    const dt=new Date(YEAR,m,d);
+    return dt>=new Date(s)&&dt<=new Date(e);
+  };
+  const getPend=(eid,m,d)=>reqs.find(r=>r.employeeId===eid&&r.status==="pending"&&inRange(m,d,r.startDate,r.endDate));
+
+  /* ── Import Planning ── */
+  const importPlanning = async (e)=>{
+    const f=e.target.files[0]; if(!f) return;
+    setLoading(true);
+    try{
+      const buf=await f.arrayBuffer();
+      const wb=XLSX.read(buf,{type:"array"});
+      const newAbs={...abs};
+      let entries=0,months=0;
+
+      for(let mi=0;mi<12;mi++){
+        const sn=MONTHS[mi];
+        const sheet=wb.Sheets[sn]||wb.Sheets[wb.SheetNames.find(n=>norm(n)===norm(sn))];
+        if(!sheet) continue;
+
+        const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+        if(!rows||rows.length<9) continue;
+
+        const hrow=rows[7];
+        if(!hrow) continue;
+
+        const dayMap={};
+        for(let c=2;c<hrow.length;c++){
+          const v=hrow[c];
+          if(v!==null&&v!==undefined){
+            const day=parseInt(v);
+            if(!isNaN(day)&&day>=1&&day<=31) dayMap[c]=day;
+          }
         }
 
-        function RequestModal({ employees, onSubmit, onClose }) {
-            const [employeeId, setEmployeeId] = useState("");
-            const [type, setType] = useState("C");
-            const [startDate, setStartDate] = useState("");
-            const [endDate, setEndDate] = useState("");
-            const [comment, setComment] = useState("");
-            
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (!employeeId || !startDate || !endDate) {
-                    alert("Veuillez remplir tous les champs obligatoires");
-                    return;
-                }
-                onSubmit({
-                    id: Date.now(),
-                    employeeId: parseInt(employeeId),
-                    type,
-                    startDate,
-                    endDate,
-                    comment,
-                    status: "pending",
-                    createdAt: new Date().toISOString()
-                });
-            };
-            
-            return (
-                <div className="modal-overlay" onClick={onClose}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                        <h2>📝 Nouvelle demande de congé</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label>Employé *</label>
-                                <select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} required>
-                                    <option value="">-- Sélectionner --</option>
-                                    {employees.filter(e => !e.isDoctor).map(emp => (
-                                        <option key={emp.id} value={emp.id}>{emp.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Type d'absence *</label>
-                                <select value={type} onChange={(e) => setType(e.target.value)}>
-                                    <option value="C">Congé payé</option>
-                                    <option value="SS">Sans solde</option>
-                                    <option value="M">Maladie</option>
-                                    <option value="F">Formation</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Date de début *</label>
-                                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-                            </div>
-                            <div className="form-group">
-                                <label>Date de fin *</label>
-                                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
-                            </div>
-                            <div className="form-group">
-                                <label>Motif / Commentaire</label>
-                                <textarea 
-                                    value={comment} 
-                                    onChange={(e) => setComment(e.target.value)}
-                                    placeholder="Ex: Vacances familiales, RDV médical, etc."
-                                />
-                            </div>
-                            <div className="modal-buttons">
-                                <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
-                                <button type="submit" className="btn-submit">Soumettre la demande</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            );
-        }
+        let found=false;
+        for(let ri=8;ri<=18&&ri<rows.length;ri++){
+          const row=rows[ri];
+          if(!row||!row[1]) continue;
+          const xn=row[1].toString().trim();
+          if(!xn||xn.toLowerCase().includes("total")) continue;
 
-        function ResponseModal({ request, employees, onSubmit, onClose }) {
-            const [response, setResponse] = useState("");
-            const [action, setAction] = useState("");
-            
-            const emp = employees.find(e => e.id === request.employeeId);
-            
-            const handleSubmit = () => {
-                if (!action) return;
-                onSubmit(request.id, action, response);
-            };
-            
-            return (
-                <div className="modal-overlay" onClick={onClose}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                        <h2>{action === "validate" ? "✅ Valider" : action === "refuse" ? "❌ Refuser" : "📋 "} la demande</h2>
-                        <div style={{ background: "var(--bg-light)", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>
-                            <p style={{ textAlign: "left", margin: 0 }}>
-                                <strong>{emp?.name}</strong><br />
-                                {ABSENCE_TYPES[request.type]?.label} du {new Date(request.startDate).toLocaleDateString("fr-FR")} au {new Date(request.endDate).toLocaleDateString("fr-FR")}
-                                {request.comment && <><br /><em>Motif : {request.comment}</em></>}
-                            </p>
+          const emp=matchEmp(xn,emps);
+          if(!emp) continue;
+
+          if(!newAbs[emp.id]) newAbs[emp.id]={};
+          if(!newAbs[emp.id][mi]) newAbs[emp.id][mi]={};
+
+          for(const [cs,day] of Object.entries(dayMap)){
+            const val=row[parseInt(cs)];
+            if(val&&typeof val==="string"&&val.trim()){
+              const code=val.trim().toUpperCase();
+              if(["C","SS","M","F"].includes(code)){
+                newAbs[emp.id][mi][day]=code;
+                entries++;
+              }
+            }
+          }
+          found=true;
+        }
+        if(found) months++;
+      }
+      setAbs(newAbs);
+      const dt=new Date().toLocaleDateString("fr-FR");
+      setPlDate(dt); localStorage.setItem("vz_pl_date",dt);
+      setImsg(prev=>({...prev,pl:{ok:true,txt:`✅ ${months} mois importés · ${entries} absences chargées`}}));
+    }catch(err){
+      console.error(err);
+      setImsg(prev=>({...prev,pl:{ok:false,txt:"❌ Erreur lors de l'import du planning"}}));
+    }
+    setLoading(false); e.target.value="";
+  };
+
+  /* ── Import Soldes ── */
+  const importSoldes = async (e)=>{
+    const f=e.target.files[0]; if(!f) return;
+    setLoading(true);
+    try{
+      const buf=await f.arrayBuffer();
+      const wb=XLSX.read(buf,{type:"array"});
+      const sheet=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+
+      let hi=-1;
+      for(let i=0;i<rows.length;i++){
+        if(rows[i]&&rows[i][0]!=null&&rows[i][0].toString().trim()==="Matricule"){hi=i;break;}
+      }
+      if(hi===-1){setImsg(prev=>({...prev,sol:{ok:false,txt:"❌ En-tête 'Matricule' introuvable"}}));setLoading(false);e.target.value="";return;}
+
+      const hdrs=rows[hi];
+      let cN1=-1,cN=-1,cRcc=-1;
+      for(let c=0;c<hdrs.length;c++){
+        const h=((hdrs[c]||"")+"").toLowerCase().replace(/\s+/g," ").replace(/\n/g," ");
+        if(h.includes("solde")&&h.includes("n-1")) cN1=c;
+        else if(h.includes("solde")&&(h.includes("cp n")||h.includes("rcc")===false)&&!h.includes("n-1")&&h.includes("cp")) cN=c;
+        else if(h.includes("solde")&&h.includes("rcc")) cRcc=c;
+      }
+      if(cN1===-1) cN1=5;
+      if(cN===-1)  cN=9;
+      if(cRcc===-1) cRcc=15;
+
+      const upd=[...emps];
+      let matched=0;
+      for(let ri=hi+1;ri<rows.length;ri++){
+        const row=rows[ri];
+        if(!row||!row[1]) continue;
+        const fn=row[1].toString().trim();
+        if(!fn||fn.toLowerCase().includes("total")) continue;
+        const emp=matchEmp(fn,upd);
+        if(!emp) continue;
+        const idx=upd.findIndex(x=>x.id===emp.id);
+        if(idx!==-1){
+          upd[idx]={...upd[idx],cpN1:parseFloat(row[cN1])||0,cpN:parseFloat(row[cN])||0,rcc:parseFloat(row[cRcc])||0};
+          matched++;
+        }
+      }
+      setEmps(upd);
+      const dt=new Date().toLocaleDateString("fr-FR");
+      setSolDate(dt); localStorage.setItem("vz_sol_date",dt);
+      setImsg(prev=>({...prev,sol:{ok:true,txt:`✅ ${matched} employés mis à jour`}}));
+    }catch(err){
+      console.error(err);
+      setImsg(prev=>({...prev,sol:{ok:false,txt:"❌ Erreur lors de l'import des soldes"}}));
+    }
+    setLoading(false); e.target.value="";
+  };
+
+  const addReq = r=>{setReqs(prev=>[...prev,r]);setShowReqM(false);};
+
+  const handleResp = (rid,act,resp)=>{
+    const req=reqs.find(r=>r.id===rid);
+    const updated=reqs.map(r=>r.id!==rid?r:{...r,status:act==="validate"?"validated":"refused",response:resp,respondedAt:new Date().toISOString()});
+    if(act==="validate"&&req){
+      const na={...abs};
+      const s=new Date(req.startDate),en=new Date(req.endDate);
+      for(const d=new Date(s);d<=en;d.setDate(d.getDate()+1)){
+        const dow=d.getDay(); if(dow===0||dow===6) continue;
+        const m=d.getMonth(),day=d.getDate();
+        if(!na[req.employeeId]) na[req.employeeId]={};
+        if(!na[req.employeeId][m]) na[req.employeeId][m]={};
+        na[req.employeeId][m][day]=req.type;
+      }
+      setAbs(na);
+    }
+    setReqs(updated);
+    setShowRespM(null);
+  };
+
+  const dim=new Date(YEAR,month+1,0).getDate();
+  const filtReqs=useMemo(()=>rfilt==="all"?reqs:reqs.filter(r=>r.status===rfilt),[reqs,rfilt]);
+
+  const renderCell=(emp,day)=>{
+    const dt=new Date(YEAR,month,day);
+    const dow=dt.getDay();
+    const isWe=dow===0||dow===6;
+    const isToday=today.getFullYear()===YEAR&&today.getMonth()===month&&today.getDate()===day;
+    const isOff=dt>new Date(YEAR,11,31);
+    const at=abs[emp.id]?.[month]?.[day];
+    const pend=admin&&!at&&getPend(emp.id,month,day);
+
+    let cls="ccell";
+    if(isWe) cls+=" we";
+    if(isToday) cls+=" td";
+    if(isOff) cls+=" off";
+
+    let badge=null;
+    if(at){
+      badge=<span className={"abg "+(ABS[at]?.cls||"")}>{at}</span>;
+    } else if(pend){
+      badge=<span className="abg pend" title="En attente de validation">?</span>;
+    }
+    return <div key={day} className={cls}>{badge}</div>;
+  };
+
+  return (
+    <div className="app">
+      {showLogin && <LoginModal onLogin={()=>{setAdmin(true);sessionStorage.setItem("vz_admin","true");setShowLogin(false);}} onClose={()=>setShowLogin(false)}/>}
+      {showReqM  && <ReqModal emps={emps.filter(e=>!e.isDoc)} onSub={addReq} onClose={()=>setShowReqM(false)}/>}
+      {showRespM && <RespModal req={showRespM} emps={emps} onSub={handleResp} onClose={()=>setShowRespM(null)}/>}
+
+      <div className="topbar">
+        <span>📍 38 route de Savanna, 97460 Saint-Paul – La Réunion</span>
+        <span>📞 +262 262 22 55 50</span>
+      </div>
+
+      <div className="hdr">
+        <h1>Cabinet d'Orthodontie Dr François VERGEZ</h1>
+        <p>Planning des Congés · Équipe 2026</p>
+      </div>
+
+      <nav className="nav">
+        <button className={"ntab"+(tab==="planning"?" on":"")} onClick={()=>setTab("planning")}>📅 Planning</button>
+        {admin&&<>
+          <button className={"ntab"+(tab==="requests"?" on":"")} onClick={()=>setTab("requests")}>
+            📋 Demandes
+            {pendingN>0&&<span className="nbadge">{pendingN}</span>}
+          </button>
+          <button className={"ntab"+(tab==="admin"?" on":"")} onClick={()=>setTab("admin")}>⚙️ Administration</button>
+        </>}
+        {admin
+          ? <button className="nadm out" onClick={()=>{setAdmin(false);sessionStorage.removeItem("vz_admin");setTab("planning");}}>🔓 Déconnexion</button>
+          : <button className="nadm" onClick={()=>setShowLogin(true)}>🔐 Admin</button>
+        }
+      </nav>
+
+      <div className="wrap">
+
+        {tab==="planning"&&<>
+          {!admin&&<div className="tbanner">ℹ️ Mode Équipe · Vue mensuelle du planning en lecture seule</div>}
+
+          <div className={"drbanner "+(drPresent?"pr":"ab")}>
+            <div className={"dricon "+(drPresent?"pr":"ab")}>{drPresent?"🩺":"🏖️"}</div>
+            <div>
+              <h3 className={drPresent?"pr":"ab"}>Dr VERGEZ – {drPresent?"Présent au cabinet aujourd'hui":"Absent du cabinet aujourd'hui"}</h3>
+              <p>{drPresent?"Le cabinet est ouvert · Consultations normales":"Cabinet fermé ou consultations réduites"}</p>
+            </div>
+          </div>
+
+          <div className="datebanner">
+            <h2>📆 {today.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</h2>
+            <div className="dstats">
+              <div className="dstat"><div className="dl">Absents</div><div className="dv">{todayAbs.length}</div></div>
+              <div className="dstat"><div className="dl">Présents</div><div className="dv">{emps.length-todayAbs.length}</div></div>
+            </div>
+          </div>
+
+          <div className="todayabs">
+            <h3 className="sectitle">👥 Absents aujourd'hui <span className="sbadge">{todayAbs.length}</span></h3>
+            {todayAbs.length>0
+              ? <div className="ablist">
+                  {todayAbs.map(emp=>{const t=ABS[emp.at]; return(
+                    <div key={emp.id} className={"abchip "+(t?.cls||"")}>
+                      <div className="chav">{initials(emp.name)}</div>
+                      <span>{emp.name}</span>
+                      <span className={"chtag "+(t?.cls||"")}>{t?.label}</span>
+                    </div>
+                  );})}
+                </div>
+              : <div className="noabs">✅ Toute l'équipe est présente aujourd'hui !</div>
+            }
+          </div>
+
+          <div className={"mlayout"+(admin?"":" team")}>
+            <div>
+              <h3 className="sectitle">📅 Calendrier mensuel <span className="sbadge">{YEAR}</span></h3>
+              <div className="mtabs">
+                {MONTHS.map((m,i)=><button key={m} className={"mtab"+(month===i?" on":"")} onClick={()=>setMonth(i)}>{MSHORT[i]}</button>)}
+              </div>
+
+              <div className="calwrap">
+                <div className="calhdr">
+                  <div>Employé · {MONTHS[month]}</div>
+                  {Array.from({length:dim},(_,i)=>{
+                    const d=new Date(YEAR,month,i+1);
+                    const dow=d.getDay();
+                    const isWe=dow===0||dow===6;
+                    const isTd=today.getMonth()===month&&today.getDate()===i+1;
+                    return(
+                      <div key={i+1} className={"dhd"+(isWe?" wkhd":"")+(isTd?" thd":"")}>
+                        <span className="dnum">{i+1}</span>
+                        <span className="dltr">{DLTR[dow]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {emps.map(emp=>(
+                  <div key={emp.id} className="calrow">
+                    <div className="calemp">
+                      <div className={"mav"+(emp.isDoc?" dr":"")}>{initials(emp.name)}</div>
+                      <span className="ename">
+                        {emp.isDoc?"Dr "+emp.name.replace(/^Dr\s+/i,"").split(" ").slice(-1)[0]:emp.name.split(" ")[0]}
+                      </span>
+                    </div>
+                    {Array.from({length:dim},(_,i)=>renderCell(emp,i+1))}
+                  </div>
+                ))}
+              </div>
+
+              {admin&&<>
+                <h3 className="sectitle" style={{marginTop:"1.75rem"}}>📊 Soldes des Congés</h3>
+                <div className="solwrap">
+                  <div className="solhdr">
+                    <div>Employé</div><div>CP N-1</div><div>CP N</div><div>RCC</div><div>Solde restant</div>
+                  </div>
+                  {emps.filter(e=>!e.isDoc).map(emp=>{
+                    const sr=solde(emp);
+                    const cls=sr>10?"ok":sr>5?"wa":"ba";
+                    return(
+                      <div key={emp.id} className="solrow">
+                        <div className="empinfo"><div className="empav">{initials(emp.name)}</div>{emp.name}</div>
+                        <div className="cval">{(emp.cpN1||0).toFixed(1)} j</div>
+                        <div className="cval">{(emp.cpN||0).toFixed(1)} j</div>
+                        <div className="cval">{(emp.rcc||0).toFixed(1)} j</div>
+                        <div><span className={"schip "+cls}>{cls==="ok"?"✅":cls==="wa"?"⚠️":"🔴"} {sr.toFixed(1)} j</span></div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {solDate&&<div className="solupd">Soldes mis à jour le {solDate}</div>}
+              </>}
+            </div>
+
+            {admin&&(
+              <div className="sidebar">
+                <div className="scard">
+                  <h3>🎨 Légende</h3>
+                  <div className="lgrid">
+                    <div className="litem"><div className="ldot conge"></div><span>C · Congé</span></div>
+                    <div className="litem"><div className="ldot ss"></div><span>SS · Sans solde</span></div>
+                    <div className="litem"><div className="ldot maladie"></div><span>M · Maladie</span></div>
+                    <div className="litem"><div className="ldot formation"></div><span>F · Formation</span></div>
+                  </div>
+                  <div className="lpend">⌛ ? = En attente de validation</div>
+                </div>
+
+                <div className="scard">
+                  <h3>📋 Règles cabinet</h3>
+                  <ul className="rlist">
+                    <li><div className="rico war">⚠</div><span>Congés uniquement lorsque <strong>Dr VERGEZ est absent</strong></span></li>
+                    <li><div className="rico inf">i</div><span>3 semaines consécutives : <strong>1 fois/an</strong> maximum</span></li>
+                    <li><div className="rico inf">i</div><span>Vert &gt;10j · Orange &gt;5j · Rouge ≤5j</span></li>
+                  </ul>
+                </div>
+
+                <div className="scard">
+                  <h3>👨‍⚕️ Dr VERGEZ · Aujourd'hui</h3>
+                  <div className={"drpill "+(drPresent?"pr":"ab")}>
+                    <div className={"sdot "+(drPresent?"pr":"ab")}></div>
+                    {drPresent?"Présent au cabinet":"Absent · Cabinet fermé"}
+                  </div>
+                </div>
+
+                {(plDate||solDate)&&(
+                  <div className="scard">
+                    <h3>📁 Derniers imports</h3>
+                    {plDate&&<div style={{fontSize:".76rem",color:"var(--t3)",marginBottom:".2rem"}}>Planning : {plDate}</div>}
+                    {solDate&&<div style={{fontSize:".76rem",color:"var(--t3)"}}>Soldes : {solDate}</div>}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </>}
+
+        {tab==="requests"&&admin&&(
+          <div className="reqsec">
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.5rem",flexWrap:"wrap",gap:"1rem"}}>
+              <h3 className="sectitle" style={{margin:0}}>📋 Demandes de congés</h3>
+              <button className="ibtn pri" style={{width:"auto"}} onClick={()=>setShowReqM(true)}>➕ Nouvelle demande</button>
+            </div>
+            <div className="rfilt">
+              {[["all","Toutes"],["pending","En attente"],["validated","Validées"],["refused","Refusées"]].map(([k,l])=>(
+                <button key={k} className={"rfbtn"+(rfilt===k?" on":"")} onClick={()=>setRfilt(k)}>
+                  {l}<span className="cnt">{k==="all"?reqs.length:reqs.filter(r=>r.status===k).length}</span>
+                </button>
+              ))}
+            </div>
+            {filtReqs.length===0
+              ? <div className="noreq">Aucune demande {rfilt!=="all"?"dans cette catégorie":""}</div>
+              : [...filtReqs].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(req=>{
+                  const emp=emps.find(e=>e.id===req.employeeId);
+                  const t=ABS[req.type];
+                  return(
+                    <div key={req.id} className={"rcard "+req.status}>
+                      <div className="rchdr">
+                        <div className="rcemp">
+                          <div className="empav" style={{width:26,height:26,fontSize:".62rem"}}>{initials(emp?.name||"?")}</div>
+                          {emp?.name||"Employé inconnu"}
                         </div>
-                        <div className="form-group">
-                            <label>Réponse de la direction (optionnel)</label>
-                            <textarea 
-                                value={response} 
-                                onChange={(e) => setResponse(e.target.value)}
-                                placeholder="Ajouter un commentaire..."
-                            />
+                        <span className={"rcst "+req.status}>
+                          {req.status==="pending"?"⏳ En attente":req.status==="validated"?"✅ Validée":"❌ Refusée"}
+                        </span>
+                      </div>
+                      <div className="rcdet">
+                        <span><strong>Type :</strong> {t?.label}</span>
+                        <span><strong>Période :</strong> {new Date(req.startDate).toLocaleDateString("fr-FR")} → {new Date(req.endDate).toLocaleDateString("fr-FR")}</span>
+                        <span><strong>Soumis le :</strong> {new Date(req.createdAt).toLocaleDateString("fr-FR")}</span>
+                      </div>
+                      {req.comment&&(
+                        <div className="rccmt"><span className="lb">Motif</span>{req.comment}</div>
+                      )}
+                      {req.status==="pending"&&(
+                        <div className="rcact">
+                          <button className="bv" onClick={()=>setShowRespM(req)}>✅ Valider</button>
+                          <button className="br" onClick={()=>setShowRespM(req)}>❌ Refuser</button>
                         </div>
-                        <div className="modal-buttons">
-                            <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
-                            <button type="button" className="btn-danger" onClick={() => { setAction("refuse"); }}>❌ Refuser</button>
-                            <button type="button" className="btn-success" onClick={() => { setAction("validate"); }}>✅ Valider</button>
-                        </div>
-                        {action && (
-                            <div style={{ marginTop: "1rem", textAlign: "center" }}>
-                                <button 
-                                    className="import-btn" 
-                                    style={{ background: action === "validate" ? "var(--success)" : "var(--danger)" }}
-                                    onClick={handleSubmit}
-                                >
-                                    Confirmer : {action === "validate" ? "Valider" : "Refuser"}
-                                </button>
-                            </div>
-                        )}
+                      )}
+                      {req.response&&(
+                        <div className="rcresp"><span className="lb">Réponse direction</span>{req.response}</div>
+                      )}
                     </div>
-                </div>
-            );
-        }
+                  );
+                })
+            }
+          </div>
+        )}
 
-        function getInitials(name) {
-            return name.split(" ").filter(n => n.length > 2).map(n => n[0]).join("").slice(0, 2);
-        }
+        {tab==="admin"&&admin&&(
+          <div className="adminsec">
+            <h2>⚙️ Administration</h2>
+            <div className="agrid">
+              <div className="acard">
+                <h4>📅 Importer le planning</h4>
+                <p>Fichier "Calendrier_d_absences_2026.xlsx" – 12 feuilles (Janvier…Décembre), ligne 8 = en-tête, lignes 9–19 = employés</p>
+                <input type="file" accept=".xlsx,.xls" onChange={importPlanning} className="fi" id="fi-pl"/>
+                <label htmlFor="fi-pl" className="ibtn acc">{loading?"⏳ Import…":"📁 Importer le planning Excel"}</label>
+                {imsg.pl&&<div className={"imsg "+(imsg.pl.ok?"ok":"er")}>{imsg.pl.txt}</div>}
+              </div>
 
-        function App() {
-            const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
-            const [absences, setAbsences] = useState({});
-            const [requests, setRequests] = useState([]);
-            const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-            const [loading, setLoading] = useState(false);
-            const [isAdmin, setIsAdmin] = useState(false);
-            const [showLoginModal, setShowLoginModal] = useState(false);
-            const [showRequestModal, setShowRequestModal] = useState(false);
-            const [showResponseModal, setShowResponseModal] = useState(null);
-            const [activeTab, setActiveTab] = useState("planning");
-            const [requestFilter, setRequestFilter] = useState("all");
-            const [soldesUpdateDate, setSoldesUpdateDate] = useState("28/02/2026");
+              <div className="acard">
+                <h4>📊 Importer les soldes</h4>
+                <p>Fichier "Solde_Repos_…xlsx" – ligne 2 = en-tête "Matricule", colonnes auto-détectées (CP N-1, CP N, RCC)</p>
+                <input type="file" accept=".xlsx,.xls" onChange={importSoldes} className="fi" id="fi-sol"/>
+                <label htmlFor="fi-sol" className="ibtn">{loading?"⏳ Import…":"📁 Importer soldes Excel"}</label>
+                {imsg.sol&&<div className={"imsg "+(imsg.sol.ok?"ok":"er")}>{imsg.sol.txt}</div>}
+              </div>
 
-            const today = new Date();
-            const selectedYear = 2026;
+              <div className="acard">
+                <h4>➕ Saisir une demande</h4>
+                <p>Créer manuellement une demande de congé ou d'absence pour un membre de l'équipe</p>
+                <button className="ibtn pri" onClick={()=>setShowReqM(true)}>📝 Nouvelle demande</button>
+              </div>
 
-            useEffect(() => {
-                const savedAbsences = localStorage.getItem("vergez_absences_2026");
-                if (savedAbsences) setAbsences(JSON.parse(savedAbsences));
-                
-                const savedEmployees = localStorage.getItem("vergez_employees_2026");
-                if (savedEmployees) setEmployees(JSON.parse(savedEmployees));
-                
-                const savedRequests = localStorage.getItem("vergez_requests_2026");
-                if (savedRequests) setRequests(JSON.parse(savedRequests));
-                
-                const savedSoldesDate = localStorage.getItem("vergez_soldes_date");
-                if (savedSoldesDate) setSoldesUpdateDate(savedSoldesDate);
-                
-                if (sessionStorage.getItem("vergez_admin") === "true") setIsAdmin(true);
-            }, []);
+              <div className="acard">
+                <h4>🗑️ Réinitialiser congés</h4>
+                <p>Supprimer toutes les absences importées du planning (les demandes ne sont pas touchées)</p>
+                <button className="ibtn dan" onClick={()=>{if(window.confirm("Supprimer toutes les absences du planning ?")){ setAbs({});localStorage.removeItem("vz_abs_26");setPlDate(null);localStorage.removeItem("vz_pl_date");setImsg(p=>({...p,pl:null})); }}}>🗑️ Supprimer les congés</button>
+              </div>
 
-            useEffect(() => {
-                localStorage.setItem("vergez_absences_2026", JSON.stringify(absences));
-            }, [absences]);
+              <div className="acard">
+                <h4>🗑️ Réinitialiser demandes</h4>
+                <p>Supprimer toutes les demandes de congés enregistrées dans le système</p>
+                <button className="ibtn dan" onClick={()=>{if(window.confirm("Supprimer toutes les demandes ?")){ setReqs([]);localStorage.removeItem("vz_reqs_26"); }}}>🗑️ Supprimer les demandes</button>
+              </div>
 
-            useEffect(() => {
-                localStorage.setItem("vergez_employees_2026", JSON.stringify(employees));
-            }, [employees]);
+              <div className="acard">
+                <h4>🔄 Réinitialiser les soldes</h4>
+                <p>Remettre les soldes de congés aux valeurs par défaut (avant import)</p>
+                <button className="ibtn dan" onClick={()=>{if(window.confirm("Réinitialiser les soldes aux valeurs par défaut ?")){ setEmps(INIT_EMP);localStorage.removeItem("vz_emps_26");setSolDate(null);localStorage.removeItem("vz_sol_date");setImsg(p=>({...p,sol:null})); }}}>🔄 Réinitialiser les soldes</button>
+              </div>
+            </div>
 
-            useEffect(() => {
-                localStorage.setItem("vergez_requests_2026", JSON.stringify(requests));
-            }, [requests]);
+            <div style={{marginTop:"1.5rem",background:"rgba(95,179,165,.06)",border:"1px solid rgba(95,179,165,.22)",borderRadius:"10px",padding:"1rem 1.25rem",fontSize:".78rem",color:"var(--t3)"}}>
+              <strong style={{color:"var(--sd)"}}>ℹ️ Structure attendue des fichiers</strong>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:".75rem",marginTop:".65rem"}}>
+                <div><strong>Calendrier (planning) :</strong><br/>· 12 feuilles : Janvier … Décembre<br/>· Ligne 8 : en-têtes (col B = nom, col C+ = jours 1–31)<br/>· Lignes 9–19 : absences (codes C / SS / M / F)</div>
+                <div><strong>Solde des repos :</strong><br/>· Ligne 1 : titre du fichier paie<br/>· Ligne 2 : en-tête avec "Matricule" en col A<br/>· Colonnes détectées automatiquement : Solde CP N-1, Solde CP N, Solde RCC</div>
+              </div>
+            </div>
+          </div>
+        )}
 
-            const pendingCount = useMemo(() => requests.filter(r => r.status === "pending").length, [requests]);
+      </div>
+      <div className="footer">© 2026 Cabinet d'Orthodontie Dr François VERGEZ · Saint-Paul, La Réunion · Application Gestion des Congés</div>
+    </div>
+  );
+}
 
-            const calculateCongesPris = useCallback((empId) => {
-                const empAbs = absences[empId] || {};
-                let conges = 0;
-                Object.values(empAbs).forEach(monthData => {
-                    Object.values(monthData).forEach(type => {
-                        if (type === "C") conges++;
-                    });
-                });
-                return conges;
-            }, [absences]);
-
-            const calculateSoldeRestant = useCallback((emp) => {
-                const congesPris = calculateCongesPris(emp.id);
-                const totalDisponible = (emp.cpN1 || 0) + (emp.cpN || 0) + (emp.rcc || 0);
-                return totalDisponible - congesPris;
-            }, [calculateCongesPris]);
-
-            const todayAbsences = useMemo(() => {
-                const m = today.getMonth();
-                const d = today.getDate();
-                return employees.filter(emp => absences[emp.id]?.[m]?.[d])
-                    .map(emp => ({ ...emp, type: absences[emp.id][m][d] }));
-            }, [absences, employees]);
-
-            const isDoctorPresentToday = !absences[1]?.[today.getMonth()]?.[today.getDate()];
-
-            // Check if a date has a pending request
-            const getPendingForDate = (empId, month, day) => {
-                return requests.find(r => 
-                    r.employeeId === empId && 
-                    r.status === "pending" &&
-                    isDateInRange(selectedYear, month, day, r.startDate, r.endDate)
-                );
-            };
-
-            const isDateInRange = (year, month, day, startStr, endStr) => {
-                const date = new Date(year, month, day);
-                const start = new Date(startStr);
-                const end = new Date(endStr);
-                return date >= start && date <= end;
-            };
-
-            const handleSoldesFileImport = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                setLoading(true);
-                try {
-                    const data = await file.arrayBuffer();
-                    const wb = XLSX.read(data, { type: "array" });
-                    const sheet = wb.Sheets[wb.SheetNames[0]];
-                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                    
-                    let headerRow = -1;
-                    for (let i = 0; i < json.length; i++) {
-                        if (json[i] && json[i][0] === "Matricule") {
-                            headerRow = i;
-                            break;
-                        }
-                    }
-                    
-                    if (headerRow === -1) {
-                        alert("Format de fichier non reconnu");
-                        setLoading(false);
-                        return;
-                    }
-                    
-                    const headers = json[headerRow];
-                    const colCpN1 = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("N-1"));
-                    const colCpN = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("CP N") && !h.toString().includes("N-1"));
-                    const colRcc = headers.findIndex(h => h && h.toString().includes("Solde") && h.toString().includes("RCC"));
-                    
-                    const updatedEmployees = [...employees];
-                    
-                    for (let i = headerRow + 1; i < json.length; i++) {
-                        const row = json[i];
-                        if (!row || !row[1] || row[1] === "Total général") continue;
-                        
-                        const fullName = row[1].toString();
-                        const nameParts = fullName.split(" née ")[0].trim().split(" ");
-                        const lastName = nameParts[0].toUpperCase();
-                        
-                        const empIndex = updatedEmployees.findIndex(e => 
-                            e.name.toUpperCase().includes(lastName)
-                        );
-                        
-                        if (empIndex !== -1) {
-                            updatedEmployees[empIndex] = {
-                                ...updatedEmployees[empIndex],
-                                cpN1: parseFloat(row[colCpN1]) || 0,
-                                cpN: parseFloat(row[colCpN]) || 0,
-                                rcc: parseFloat(row[colRcc]) || 0
-                            };
-                        }
-                    }
-                    
-                    setEmployees(updatedEmployees);
-                    const dateStr = new Date().toLocaleDateString("fr-FR");
-                    setSoldesUpdateDate(dateStr);
-                    localStorage.setItem("vergez_soldes_date", dateStr);
-                    alert("Import des soldes réussi !");
-                } catch (err) {
-                    console.error(err);
-                    alert("Erreur lors de l'import des soldes");
-                }
-                setLoading(false);
-                e.target.value = "";
-            };
-
-            const handleNewRequest = (request) => {
-                setRequests([...requests, request]);
-                setShowRequestModal(false);
-                alert("Demande enregistrée !");
-            };
-
-            const handleRequestResponse = (requestId, action, response) => {
-                const updatedRequests = requests.map(r => {
-                    if (r.id === requestId) {
-                        return {
-                            ...r,
-                            status: action === "validate" ? "validated" : "refused",
-                            response,
-                            respondedAt: new Date().toISOString()
-                        };
-                    }
-                    return r;
-                });
-                
-                // If validated, update absences
-                if (action === "validate") {
-                    const request = requests.find(r => r.id === requestId);
-                    if (request) {
-                        const newAbsences = { ...absences };
-                        const start = new Date(request.startDate);
-                        const end = new Date(request.endDate);
-                        
-                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                            const month = d.getMonth();
-                            const day = d.getDate();
-                            const dayOfWeek = d.getDay();
-                            
-                            // Skip weekends
-                            if (dayOfWeek === 0 || dayOfWeek === 6) continue;
-                            
-                            if (!newAbsences[request.employeeId]) newAbsences[request.employeeId] = {};
-                            if (!newAbsences[request.employeeId][month]) newAbsences[request.employeeId][month] = {};
-                            newAbsences[request.employeeId][month][day] = request.type;
-                        }
-                        
-                        setAbsences(newAbsences);
-                    }
-                }
-                
-                setRequests(updatedRequests);
-                setShowResponseModal(null);
-            };
-
-            const clearData = () => {
-                if (window.confirm("Supprimer toutes les données de congés ?")) {
-                    setAbsences({});
-                    localStorage.removeItem("vergez_absences_2026");
-                }
-            };
-
-            const clearRequests = () => {
-                if (window.confirm("Supprimer toutes les demandes ?")) {
-                    setRequests([]);
-                    localStorage.removeItem("vergez_requests_2026");
-                }
-            };
-
-            const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-
-            const filteredRequests = useMemo(() => {
-                if (requestFilter === "all") return requests;
-                return requests.filter(r => r.status === requestFilter);
-            }, [requests, requestFilter]);
-
-            return (
-                <div className="app-container">
-                    {showLoginModal && <LoginModal onLogin={() => { setIsAdmin(true); sessionStorage.setItem("vergez_admin", "true"); setShowLoginModal(false); }} onClose={() => setShowLoginModal(false)} />}
-                    {showRequestModal && <RequestModal employees={employees} onSubmit={handleNewRequest} onClose={() => setShowRequestModal(false)} />}
-                    {showResponseModal && <ResponseModal request={showResponseModal} employees={employees} onSubmit={handleRequestResponse} onClose={() => setShowResponseModal(null)} />}
-                    
-                    <div className="top-bar">
-                        <span>📍 38 route de Savanna, 97460 Saint Paul - La Réunion</span>
-                        <span>📞 +262 262 22 55 50</span>
-                    </div>
-                    
-                    <div className="header-main">
-                        <h1>Cabinet d'Orthodontie Dr François Vergez</h1>
-                        <p>Planning des Congés - Équipe</p>
-                    </div>
-                    
-                    <nav className="nav-bar">
-                        <button className={"nav-item" + (activeTab === "planning" ? " active" : "")} onClick={() => setActiveTab("planning")}>
-                            📅 Planning
-                        </button>
-                        {isAdmin && (
-                            <>
-                                <button className={"nav-item" + (activeTab === "requests" ? " active" : "")} onClick={() => setActiveTab("requests")}>
-                                    📋 Demandes
-                                    {pendingCount > 0 && <span className="nav-badge">{pendingCount}</span>}
-                                </button>
-                                <button className={"nav-item" + (activeTab === "admin" ? " active" : "")} onClick={() => setActiveTab("admin")}>
-                                    ⚙️ Administration
-                                </button>
-                            </>
-                        )}
-                        {isAdmin ? (
-                            <button className="nav-item admin-btn logged" onClick={() => { setIsAdmin(false); sessionStorage.removeItem("vergez_admin"); setActiveTab("planning"); }}>
-                                🔓 Déconnexion Admin
-                            </button>
-                        ) : (
-                            <button className="nav-item admin-btn" onClick={() => setShowLoginModal(true)}>
-                                🔐 Admin
-                            </button>
-                        )}
-                    </nav>
-                    
-                    <div className="content-wrapper">
-                        {activeTab === "planning" && (
-                            <>
-                                {!isAdmin && (
-                                    <div className="team-info-banner">
-                                        ℹ️ Mode Équipe : Vue mensuelle des congés uniquement
-                                    </div>
-                                )}
-                                
-                                <div className={"alert-box" + (isDoctorPresentToday ? "" : " info")}>
-                                    <div className="alert-icon">{isDoctorPresentToday ? "⚠" : "ℹ"}</div>
-                                    <div className="alert-content">
-                                        <h3>{isDoctorPresentToday ? "Dr VERGEZ Présent" : "Dr VERGEZ Absent"}</h3>
-                                        <p>{isDoctorPresentToday ? "Le Dr VERGEZ est présent aujourd'hui." : "Le Dr VERGEZ est absent."}</p>
-                                    </div>
-                                </div>
-                                
-                                <div className="date-banner">
-                                    <h2>📆 {today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</h2>
-                                    <div className="date-info">
-                                        <div className="date-item">
-                                            <div className="label">Absents</div>
-                                            <div className="value">{todayAbsences.length}</div>
-                                        </div>
-                                        <div className="date-item">
-                                            <div className="label">Présents</div>
-                                            <div className="value">{employees.length - todayAbsences.length}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="today-absences">
-                                    <h3 className="section-title">👤 Qui est absent aujourd'hui ?</h3>
-                                    {todayAbsences.length > 0 ? (
-                                        <div className="absent-list">
-                                            {todayAbsences.map(emp => (
-                                                <div key={emp.id} className={"absent-chip " + ABSENCE_TYPES[emp.type]?.cls}>
-                                                    <div className="chip-avatar">{getInitials(emp.name)}</div>
-                                                    <span>{emp.name}</span>
-                                                    <span className={"chip-type " + ABSENCE_TYPES[emp.type]?.cls}>{ABSENCE_TYPES[emp.type]?.label}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="no-absences">✅ Toute l'équipe est présente aujourd'hui !</div>
-                                    )}
-                                </div>
-                                
-                                <div className={"main-layout" + (isAdmin ? "" : " team-mode")}>
-                                    <div className="main-section">
-                                        <h3 className="section-title">
-                                            📅 Vue mensuelle <span className="section-badge">{selectedYear}</span>
-                                        </h3>
-                                        <div className="month-tabs">
-                                            {MONTHS.map((m, i) => (
-                                                <button key={m} className={"month-tab" + (selectedMonth === i ? " active" : "")} onClick={() => setSelectedMonth(i)}>
-                                                    {m.slice(0, 3)}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        
-                                        <div className="calendar-full">
-                                            <div className="calendar-full-header">
-                                                <div>Employé</div>
-                                                {Array.from({ length: daysInMonth }, (_, i) => {
-                                                    const d = new Date(selectedYear, selectedMonth, i + 1);
-                                                    return <div key={i + 1}>{i + 1}<br /><small>{DAYS[d.getDay()].slice(0, 1)}</small></div>;
-                                                })}
-                                            </div>
-                                            {employees.map(emp => (
-                                                <div key={emp.id} className="calendar-full-row">
-                                                    <div>
-                                                        <div className={"mini-avatar" + (emp.isDoctor ? " doctor" : "")} style={{ width: 20, height: 20, fontSize: "0.55rem" }}>{getInitials(emp.name)}</div>
-                                                        <span>{emp.name.split(" ")[0]}</span>
-                                                    </div>
-                                                    {Array.from({ length: daysInMonth }, (_, i) => {
-                                                        const day = i + 1;
-                                                        const date = new Date(selectedYear, selectedMonth, day);
-                                                        const isWe = date.getDay() === 0 || date.getDay() === 6;
-                                                        const at = absences[emp.id]?.[selectedMonth]?.[day];
-                                                        const pending = isAdmin && getPendingForDate(emp.id, selectedMonth, day);
-                                                        
-                                                        let cls = "";
-                                                        let content = "";
-                                                        
-                                                        if (at) {
-                                                            cls = ABSENCE_TYPES[at]?.cls || "";
-                                                            content = at;
-                                                        } else if (pending) {
-                                                            cls = "pending";
-                                                            content = "?";
-                                                        } else if (isWe) {
-                                                            cls = "weekend";
-                                                        }
-                                                        
-                                                        return <div key={day} className={"full-cell " + cls}>{content}</div>;
-                                                    })}
-                                                </div>
-                                            ))}
-                                        </div>
-                                        
-                                        {isAdmin && (
-                                            <>
-                                                <h3 className="section-title" style={{ marginTop: "1.5rem" }}>📊 Soldes des Congés</h3>
-                                                <div className="soldes-table">
-                                                    <div className="soldes-table-header">
-                                                        <div>Employé</div>
-                                                        <div>CP N-1</div>
-                                                        <div>CP N</div>
-                                                        <div>RCC</div>
-                                                        <div>Solde restant</div>
-                                                    </div>
-                                                    {employees.filter(e => !e.isDoctor).map(emp => {
-                                                        const soldeRestant = calculateSoldeRestant(emp);
-                                                        return (
-                                                            <div key={emp.id} className="soldes-table-row">
-                                                                <div className="employee-name">
-                                                                    <div className="employee-avatar">{getInitials(emp.name)}</div>
-                                                                    <span>{emp.name}</span>
-                                                                </div>
-                                                                <div className="cell-value">{(emp.cpN1 || 0).toFixed(1)}</div>
-                                                                <div className="cell-value">{(emp.cpN || 0).toFixed(1)}</div>
-                                                                <div className="cell-value">{(emp.rcc || 0).toFixed(1)}</div>
-                                                                <div className={"cell-value " + (soldeRestant > 10 ? "positive" : soldeRestant > 5 ? "warning" : "negative")}>
-                                                                    {soldeRestant.toFixed(1)} j
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                                <div className="soldes-update">Soldes mis à jour le {soldesUpdateDate}</div>
-                                            </>
-                                        )}
-                                    </div>
-                                    
-                                    {isAdmin && (
-                                        <div className="sidebar">
-                                            <div className="sidebar-card">
-                                                <h3>🎨 Légende</h3>
-                                                <div className="legend-grid">
-                                                    <div className="legend-item"><div className="legend-color conge"></div><span>C - Congé</span></div>
-                                                    <div className="legend-item"><div className="legend-color ss"></div><span>SS - Sans solde</span></div>
-                                                    <div className="legend-item"><div className="legend-color maladie"></div><span>M - Maladie</span></div>
-                                                    <div className="legend-item"><div className="legend-color formation"></div><span>F - Formation</span></div>
-                                                </div>
-                                                <div style={{ marginTop: "0.75rem", padding: "0.5rem", background: "repeating-linear-gradient(45deg, rgba(212,168,83,0.2), rgba(212,168,83,0.2) 2px, transparent 2px, transparent 4px)", borderRadius: "4px", fontSize: "0.75rem", color: "var(--warning)", textAlign: "center" }}>
-                                                    ? = En attente de validation
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="sidebar-card">
-                                                <h3>📋 Règles</h3>
-                                                <ul className="rules-list">
-                                                    <li><div className="rule-icon warning">⚠</div><span>Pas de congé si <strong>Dr VERGEZ présent</strong></span></li>
-                                                    <li><div className="rule-icon info">i</div><span>Si 3 semaines consécutives acceptées, valable <strong>1 seule fois/an</strong></span></li>
-                                                </ul>
-                                            </div>
-                                            
-                                            <div className="sidebar-card">
-                                                <h3>👨‍⚕️ Dr VERGEZ</h3>
-                                                <div className={"doctor-status " + (isDoctorPresentToday ? "present" : "absent")}>
-                                                    <div className={"status-dot " + (isDoctorPresentToday ? "present" : "absent")}></div>
-                                                    <span>{isDoctorPresentToday ? "Présent aujourd'hui" : "Absent aujourd'hui"}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                        
-                        {activeTab === "requests" && isAdmin && (
-                            <div className="requests-section">
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
-                                    <h3 className="section-title" style={{ margin: 0 }}>📋 Demandes de congés</h3>
-                                    <button className="import-btn primary" style={{ width: "auto" }} onClick={() => setShowRequestModal(true)}>
-                                        ➕ Nouvelle demande
-                                    </button>
-                                </div>
-                                
-                                <div className="request-filters">
-                                    <button className={"filter-btn" + (requestFilter === "all" ? " active" : "")} onClick={() => setRequestFilter("all")}>
-                                        Toutes <span className="count">{requests.length}</span>
-                                    </button>
-                                    <button className={"filter-btn" + (requestFilter === "pending" ? " active" : "")} onClick={() => setRequestFilter("pending")}>
-                                        En attente <span className="count">{requests.filter(r => r.status === "pending").length}</span>
-                                    </button>
-                                    <button className={"filter-btn" + (requestFilter === "validated" ? " active" : "")} onClick={() => setRequestFilter("validated")}>
-                                        Validées <span className="count">{requests.filter(r => r.status === "validated").length}</span>
-                                    </button>
-                                    <button className={"filter-btn" + (requestFilter === "refused" ? " active" : "")} onClick={() => setRequestFilter("refused")}>
-                                        Refusées <span className="count">{requests.filter(r => r.status === "refused").length}</span>
-                                    </button>
-                                </div>
-                                
-                                {filteredRequests.length === 0 ? (
-                                    <div className="no-requests">Aucune demande</div>
-                                ) : (
-                                    filteredRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(request => {
-                                        const emp = employees.find(e => e.id === request.employeeId);
-                                        return (
-                                            <div key={request.id} className={"request-card " + request.status}>
-                                                <div className="request-header">
-                                                    <div className="request-employee">
-                                                        <div className="chip-avatar">{emp ? getInitials(emp.name) : "?"}</div>
-                                                        {emp?.name || "Employé inconnu"}
-                                                    </div>
-                                                    <span className={"request-status " + request.status}>
-                                                        {request.status === "pending" ? "⏳ En attente" : request.status === "validated" ? "✅ Validée" : "❌ Refusée"}
-                                                    </span>
-                                                </div>
-                                                <div className="request-details">
-                                                    <span><strong>Type :</strong> {ABSENCE_TYPES[request.type]?.label}</span>
-                                                    <span><strong>Période :</strong> du {new Date(request.startDate).toLocaleDateString("fr-FR")} au {new Date(request.endDate).toLocaleDateString("fr-FR")}</span>
-                                                    <span><strong>Demandé le :</strong> {new Date(request.createdAt).toLocaleDateString("fr-FR")}</span>
-                                                </div>
-                                                {request.comment && (
-                                                    <div className="request-comment">
-                                                        <strong>Motif :</strong>
-                                                        {request.comment}
-                                                    </div>
-                                                )}
-                                                {request.status === "pending" && (
-                                                    <div className="request-actions">
-                                                        <button className="btn-validate" onClick={() => setShowResponseModal(request)}>✅ Valider</button>
-                                                        <button className="btn-refuse" onClick={() => setShowResponseModal(request)}>❌ Refuser</button>
-                                                    </div>
-                                                )}
-                                                {request.response && (
-                                                    <div className="request-response">
-                                                        <strong>Réponse direction :</strong>
-                                                        <p>{request.response}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-                        )}
-                        
-                        {activeTab === "admin" && isAdmin && (
-                            <div className="admin-section">
-                                <h2>⚙️ Administration</h2>
-                                <div className="admin-grid">
-                                    <div className="admin-card">
-                                        <h4>📊 Importer les soldes</h4>
-                                        <p>Fichier Excel "Solde des repos"</p>
-                                        <input type="file" accept=".xlsx,.xls" onChange={handleSoldesFileImport} className="file-input" id="file-import-soldes" />
-                                        <label htmlFor="file-import-soldes" className="import-btn">
-                                            {loading ? "⏳ Import..." : "📁 Importer soldes Excel"}
-                                        </label>
-                                    </div>
-                                    <div className="admin-card">
-                                        <h4>➕ Saisir une demande</h4>
-                                        <p>Créer une demande de congé</p>
-                                        <button className="import-btn primary" onClick={() => setShowRequestModal(true)}>📝 Nouvelle demande</button>
-                                    </div>
-                                    <div className="admin-card">
-                                        <h4>🗑️ Réinitialiser congés</h4>
-                                        <p>Supprimer les absences</p>
-                                        <button className="import-btn danger" onClick={clearData}>🗑️ Supprimer congés</button>
-                                    </div>
-                                    <div className="admin-card">
-                                        <h4>🗑️ Réinitialiser demandes</h4>
-                                        <p>Supprimer les demandes</p>
-                                        <button className="import-btn danger" onClick={clearRequests}>🗑️ Supprimer demandes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    
-                    <footer className="footer">© 2026 Cabinet d'Orthodontie du Dr François VERGEZ - Saint Paul, La Réunion</footer>
-                </div>
-            );
-        }
-        
-        ReactDOM.render(<App />, document.getElementById("root"));
-    </script>
+ReactDOM.render(<App/>, document.getElementById("root"));
+</script>
 </body>
 </html>
