@@ -1,332 +1,645 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAM Cabinet VERGEZ - Gestion des Congés</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <style>
-/* ── VARIABLES ── */
-:root{
-  --p:#7b6b8d;--pl:#9d8fb0;--pd:#5a4d6b;
-  --s:#5fb3a5;--sl:#7ecec0;--sd:#4a9a8c;
-  --a:#d4a853;--al:#e8c27a;--ad:#c49040;
-  --danger:#c75a5a;--warn:#d4a853;--ok:#5fb3a5;
-  --bg:#f4f5f8;--white:#fff;
-  --t1:#2d2d3d;--t2:#4d4d5d;--t3:#7d7d8d;--t4:#adadba;
-  --bd:#e4e4ef;--bdl:#eeeeF5;
-  --sh1:0 1px 4px rgba(0,0,0,.06);
-  --sh2:0 4px 16px rgba(0,0,0,.08);
-  --sh3:0 8px 32px rgba(0,0,0,.12);
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TEAM Cabinet VERGEZ – Gestion des Congés</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES & RESET
+   ═══════════════════════════════════════════════════ */
+:root {
+  --violet:     #7b6b8d;
+  --violet-lt:  #9d8fb0;
+  --violet-dk:  #5a4d6b;
+  --violet-bg:  rgba(123,107,141,.06);
+  --teal:       #5fb3a5;
+  --teal-lt:    #7ecec0;
+  --teal-dk:    #4a9a8c;
+  --teal-bg:    rgba(95,179,165,.08);
+  --gold:       #d4a853;
+  --gold-lt:    #e8c27a;
+  --gold-dk:    #c49040;
+  --gold-bg:    rgba(212,168,83,.1);
+  --red:        #c75a5a;
+  --red-dk:     #a84a4a;
+  --red-bg:     rgba(199,90,90,.08);
+  --bg:         #f5f5fa;
+  --white:      #ffffff;
+  --t1:         #2d2d3d;
+  --t2:         #4d4d5d;
+  --t3:         #7d7d8d;
+  --t4:         #adadba;
+  --bd:         #e4e4ef;
+  --bd-lt:      #eeeef5;
+  --sh-sm:  0 1px 4px rgba(45,45,61,.05);
+  --sh-md:  0 4px 16px rgba(45,45,61,.07);
+  --sh-lg:  0 8px 30px rgba(45,45,61,.1);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t2);min-height:100vh}
-.app{max-width:1500px;margin:0 auto}
 
-/* TOP BAR */
-.topbar{background:var(--pd);padding:.45rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:rgba(255,255,255,.65)}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',system-ui,sans-serif; background:var(--bg); color:var(--t2); min-height:100vh; -webkit-font-smoothing:antialiased; }
+.app { max-width:1520px; margin:0 auto; }
 
-/* HEADER */
-.hdr{background:linear-gradient(135deg,var(--pd) 0%,var(--p) 55%,var(--pl) 100%);padding:1.75rem 2rem 1.35rem;text-align:center;position:relative;overflow:hidden}
-.hdr::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='%23ffffff' stroke-width='0.5' opacity='0.06'/%3E%3C/svg%3E");background-size:80px 80px}
-.hdr h1{font-family:'Montserrat',sans-serif;font-size:1.45rem;font-weight:800;color:#fff;letter-spacing:2.5px;text-transform:uppercase;position:relative;text-shadow:0 2px 10px rgba(0,0,0,.25)}
-.hdr p{font-size:.78rem;color:rgba(255,255,255,.72);letter-spacing:2.5px;text-transform:uppercase;position:relative;margin-top:.3rem}
+/* ═══════════════════════════════════════════════════
+   TOP BAR
+   ═══════════════════════════════════════════════════ */
+.topbar {
+  background:var(--violet-dk); padding:.4rem 2rem;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.72rem; color:rgba(255,255,255,.6); letter-spacing:.2px;
+}
 
-/* NAV */
-.nav{background:var(--white);padding:0 1.5rem;display:flex;align-items:center;gap:.1rem;border-bottom:2px solid var(--bd);box-shadow:var(--sh1);flex-wrap:wrap}
-.ntab{padding:.9rem 1.2rem;color:var(--t3);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s;position:relative}
-.ntab:hover{color:var(--p);background:rgba(123,107,141,.04)}
-.ntab.on{color:var(--p);border-bottom-color:var(--p)}
-.nadm{margin-left:auto;background:var(--p);color:#fff;border-radius:6px;padding:.55rem 1rem;border:none;margin-bottom:0;border-bottom:none;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .2s}
-.nadm:hover{background:var(--pd)}
-.nadm.out{background:var(--a)}
-.nbadge{position:absolute;top:8px;right:8px;background:var(--danger);color:#fff;font-size:.58rem;font-weight:800;padding:.1rem .35rem;border-radius:10px;animation:pulseB 2s infinite}
-@keyframes pulseB{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+/* ═══════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════ */
+.hdr {
+  background:linear-gradient(135deg,var(--violet-dk) 0%,var(--violet) 50%,var(--violet-lt) 100%);
+  padding:1.8rem 2rem 1.4rem; text-align:center; position:relative; overflow:hidden;
+}
+.hdr::before {
+  content:""; position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 30 L30 55 L5 30Z' fill='none' stroke='%23fff' stroke-width='.4' opacity='.04'/%3E%3C/svg%3E");
+  background-size:60px 60px;
+}
+.hdr h1 {
+  font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:800;
+  color:#fff; letter-spacing:2px; text-transform:uppercase; position:relative;
+  text-shadow:0 2px 12px rgba(0,0,0,.2);
+}
+.hdr p {
+  font-size:.76rem; color:rgba(255,255,255,.65);
+  letter-spacing:2.5px; text-transform:uppercase; position:relative; margin-top:.3rem;
+}
 
-/* CONTENT */
-.wrap{padding:1.5rem 2rem}
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════ */
+.nav {
+  background:var(--white); padding:0 1.5rem; display:flex; align-items:center; gap:0;
+  border-bottom:2px solid var(--bd); box-shadow:var(--sh-sm); flex-wrap:wrap;
+}
+.ntab {
+  padding:.85rem 1.15rem; color:var(--t3); font-size:.78rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.5px; cursor:pointer; border:none;
+  background:transparent; border-bottom:2.5px solid transparent; margin-bottom:-2px;
+  transition:color .2s,border-color .2s; position:relative; font-family:inherit;
+}
+.ntab:hover { color:var(--violet); background:var(--violet-bg); }
+.ntab.on { color:var(--violet); border-bottom-color:var(--violet); }
+.nadm {
+  margin-left:auto; background:var(--violet); color:#fff; border-radius:6px;
+  padding:.5rem .95rem; border:none; font-size:.76rem; font-weight:700;
+  cursor:pointer; transition:background .2s; font-family:inherit;
+}
+.nadm:hover { background:var(--violet-dk); }
+.nadm.out { background:var(--gold); }
+.nadm.out:hover { background:var(--gold-dk); }
+.nbadge {
+  position:absolute; top:6px; right:4px; background:var(--red); color:#fff;
+  font-size:.56rem; font-weight:800; padding:.1rem .35rem; border-radius:10px;
+  animation:pulseB 2s infinite;
+}
+@keyframes pulseB { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
 
-/* BANNERS */
-.tbanner{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.3);border-left:4px solid var(--s);border-radius:8px;padding:.7rem 1.25rem;margin-bottom:1.25rem;font-size:.83rem;color:var(--sd);font-weight:500;display:flex;align-items:center;gap:.5rem}
+/* ═══════════════════════════════════════════════════
+   CONTENT WRAPPER
+   ═══════════════════════════════════════════════════ */
+.wrap { padding:1.5rem 2rem; }
+@media(max-width:768px) { .wrap { padding:1rem; } }
 
-.drbanner{border-radius:10px;padding:1rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem}
-.drbanner.pr{background:rgba(95,179,165,.08);border:1px solid rgba(95,179,165,.3)}
-.drbanner.ab{background:rgba(199,90,90,.08);border:1px solid rgba(199,90,90,.3)}
-.dricon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
-.dricon.pr{background:rgba(95,179,165,.18)}
-.dricon.ab{background:rgba(199,90,90,.18)}
-.drbanner h3{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700}
-.drbanner h3.pr{color:var(--sd)}
-.drbanner h3.ab{color:var(--danger)}
-.drbanner p{font-size:.78rem;color:var(--t3);margin-top:.15rem}
+/* ═══════════════════════════════════════════════════
+   BANNERS
+   ═══════════════════════════════════════════════════ */
+.team-banner {
+  background:var(--teal-bg); border:1px solid rgba(95,179,165,.25);
+  border-left:4px solid var(--teal); border-radius:8px;
+  padding:.65rem 1.2rem; margin-bottom:1.2rem; font-size:.82rem;
+  color:var(--teal-dk); font-weight:500; display:flex; align-items:center; gap:.5rem;
+}
+.dr-banner {
+  border-radius:10px; padding:1rem 1.4rem; margin-bottom:1.2rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.dr-banner.present { background:var(--teal-bg); border:1px solid rgba(95,179,165,.25); }
+.dr-banner.absent  { background:var(--red-bg);  border:1px solid rgba(199,90,90,.25); }
+.dr-icon {
+  width:44px; height:44px; border-radius:50%; display:flex;
+  align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;
+}
+.dr-icon.present { background:rgba(95,179,165,.18); }
+.dr-icon.absent  { background:rgba(199,90,90,.18); }
+.dr-banner h3 {
+  font-family:'Playfair Display',serif; font-size:.9rem; font-weight:700;
+}
+.dr-banner h3.present { color:var(--teal-dk); }
+.dr-banner h3.absent  { color:var(--red); }
+.dr-banner p { font-size:.77rem; color:var(--t3); margin-top:.15rem; }
 
-.datebanner{background:linear-gradient(135deg,var(--p) 0%,var(--pl) 100%);color:#fff;padding:1rem 1.5rem;border-radius:12px;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;box-shadow:0 4px 20px rgba(123,107,141,.3)}
-.datebanner h2{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;text-transform:capitalize}
-.dstats{display:flex;gap:1.25rem}
-.dstat{text-align:center;background:rgba(255,255,255,.15);border-radius:8px;padding:.4rem .875rem}
-.dstat .dl{font-size:.63rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
-.dstat .dv{font-size:1.25rem;font-weight:800;font-family:'Montserrat',sans-serif}
+.date-banner {
+  background:linear-gradient(135deg,var(--violet) 0%,var(--violet-lt) 100%);
+  color:#fff; padding:1rem 1.5rem; border-radius:12px; margin-bottom:1.2rem;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  box-shadow:0 4px 20px rgba(123,107,141,.25);
+}
+.date-banner h2 {
+  font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; text-transform:capitalize;
+}
+.dstats { display:flex; gap:1.2rem; }
+.dstat {
+  text-align:center; background:rgba(255,255,255,.14); border-radius:8px; padding:.4rem .85rem;
+}
+.dstat .dl { font-size:.6rem; opacity:.75; text-transform:uppercase; letter-spacing:.5px; }
+.dstat .dv { font-size:1.25rem; font-weight:800; font-family:'Playfair Display',serif; }
 
-/* TODAY ABS */
-.todayabs{background:var(--white);border-radius:12px;padding:1.25rem 1.5rem;border:1px solid var(--bd);margin-bottom:1.5rem;box-shadow:var(--sh1)}
-.sectitle{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--p);margin-bottom:.875rem;display:flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.8px}
-.sbadge{background:var(--s);color:#fff;font-size:.6rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
-.ablist{display:flex;flex-wrap:wrap;gap:.6rem}
-.abchip{display:flex;align-items:center;gap:.45rem;padding:.42rem .875rem;border-radius:20px;font-size:.81rem;font-weight:500}
-.abchip.conge{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.3)}
-.abchip.ss{background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.3)}
-.abchip.maladie{background:rgba(199,90,90,.1);border:1px solid rgba(199,90,90,.3)}
-.abchip.formation{background:rgba(123,107,141,.1);border:1px solid rgba(123,107,141,.3)}
-.chav{width:22px;height:22px;border-radius:50%;background:var(--s);display:flex;align-items:center;justify-content:center;font-size:.53rem;font-weight:800;color:#fff}
-.chtag{font-size:.67rem;padding:.1rem .42rem;border-radius:4px;font-weight:700;color:#fff}
-.chtag.conge{background:var(--s)}
-.chtag.ss{background:var(--a)}
-.chtag.maladie{background:var(--danger)}
-.chtag.formation{background:var(--p)}
-.noabs{color:var(--ok);font-weight:600;display:flex;align-items:center;gap:.5rem;font-size:.86rem}
+/* ═══════════════════════════════════════════════════
+   TODAY ABSENCES
+   ═══════════════════════════════════════════════════ */
+.today-abs {
+  background:var(--white); border-radius:12px; padding:1.2rem 1.4rem;
+  border:1px solid var(--bd); margin-bottom:1.4rem; box-shadow:var(--sh-sm);
+}
+.sec-title {
+  font-family:'Playfair Display',serif; font-size:.84rem; font-weight:700;
+  color:var(--violet); margin-bottom:.85rem; display:flex; align-items:center; gap:.5rem;
+  text-transform:uppercase; letter-spacing:.7px;
+}
+.sbadge {
+  background:var(--teal); color:#fff; font-size:.58rem; padding:.12rem .45rem;
+  border-radius:20px; font-weight:700; font-family:'DM Sans',sans-serif;
+}
+.abs-list { display:flex; flex-wrap:wrap; gap:.55rem; }
+.abs-chip {
+  display:flex; align-items:center; gap:.4rem; padding:.38rem .8rem;
+  border-radius:20px; font-size:.79rem; font-weight:500;
+}
+.abs-chip.conge    { background:rgba(95,179,165,.1);  border:1px solid rgba(95,179,165,.25); }
+.abs-chip.ss       { background:var(--gold-bg);       border:1px solid rgba(212,168,83,.25); }
+.abs-chip.maladie  { background:var(--red-bg);        border:1px solid rgba(199,90,90,.25); }
+.abs-chip.formation{ background:var(--violet-bg);     border:1px solid rgba(123,107,141,.25); }
+.chip-av {
+  width:22px; height:22px; border-radius:50%; background:var(--teal);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.52rem; font-weight:800; color:#fff;
+}
+.chip-tag {
+  font-size:.64rem; padding:.08rem .38rem; border-radius:4px; font-weight:700; color:#fff;
+}
+.chip-tag.conge    { background:var(--teal); }
+.chip-tag.ss       { background:var(--gold); }
+.chip-tag.maladie  { background:var(--red); }
+.chip-tag.formation{ background:var(--violet); }
+.no-abs { color:var(--teal); font-weight:600; display:flex; align-items:center; gap:.5rem; font-size:.85rem; }
 
-/* LAYOUT */
-.mlayout{display:grid;grid-template-columns:1fr 275px;gap:1.5rem}
-.mlayout.team{grid-template-columns:1fr}
-@media(max-width:1100px){.mlayout{grid-template-columns:1fr}}
+/* ═══════════════════════════════════════════════════
+   LAYOUT — main + sidebar
+   ═══════════════════════════════════════════════════ */
+.main-layout { display:grid; grid-template-columns:1fr 265px; gap:1.5rem; }
+.main-layout.team-only { grid-template-columns:1fr; }
+@media(max-width:1100px) { .main-layout { grid-template-columns:1fr; } }
 
-/* MONTH TABS */
-.mtabs{display:flex;gap:.3rem;margin-bottom:1rem;flex-wrap:wrap}
-.mtab{padding:.35rem .7rem;background:var(--white);border:1px solid var(--bd);border-radius:6px;color:var(--t3);cursor:pointer;font-size:.73rem;font-weight:600;transition:all .15s}
-.mtab:hover{border-color:var(--s);color:var(--s);background:rgba(95,179,165,.04)}
-.mtab.on{background:var(--s);border-color:var(--s);color:#fff;box-shadow:0 2px 8px rgba(95,179,165,.3)}
+/* ═══════════════════════════════════════════════════
+   MONTH TABS
+   ═══════════════════════════════════════════════════ */
+.month-tabs { display:flex; gap:.25rem; margin-bottom:1rem; flex-wrap:wrap; }
+.mtab {
+  padding:.32rem .65rem; background:var(--white); border:1px solid var(--bd);
+  border-radius:6px; color:var(--t3); cursor:pointer; font-size:.72rem; font-weight:600;
+  transition:all .15s; font-family:inherit;
+}
+.mtab:hover { border-color:var(--teal); color:var(--teal); }
+.mtab.on {
+  background:var(--teal); border-color:var(--teal); color:#fff;
+  box-shadow:0 2px 8px rgba(95,179,165,.3);
+}
 
-/* CALENDAR */
-.calwrap{background:var(--white);border-radius:12px;border:1px solid var(--bd);overflow-x:auto;box-shadow:var(--sh1)}
-.calhdr{display:grid;grid-template-columns:158px repeat(31,minmax(27px,1fr));background:linear-gradient(135deg,var(--pd) 0%,var(--p) 100%);color:#fff;font-size:.6rem;font-weight:700;min-width:1050px;position:sticky;top:0;z-index:10}
-.calhdr>div{padding:.5rem .08rem;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
-.calhdr>div:first-child{text-align:left;padding-left:.875rem;border-right:1px solid rgba(255,255,255,.15);font-size:.72rem}
-.dhd{display:flex;flex-direction:column;align-items:center;gap:1px}
-.dnum{font-size:.68rem;font-weight:800}
-.dltr{font-size:.56rem;opacity:.65;font-weight:500}
-.wkhd{background:rgba(0,0,0,.18)}
-.thd{background:rgba(212,168,83,.45)!important}
+/* ═══════════════════════════════════════════════════
+   CALENDAR
+   ═══════════════════════════════════════════════════ */
+.cal-wrap {
+  background:var(--white); border-radius:12px; border:1px solid var(--bd);
+  overflow-x:auto; box-shadow:var(--sh-sm);
+}
+.cal-hdr {
+  display:grid; grid-template-columns:155px repeat(31,minmax(27px,1fr));
+  background:linear-gradient(135deg,var(--violet-dk),var(--violet));
+  color:#fff; font-size:.58rem; font-weight:700; min-width:1060px;
+  position:sticky; top:0; z-index:10;
+}
+.cal-hdr > div {
+  padding:.48rem .06rem; text-align:center;
+  border-right:1px solid rgba(255,255,255,.07);
+}
+.cal-hdr > div:first-child {
+  text-align:left; padding-left:.85rem; border-right:1px solid rgba(255,255,255,.13);
+  font-size:.7rem; display:flex; align-items:center;
+}
+.d-hd { display:flex; flex-direction:column; align-items:center; gap:1px; }
+.d-num { font-size:.66rem; font-weight:800; }
+.d-ltr { font-size:.54rem; opacity:.6; font-weight:400; }
+.wk-hd { background:rgba(0,0,0,.16); }
+.td-hd { background:rgba(212,168,83,.45) !important; }
 
-.calrow{display:grid;grid-template-columns:158px repeat(31,minmax(27px,1fr));border-bottom:1px solid var(--bdl);min-width:1050px;transition:background .15s}
-.calrow:hover{background:rgba(123,107,141,.025)}
-.calrow:last-child{border-bottom:none}
-.calemp{padding:.38rem .5rem;display:flex;align-items:center;gap:.4rem;border-right:1px solid var(--bd);font-size:.7rem;font-weight:600;color:var(--t1)}
-.ename{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mav{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--sl));display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:800;color:#fff;flex-shrink:0}
-.mav.dr{background:linear-gradient(135deg,var(--p),var(--pl))}
+.cal-row {
+  display:grid; grid-template-columns:155px repeat(31,minmax(27px,1fr));
+  border-bottom:1px solid var(--bd-lt); min-width:1060px; transition:background .12s;
+}
+.cal-row:hover { background:rgba(123,107,141,.02); }
+.cal-row:last-child { border-bottom:none; }
+.cal-emp {
+  padding:.35rem .5rem; display:flex; align-items:center; gap:.4rem;
+  border-right:1px solid var(--bd); font-size:.69rem; font-weight:600; color:var(--t1);
+}
+.emp-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mini-av {
+  width:22px; height:22px; border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--teal-lt));
+  display:flex; align-items:center; justify-content:center;
+  font-size:.5rem; font-weight:800; color:#fff; flex-shrink:0;
+}
+.mini-av.dr { background:linear-gradient(135deg,var(--violet),var(--violet-lt)); }
 
-.ccell{padding:.22rem .08rem;text-align:center;border-right:1px solid var(--bdl);display:flex;align-items:center;justify-content:center;min-height:31px}
-.ccell.we{background:rgba(0,0,0,.022)}
-.ccell.td{background:rgba(212,168,83,.06);border-right:1px solid rgba(212,168,83,.22)}
-.ccell.off{background:rgba(0,0,0,.014)}
+.cal-cell {
+  padding:.2rem .06rem; text-align:center; border-right:1px solid var(--bd-lt);
+  display:flex; align-items:center; justify-content:center; min-height:30px;
+}
+.cal-cell.we { background:rgba(0,0,0,.02); }
+.cal-cell.td { background:rgba(212,168,83,.06); border-right-color:rgba(212,168,83,.2); }
 
-/* ABSENCE BADGES */
-.abg{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:5px;font-size:.58rem;font-weight:800;color:#fff}
-.abg.conge{background:linear-gradient(135deg,var(--s),var(--sd));box-shadow:0 1px 4px rgba(95,179,165,.5)}
-.abg.ss{background:linear-gradient(135deg,var(--a),var(--ad));box-shadow:0 1px 4px rgba(212,168,83,.5)}
-.abg.maladie{background:linear-gradient(135deg,var(--danger),#a84a4a);box-shadow:0 1px 4px rgba(199,90,90,.5)}
-.abg.formation{background:linear-gradient(135deg,var(--p),var(--pd));box-shadow:0 1px 4px rgba(123,107,141,.5)}
-.abg.pend{background:repeating-linear-gradient(45deg,rgba(212,168,83,.25),rgba(212,168,83,.25) 2px,transparent 2px,transparent 5px);border:1.5px dashed var(--warn);color:var(--warn);box-shadow:none;font-weight:900}
+.abg {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:21px; height:21px; border-radius:5px; font-size:.56rem; font-weight:800; color:#fff;
+}
+.abg.conge    { background:linear-gradient(135deg,var(--teal),var(--teal-dk));    box-shadow:0 1px 4px rgba(95,179,165,.45); }
+.abg.ss       { background:linear-gradient(135deg,var(--gold),var(--gold-dk));    box-shadow:0 1px 4px rgba(212,168,83,.45); }
+.abg.maladie  { background:linear-gradient(135deg,var(--red),var(--red-dk));      box-shadow:0 1px 4px rgba(199,90,90,.45); }
+.abg.formation{ background:linear-gradient(135deg,var(--violet),var(--violet-dk));box-shadow:0 1px 4px rgba(123,107,141,.45); }
+.abg.pending {
+  background:repeating-linear-gradient(45deg,rgba(212,168,83,.2),rgba(212,168,83,.2) 2px,transparent 2px,transparent 5px);
+  border:1.5px dashed var(--gold); color:var(--gold-dk); box-shadow:none; font-weight:900;
+}
 
-/* SOLDES */
-.solwrap{background:var(--white);border-radius:12px;border:1px solid var(--bd);overflow:hidden;margin-top:1.5rem;box-shadow:var(--sh1)}
-.solhdr{display:grid;grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;padding:.7rem 1.25rem;background:linear-gradient(135deg,var(--s),var(--sd));color:#fff;font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.4px}
-.solrow{display:grid;grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;padding:.7rem 1.25rem;border-bottom:1px solid var(--bdl);align-items:center;transition:background .15s}
-.solrow:hover{background:rgba(95,179,165,.04)}
-.solrow:last-child{border-bottom:none}
-.empinfo{font-weight:600;display:flex;align-items:center;gap:.55rem;color:var(--t1);font-size:.83rem}
-.empav{width:29px;height:29px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--sl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.67rem;color:#fff;flex-shrink:0}
-.cval{font-family:'Montserrat',sans-serif;font-size:.86rem;font-weight:700;color:var(--t2)}
-.schip{display:inline-flex;align-items:center;gap:.28rem;padding:.22rem .55rem;border-radius:20px;font-size:.76rem;font-weight:700;font-family:'Montserrat',sans-serif}
-.schip.ok{background:rgba(95,179,165,.12);color:var(--sd);border:1px solid rgba(95,179,165,.25)}
-.schip.wa{background:rgba(212,168,83,.12);color:#9a7a2a;border:1px solid rgba(212,168,83,.25)}
-.schip.ba{background:rgba(199,90,90,.12);color:var(--danger);border:1px solid rgba(199,90,90,.25)}
-.solupd{font-size:.7rem;color:var(--t4);margin-top:.4rem;text-align:right;padding-right:1.25rem;padding-bottom:.4rem}
+/* ═══════════════════════════════════════════════════
+   SOLDES TABLE
+   ═══════════════════════════════════════════════════ */
+.sol-wrap {
+  background:var(--white); border-radius:12px; border:1px solid var(--bd);
+  overflow:hidden; margin-top:1.5rem; box-shadow:var(--sh-sm);
+}
+.sol-hdr {
+  display:grid; grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;
+  padding:.65rem 1.2rem; background:linear-gradient(135deg,var(--teal),var(--teal-dk));
+  color:#fff; font-weight:700; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px;
+}
+.sol-row {
+  display:grid; grid-template-columns:2.3fr 1fr 1fr 1fr 1.3fr;
+  padding:.65rem 1.2rem; border-bottom:1px solid var(--bd-lt); align-items:center;
+  transition:background .12s;
+}
+.sol-row:hover { background:var(--teal-bg); }
+.sol-row:last-child { border-bottom:none; }
+.emp-info {
+  font-weight:600; display:flex; align-items:center; gap:.5rem;
+  color:var(--t1); font-size:.82rem;
+}
+.emp-av {
+  width:28px; height:28px; border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--teal-lt));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.64rem; color:#fff; flex-shrink:0;
+}
+.c-val {
+  font-family:'Playfair Display',serif; font-size:.85rem; font-weight:700; color:var(--t2);
+}
+.sol-chip {
+  display:inline-flex; align-items:center; gap:.25rem; padding:.2rem .5rem;
+  border-radius:20px; font-size:.74rem; font-weight:700; font-family:'Playfair Display',serif;
+}
+.sol-chip.ok { background:rgba(95,179,165,.12); color:var(--teal-dk); border:1px solid rgba(95,179,165,.22); }
+.sol-chip.wa { background:var(--gold-bg);       color:#9a7a2a;        border:1px solid rgba(212,168,83,.22); }
+.sol-chip.ba { background:var(--red-bg);        color:var(--red);     border:1px solid rgba(199,90,90,.22); }
+.sol-upd { font-size:.68rem; color:var(--t4); margin-top:.35rem; text-align:right; padding-right:1.2rem; padding-bottom:.4rem; }
 
-/* SIDEBAR */
-.sidebar{display:flex;flex-direction:column;gap:1rem}
-.scard{background:var(--white);border-radius:10px;padding:1.1rem 1.2rem;border:1px solid var(--bd);box-shadow:var(--sh1)}
-.scard h3{font-family:'Montserrat',sans-serif;font-size:.74rem;font-weight:700;color:var(--p);margin-bottom:.7rem;text-transform:uppercase;letter-spacing:.4px}
-.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
-.litem{display:flex;align-items:center;gap:.45rem;font-size:.77rem;color:var(--t3)}
-.ldot{width:20px;height:13px;border-radius:4px;flex-shrink:0}
-.ldot.conge{background:linear-gradient(135deg,var(--s),var(--sd))}
-.ldot.ss{background:linear-gradient(135deg,var(--a),var(--ad))}
-.ldot.maladie{background:linear-gradient(135deg,var(--danger),#a84a4a)}
-.ldot.formation{background:linear-gradient(135deg,var(--p),var(--pd))}
-.lpend{margin-top:.55rem;padding:.38rem .6rem;background:repeating-linear-gradient(45deg,rgba(212,168,83,.12),rgba(212,168,83,.12) 2px,transparent 2px,transparent 5px);border:1px dashed var(--warn);border-radius:5px;font-size:.7rem;color:#9a7a2a;text-align:center;font-weight:600}
-.rlist{list-style:none}
-.rlist li{padding:.45rem 0;border-bottom:1px solid var(--bdl);font-size:.77rem;color:var(--t3);display:flex;align-items:flex-start;gap:.45rem;line-height:1.4}
-.rlist li:last-child{border-bottom:none}
-.rico{width:17px;height:17px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.58rem;margin-top:1px}
-.rico.inf{background:rgba(95,179,165,.2);color:var(--sd)}
-.rico.war{background:rgba(212,168,83,.2);color:var(--a)}
-.drpill{padding:.48rem .75rem;border-radius:6px;display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:600;margin-top:.25rem}
-.drpill.pr{background:rgba(95,179,165,.1);border:1px solid rgba(95,179,165,.28);color:var(--sd)}
-.drpill.ab{background:rgba(199,90,90,.1);border:1px solid rgba(199,90,90,.28);color:var(--danger)}
-.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.sdot.pr{background:var(--ok);box-shadow:0 0 0 3px rgba(95,179,165,.22)}
-.sdot.ab{background:var(--danger);box-shadow:0 0 0 3px rgba(199,90,90,.22)}
+/* ═══════════════════════════════════════════════════
+   SIDEBAR CARDS
+   ═══════════════════════════════════════════════════ */
+.sidebar { display:flex; flex-direction:column; gap:.9rem; }
+.scard {
+  background:var(--white); border-radius:10px; padding:1rem 1.1rem;
+  border:1px solid var(--bd); box-shadow:var(--sh-sm);
+}
+.scard h3 {
+  font-family:'Playfair Display',serif; font-size:.72rem; font-weight:700;
+  color:var(--violet); margin-bottom:.65rem; text-transform:uppercase; letter-spacing:.4px;
+}
+.legend-grid { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; }
+.legend-item { display:flex; align-items:center; gap:.4rem; font-size:.75rem; color:var(--t3); }
+.legend-dot { width:20px; height:13px; border-radius:4px; flex-shrink:0; }
+.legend-dot.conge    { background:linear-gradient(135deg,var(--teal),var(--teal-dk)); }
+.legend-dot.ss       { background:linear-gradient(135deg,var(--gold),var(--gold-dk)); }
+.legend-dot.maladie  { background:linear-gradient(135deg,var(--red),var(--red-dk)); }
+.legend-dot.formation{ background:linear-gradient(135deg,var(--violet),var(--violet-dk)); }
+.legend-pending {
+  margin-top:.5rem; padding:.35rem .55rem;
+  background:repeating-linear-gradient(45deg,rgba(212,168,83,.1),rgba(212,168,83,.1) 2px,transparent 2px,transparent 5px);
+  border:1px dashed var(--gold); border-radius:5px; font-size:.68rem; color:#9a7a2a;
+  text-align:center; font-weight:600;
+}
+.rules-list { list-style:none; }
+.rules-list li {
+  padding:.4rem 0; border-bottom:1px solid var(--bd-lt); font-size:.75rem;
+  color:var(--t3); display:flex; align-items:flex-start; gap:.4rem; line-height:1.4;
+}
+.rules-list li:last-child { border-bottom:none; }
+.r-icon {
+  width:17px; height:17px; border-radius:4px; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0; font-size:.56rem; margin-top:1px;
+}
+.r-icon.info { background:rgba(95,179,165,.18); color:var(--teal-dk); }
+.r-icon.warn { background:rgba(212,168,83,.18); color:var(--gold); }
 
-/* ADMIN */
-.adminsec{background:var(--white);border-radius:12px;padding:1.5rem;border:1px solid var(--bd);margin-bottom:1.5rem;box-shadow:var(--sh1)}
-.adminsec h2{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;color:var(--p);margin-bottom:1.25rem}
-.agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
-.acard{background:var(--bg);border-radius:10px;padding:1.2rem;border:1px solid var(--bd);display:flex;flex-direction:column;gap:.5rem}
-.acard h4{font-size:.86rem;font-weight:700;color:var(--t1)}
-.acard p{font-size:.77rem;color:var(--t3);flex:1}
-.ibtn{width:100%;padding:.72rem;border:none;border-radius:8px;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,var(--s),var(--sd))}
-.ibtn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(95,179,165,.35)}
-.ibtn.pri{background:linear-gradient(135deg,var(--p),var(--pd))}
-.ibtn.pri:hover{box-shadow:0 6px 20px rgba(123,107,141,.35)}
-.ibtn.acc{background:linear-gradient(135deg,var(--a),var(--ad))}
-.ibtn.acc:hover{box-shadow:0 6px 20px rgba(212,168,83,.35)}
-.ibtn.dan{background:linear-gradient(135deg,var(--danger),#a84a4a)}
-.ibtn.dan:hover{box-shadow:0 6px 20px rgba(199,90,90,.35)}
-.fi{display:none}
-.imsg{margin-top:.45rem;padding:.45rem .7rem;border-radius:6px;font-size:.74rem;font-weight:600}
-.imsg.ok{background:rgba(95,179,165,.1);color:var(--sd);border:1px solid rgba(95,179,165,.22)}
-.imsg.er{background:rgba(199,90,90,.1);color:var(--danger);border:1px solid rgba(199,90,90,.22)}
+.dr-pill {
+  padding:.45rem .7rem; border-radius:6px; display:flex; align-items:center;
+  gap:.5rem; font-size:.78rem; font-weight:600; margin-top:.2rem;
+}
+.dr-pill.present { background:var(--teal-bg); border:1px solid rgba(95,179,165,.22); color:var(--teal-dk); }
+.dr-pill.absent  { background:var(--red-bg);  border:1px solid rgba(199,90,90,.22);  color:var(--red); }
+.status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.status-dot.present { background:var(--teal); box-shadow:0 0 0 3px rgba(95,179,165,.2); }
+.status-dot.absent  { background:var(--red);  box-shadow:0 0 0 3px rgba(199,90,90,.2); }
 
-/* REQUESTS */
-.reqsec{background:var(--white);border-radius:12px;border:1px solid var(--bd);padding:1.5rem;box-shadow:var(--sh1)}
-.rfilt{display:flex;gap:.38rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.rfbtn{padding:.42rem .875rem;border-radius:20px;border:1px solid var(--bd);background:var(--white);cursor:pointer;font-size:.77rem;font-weight:600;transition:all .2s;color:var(--t3);font-family:'DM Sans',sans-serif}
-.rfbtn:hover{border-color:var(--p);color:var(--p)}
-.rfbtn.on{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 2px 8px rgba(123,107,141,.3)}
-.rfbtn .cnt{background:rgba(0,0,0,.1);padding:.07rem .33rem;border-radius:10px;margin-left:.28rem;font-size:.68rem}
-.rfbtn.on .cnt{background:rgba(255,255,255,.25)}
-.rcard{background:var(--bg);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:.875rem;border:1px solid var(--bd);border-left:4px solid var(--warn);transition:box-shadow .15s}
-.rcard:hover{box-shadow:var(--sh2)}
-.rcard.validated{border-left-color:var(--ok);background:rgba(95,179,165,.04)}
-.rcard.refused{border-left-color:var(--danger);background:rgba(199,90,90,.04)}
-.rchdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.7rem;gap:1rem}
-.rcemp{font-weight:700;color:var(--t1);display:flex;align-items:center;gap:.45rem;font-size:.88rem}
-.rcst{font-size:.7rem;padding:.2rem .55rem;border-radius:12px;font-weight:700;white-space:nowrap}
-.rcst.pending{background:rgba(212,168,83,.15);color:#9a7a2a;border:1px solid rgba(212,168,83,.28)}
-.rcst.validated{background:rgba(95,179,165,.15);color:var(--sd);border:1px solid rgba(95,179,165,.28)}
-.rcst.refused{background:rgba(199,90,90,.15);color:var(--danger);border:1px solid rgba(199,90,90,.28)}
-.rcdet{font-size:.8rem;color:var(--t3);margin-bottom:.7rem;display:flex;flex-wrap:wrap;gap:.35rem 1.4rem}
-.rccmt{background:var(--white);padding:.6rem .85rem;border-radius:6px;font-size:.8rem;color:var(--t2);margin-bottom:.7rem;border:1px solid var(--bd)}
-.rccmt .lb{font-size:.68rem;font-weight:700;color:var(--t3);display:block;margin-bottom:.18rem;text-transform:uppercase;letter-spacing:.4px}
-.rcact{display:flex;gap:.45rem;margin-top:.5rem}
-.rcact button{padding:.42rem .85rem;border-radius:6px;border:none;font-weight:700;font-size:.77rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
-.rcact .bv{background:var(--ok);color:#fff}
-.rcact .bv:hover{background:var(--sd)}
-.rcact .br{background:var(--danger);color:#fff}
-.rcact .br:hover{background:#a84a4a}
-.rcresp{margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--bd);font-size:.8rem}
-.rcresp .lb{font-size:.68rem;font-weight:700;color:var(--t3);display:block;margin-bottom:.22rem;text-transform:uppercase}
-.noreq{text-align:center;color:var(--t4);padding:3rem 2rem;font-size:.88rem}
+/* ═══════════════════════════════════════════════════
+   ADMIN SECTION
+   ═══════════════════════════════════════════════════ */
+.admin-sec {
+  background:var(--white); border-radius:12px; padding:1.5rem; border:1px solid var(--bd);
+  margin-bottom:1.4rem; box-shadow:var(--sh-sm);
+}
+.admin-sec h2 {
+  font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700;
+  color:var(--violet); margin-bottom:1.2rem;
+}
+.admin-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1rem; }
+.acard {
+  background:var(--bg); border-radius:10px; padding:1.1rem;
+  border:1px solid var(--bd); display:flex; flex-direction:column; gap:.45rem;
+}
+.acard h4 { font-size:.84rem; font-weight:700; color:var(--t1); }
+.acard p  { font-size:.75rem; color:var(--t3); flex:1; line-height:1.45; }
+.action-btn {
+  width:100%; padding:.68rem; border:none; border-radius:8px; color:#fff;
+  font-weight:700; font-size:.78rem; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; gap:.4rem; transition:all .2s; font-family:inherit;
+  background:linear-gradient(135deg,var(--teal),var(--teal-dk));
+}
+.action-btn:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(95,179,165,.3); }
+.action-btn.violet { background:linear-gradient(135deg,var(--violet),var(--violet-dk)); }
+.action-btn.violet:hover { box-shadow:0 4px 16px rgba(123,107,141,.3); }
+.action-btn.gold { background:linear-gradient(135deg,var(--gold),var(--gold-dk)); }
+.action-btn.gold:hover { box-shadow:0 4px 16px rgba(212,168,83,.3); }
+.action-btn.danger { background:linear-gradient(135deg,var(--red),var(--red-dk)); }
+.action-btn.danger:hover { box-shadow:0 4px 16px rgba(199,90,90,.3); }
+.file-input { display:none; }
+.import-msg {
+  margin-top:.4rem; padding:.4rem .65rem; border-radius:6px; font-size:.72rem; font-weight:600;
+}
+.import-msg.ok { background:rgba(95,179,165,.1); color:var(--teal-dk); border:1px solid rgba(95,179,165,.2); }
+.import-msg.er { background:var(--red-bg); color:var(--red); border:1px solid rgba(199,90,90,.2); }
 
-/* MODAL */
-.movl{position:fixed;inset:0;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(3px)}
-.modal{background:var(--white);border-radius:16px;padding:2rem;width:90%;max-width:470px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22)}
-.modal h2{font-family:'Montserrat',sans-serif;font-size:1.1rem;color:var(--p);margin-bottom:.35rem;font-weight:700}
-.msub{color:var(--t3);font-size:.83rem;margin-bottom:1.4rem}
-.fg{margin-bottom:.95rem}
-.fg label{display:block;font-size:.8rem;font-weight:700;color:var(--t2);margin-bottom:.32rem}
-.modal input,.modal select,.modal textarea{width:100%;padding:.72rem .85rem;border:1.5px solid var(--bd);border-radius:8px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:var(--t1);transition:border-color .15s;outline:none;background:var(--white)}
-.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(123,107,141,.1)}
-.modal textarea{resize:vertical;min-height:76px}
-.mbtns{display:flex;gap:.7rem;margin-top:.5rem}
-.mbtns button{flex:1;padding:.78rem;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.86rem;transition:all .15s}
-.bcnc{background:var(--bg);border:1.5px solid var(--bd);color:var(--t3)}
-.bcnc:hover{border-color:var(--t3)}
-.bsub{background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff}
-.bsub:hover{box-shadow:0 4px 16px rgba(123,107,141,.4)}
-.bok{background:linear-gradient(135deg,var(--ok),var(--sd));border:none;color:#fff}
-.bdng{background:linear-gradient(135deg,var(--danger),#a84a4a);border:none;color:#fff}
-.errmsg{color:var(--danger);font-size:.8rem;margin-bottom:.9rem;background:rgba(199,90,90,.07);padding:.45rem .72rem;border-radius:6px;border:1px solid rgba(199,90,90,.2)}
+/* ═══════════════════════════════════════════════════
+   REQUESTS SECTION
+   ═══════════════════════════════════════════════════ */
+.req-sec {
+  background:var(--white); border-radius:12px; border:1px solid var(--bd);
+  padding:1.5rem; box-shadow:var(--sh-sm);
+}
+.req-filters { display:flex; gap:.35rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+.rf-btn {
+  padding:.4rem .8rem; border-radius:20px; border:1px solid var(--bd);
+  background:var(--white); cursor:pointer; font-size:.75rem; font-weight:600;
+  transition:all .2s; color:var(--t3); font-family:inherit;
+}
+.rf-btn:hover { border-color:var(--violet); color:var(--violet); }
+.rf-btn.on { background:var(--violet); color:#fff; border-color:var(--violet); box-shadow:0 2px 8px rgba(123,107,141,.25); }
+.rf-btn .cnt {
+  background:rgba(0,0,0,.08); padding:.05rem .3rem; border-radius:10px;
+  margin-left:.25rem; font-size:.66rem;
+}
+.rf-btn.on .cnt { background:rgba(255,255,255,.22); }
 
-/* FOOTER */
-.footer{text-align:center;padding:1.2rem;color:var(--t4);font-size:.73rem;border-top:1px solid var(--bd);margin-top:1.5rem}
-    </style>
+.req-card {
+  background:var(--bg); border-radius:10px; padding:1rem 1.15rem; margin-bottom:.8rem;
+  border:1px solid var(--bd); border-left:4px solid var(--gold); transition:box-shadow .15s;
+}
+.req-card:hover { box-shadow:var(--sh-md); }
+.req-card.validated { border-left-color:var(--teal); background:var(--teal-bg); }
+.req-card.refused   { border-left-color:var(--red);  background:var(--red-bg); }
+.rc-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.65rem; gap:1rem; }
+.rc-emp { font-weight:700; color:var(--t1); display:flex; align-items:center; gap:.4rem; font-size:.86rem; }
+.rc-status {
+  font-size:.68rem; padding:.18rem .5rem; border-radius:12px; font-weight:700; white-space:nowrap;
+}
+.rc-status.pending   { background:var(--gold-bg); color:#9a7a2a; border:1px solid rgba(212,168,83,.25); }
+.rc-status.validated { background:rgba(95,179,165,.12); color:var(--teal-dk); border:1px solid rgba(95,179,165,.22); }
+.rc-status.refused   { background:var(--red-bg); color:var(--red); border:1px solid rgba(199,90,90,.22); }
+.rc-details { font-size:.78rem; color:var(--t3); margin-bottom:.65rem; display:flex; flex-wrap:wrap; gap:.3rem 1.3rem; }
+.rc-comment {
+  background:var(--white); padding:.55rem .8rem; border-radius:6px; font-size:.78rem;
+  color:var(--t2); margin-bottom:.65rem; border:1px solid var(--bd);
+}
+.rc-comment .lbl { font-size:.66rem; font-weight:700; color:var(--t3); display:block; margin-bottom:.15rem; text-transform:uppercase; letter-spacing:.4px; }
+.rc-actions { display:flex; gap:.4rem; margin-top:.45rem; }
+.rc-actions button {
+  padding:.4rem .8rem; border-radius:6px; border:none; font-weight:700;
+  font-size:.75rem; cursor:pointer; transition:all .15s; font-family:inherit;
+}
+.btn-validate { background:var(--teal); color:#fff; }
+.btn-validate:hover { background:var(--teal-dk); }
+.btn-refuse { background:var(--red); color:#fff; }
+.btn-refuse:hover { background:var(--red-dk); }
+.rc-response { margin-top:.65rem; padding-top:.65rem; border-top:1px solid var(--bd); font-size:.78rem; }
+.rc-response .lbl { font-size:.66rem; font-weight:700; color:var(--t3); display:block; margin-bottom:.18rem; text-transform:uppercase; }
+.no-req { text-align:center; color:var(--t4); padding:3rem 2rem; font-size:.86rem; }
+
+/* ═══════════════════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════════════════ */
+.overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex;
+  align-items:center; justify-content:center; z-index:1000; backdrop-filter:blur(3px);
+}
+.modal {
+  background:var(--white); border-radius:16px; padding:1.8rem;
+  width:90%; max-width:460px; max-height:90vh; overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+.modal h2 {
+  font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--violet);
+  margin-bottom:.3rem; font-weight:700;
+}
+.modal-sub { color:var(--t3); font-size:.82rem; margin-bottom:1.3rem; }
+.fg { margin-bottom:.9rem; }
+.fg label { display:block; font-size:.78rem; font-weight:700; color:var(--t2); margin-bottom:.3rem; }
+.modal input, .modal select, .modal textarea {
+  width:100%; padding:.68rem .8rem; border:1.5px solid var(--bd); border-radius:8px;
+  font-size:.86rem; font-family:inherit; color:var(--t1); transition:border-color .15s;
+  outline:none; background:var(--white);
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus {
+  border-color:var(--violet); box-shadow:0 0 0 3px rgba(123,107,141,.1);
+}
+.modal textarea { resize:vertical; min-height:72px; }
+.modal-btns { display:flex; gap:.65rem; margin-top:.5rem; }
+.modal-btns button {
+  flex:1; padding:.75rem; border-radius:8px; font-weight:700; cursor:pointer;
+  font-family:inherit; font-size:.84rem; transition:all .15s;
+}
+.btn-cancel { background:var(--bg); border:1.5px solid var(--bd); color:var(--t3); }
+.btn-cancel:hover { border-color:var(--t3); }
+.btn-submit { background:linear-gradient(135deg,var(--violet),var(--violet-dk)); border:none; color:#fff; }
+.btn-submit:hover { box-shadow:0 4px 16px rgba(123,107,141,.35); }
+.err-msg {
+  color:var(--red); font-size:.78rem; margin-bottom:.85rem;
+  background:var(--red-bg); padding:.4rem .7rem; border-radius:6px; border:1px solid rgba(199,90,90,.18);
+}
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:1.5rem; right:1.5rem; color:#fff; padding:.8rem 1.3rem;
+  border-radius:10px; font-size:.83rem; font-weight:600; z-index:9999;
+  box-shadow:var(--sh-lg); animation:slideIn .3s ease; max-width:360px; line-height:1.4;
+}
+.toast.ok  { background:linear-gradient(135deg,var(--teal-dk),var(--teal)); }
+.toast.err { background:linear-gradient(135deg,var(--red-dk),var(--red)); }
+@keyframes slideIn { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════ */
+.footer {
+  text-align:center; padding:1.2rem; color:var(--t4); font-size:.71rem;
+  border-top:1px solid var(--bd); margin-top:1.5rem;
+}
+
+.struct-info {
+  margin-top:1.5rem; background:var(--teal-bg); border:1px solid rgba(95,179,165,.2);
+  border-radius:10px; padding:.95rem 1.2rem; font-size:.76rem; color:var(--t3);
+}
+.struct-info strong { color:var(--teal-dk); }
+.struct-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:.7rem; margin-top:.6rem;
+}
+</style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
+const {useState,useEffect,useCallback,useMemo} = React;
 
+/* ══════════════════════════════════════════════════════
+   CONSTANTES
+   ══════════════════════════════════════════════════════ */
 const ADMIN_PW = "vergez2026";
-const YEAR = 2026;
-const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-const MSHORT = ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
-const DLTR   = ["D","L","M","M","J","V","S"];
+const YEAR     = 2026;
+const MONTHS   = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const MO_SHORT = ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+const DAY_LTR  = ["D","L","M","M","J","V","S"];
 
-const ABS = {
-  C:  { label:"Congé payé",  cls:"conge",    s:"C" },
-  SS: { label:"Sans solde",  cls:"ss",       s:"SS" },
-  M:  { label:"Maladie",     cls:"maladie",  s:"M" },
-  F:  { label:"Formation",   cls:"formation",s:"F" },
+const ABS_TYPES = {
+  C:  {label:"Congé payé",  cls:"conge",     code:"C"},
+  SS: {label:"Sans solde",  cls:"ss",        code:"SS"},
+  M:  {label:"Maladie",     cls:"maladie",   code:"M"},
+  F:  {label:"Formation",   cls:"formation", code:"F"},
 };
 
-const INIT_EMP = [
-  { id:1,  name:"Dr François VERGEZ",  isDoc:true,  cpN1:0,    cpN:35,    rcc:0 },
-  { id:2,  name:"Mathilde TSANG-TUNG", isDoc:false, cpN1:0,    cpN:0,     rcc:0 },
-  { id:3,  name:"Chloé TANGUY",        isDoc:false, cpN1:0,    cpN:0,     rcc:0 },
-  { id:4,  name:"Erika CAPDEBOSCQ",    isDoc:false, cpN1:0,    cpN:8,     rcc:3.51 },
-  { id:5,  name:"Virginie BLARD",      isDoc:false, cpN1:8.5,  cpN:36,    rcc:0 },
-  { id:6,  name:"Laurence GIGAN",      isDoc:false, cpN1:13.5, cpN:25.5,  rcc:0.34 },
-  { id:7,  name:"Cécile GRONDIN",      isDoc:false, cpN1:0,    cpN:3.5,   rcc:0 },
-  { id:8,  name:"Fabiola TECHER",      isDoc:false, cpN1:0,    cpN:17.5,  rcc:0 },
-  { id:9,  name:"Sylvie De la Hogue",  isDoc:false, cpN1:0,    cpN:12.18, rcc:0 },
-  { id:10, name:"Elodie Ludovic",      isDoc:false, cpN1:0,    cpN:15.5,  rcc:0 },
-  { id:11, name:"Stéphanie MARTIN",    isDoc:false, cpN1:0,    cpN:9.5,   rcc:0 },
+const INIT_EMPLOYEES = [
+  {id:1,  name:"Dr François VERGEZ",  isDoc:true,  cpN1:0,    cpN:35,    rcc:0},
+  {id:2,  name:"Mathilde TSANG-TUNG", isDoc:false, cpN1:0,    cpN:0,     rcc:0},
+  {id:3,  name:"Chloé TANGUY",        isDoc:false, cpN1:0,    cpN:0,     rcc:0},
+  {id:4,  name:"Erika CAPDEBOSCQ",    isDoc:false, cpN1:0,    cpN:8,     rcc:3.51},
+  {id:5,  name:"Virginie BLARD",      isDoc:false, cpN1:8.5,  cpN:36,    rcc:0},
+  {id:6,  name:"Laurence GIGAN",      isDoc:false, cpN1:13.5, cpN:25.5,  rcc:0.34},
+  {id:7,  name:"Cécile GRONDIN",      isDoc:false, cpN1:0,    cpN:3.5,   rcc:0},
+  {id:8,  name:"Fabiola TECHER",      isDoc:false, cpN1:0,    cpN:17.5,  rcc:0},
+  {id:9,  name:"Sylvie De la Hogue",  isDoc:false, cpN1:0,    cpN:12.18, rcc:0},
+  {id:10, name:"Elodie Ludovic",      isDoc:false, cpN1:0,    cpN:15.5,  rcc:0},
+  {id:11, name:"Stéphanie MARTIN",    isDoc:false, cpN1:0,    cpN:9.5,   rcc:0},
 ];
 
-function initials(n){
-  const p = n.replace(/^Dr\s+/i,"").split(/[\s\-]+/).filter(x=>x.length>1);
-  if(!p.length) return "?";
-  if(p.length===1) return p[0].slice(0,2).toUpperCase();
-  return (p[0][0]+p[p.length-1][0]).toUpperCase();
+/* ══════════════════════════════════════════════════════
+   UTILITAIRES
+   ══════════════════════════════════════════════════════ */
+function initials(n) {
+  const parts = n.replace(/^Dr\s+/i,"").split(/[\s\-]+/).filter(x => x.length > 1);
+  if (!parts.length) return "?";
+  if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
 }
 
-function norm(s){ return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g," ").replace(/\s+/g," ").trim(); }
+function normalize(s) {
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g," ").replace(/\s+/g," ").trim();
+}
 
-function matchEmp(excelName, emps){
-  const n = norm(excelName);
-  const parts = n.split(" ").filter(p=>p.length>2);
-  let best=null, score=0;
-  for(const e of emps){
-    const en = norm(e.name);
-    let s=0;
-    for(const p of parts) if(en.includes(p)) s++;
-    if(s>score){ score=s; best=e; }
+function matchEmployee(excelName, employees) {
+  const n = normalize(excelName);
+  const parts = n.split(" ").filter(p => p.length > 2);
+  let best = null, bestScore = 0;
+  for (const emp of employees) {
+    const en = normalize(emp.name);
+    let score = 0;
+    for (const p of parts) { if (en.includes(p)) score++; }
+    if (score > bestScore) { bestScore = score; best = emp; }
   }
-  return score>=1 ? best : null;
+  return bestScore >= 1 ? best : null;
 }
 
-function lsGet(k,def){
-  try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch{ return def; }
+function lsGet(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function lsSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
 }
 
-/* ─── LOGIN MODAL ─── */
-function LoginModal({onLogin, onClose}){
-  const [pw,setPw]=useState("");
-  const [err,setErr]=useState("");
-  const sub = e=>{
+function shortName(emp) {
+  if (emp.isDoc) return "Dr " + emp.name.replace(/^Dr\s+/i,"").split(" ").pop();
+  return emp.name.split(" ")[0];
+}
+
+/* ══════════════════════════════════════════════════════
+   COMPOSANT : LoginModal
+   ══════════════════════════════════════════════════════ */
+function LoginModal({onLogin, onClose}) {
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState("");
+  const submit = (e) => {
     e.preventDefault();
-    if(pw===ADMIN_PW) onLogin();
+    if (pw === ADMIN_PW) onLogin();
     else setErr("Mot de passe incorrect");
   };
   return (
-    <div className="movl" onClick={onClose}>
-      <div className="modal" onClick={e=>e.stopPropagation()}>
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
         <h2>🔐 Accès Administration</h2>
-        <p className="msub">Entrez le mot de passe de la direction pour accéder à la gestion complète</p>
-        <form onSubmit={sub}>
-          {err && <div className="errmsg">{err}</div>}
-          <div className="fg"><label>Mot de passe</label>
-            <input type="password" placeholder="••••••••" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}} autoFocus />
+        <p className="modal-sub">Mot de passe de la direction requis</p>
+        <form onSubmit={submit}>
+          {err && <div className="err-msg">{err}</div>}
+          <div className="fg">
+            <label>Mot de passe</label>
+            <input type="password" placeholder="••••••••" value={pw}
+                   onChange={e => {setPw(e.target.value);setErr("");}} autoFocus />
           </div>
-          <div className="mbtns">
-            <button type="button" className="bcnc" onClick={onClose}>Annuler</button>
-            <button type="submit" className="bsub">Se connecter</button>
+          <div className="modal-btns">
+            <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
+            <button type="submit" className="btn-submit">Se connecter</button>
           </div>
         </form>
       </div>
@@ -334,53 +647,64 @@ function LoginModal({onLogin, onClose}){
   );
 }
 
-/* ─── REQUEST MODAL ─── */
-function ReqModal({emps, onSub, onClose}){
-  const [eid,setEid]=useState("");
-  const [tp,setTp]=useState("C");
-  const [sd,setSd]=useState("");
-  const [ed,setEd]=useState("");
-  const [cmt,setCmt]=useState("");
-  const sub = e=>{
+/* ══════════════════════════════════════════════════════
+   COMPOSANT : ReqModal (nouvelle demande)
+   ══════════════════════════════════════════════════════ */
+function ReqModal({employees, onSubmit, onClose}) {
+  const [empId, setEmpId] = useState("");
+  const [type, setType]   = useState("C");
+  const [startD, setStartD] = useState("");
+  const [endD, setEndD]     = useState("");
+  const [comment, setComment] = useState("");
+
+  const submit = (e) => {
     e.preventDefault();
-    if(!eid||!sd||!ed){alert("Champs obligatoires manquants");return;}
-    if(new Date(ed)<new Date(sd)){alert("Date de fin avant date de début");return;}
-    onSub({id:Date.now(),employeeId:parseInt(eid),type:tp,startDate:sd,endDate:ed,comment:cmt,status:"pending",createdAt:new Date().toISOString()});
+    if (!empId || !startD || !endD) { alert("Champs obligatoires manquants"); return; }
+    if (new Date(endD) < new Date(startD)) { alert("Date de fin avant date de début"); return; }
+    onSubmit({
+      id: Date.now(),
+      employeeId: parseInt(empId),
+      type, startDate: startD, endDate: endD,
+      comment, status: "pending",
+      createdAt: new Date().toISOString()
+    });
   };
+
   return (
-    <div className="movl" onClick={onClose}>
-      <div className="modal" onClick={e=>e.stopPropagation()}>
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
         <h2>📝 Nouvelle demande de congé</h2>
-        <p className="msub">Remplissez les informations ci-dessous</p>
-        <form onSubmit={sub}>
-          <div className="fg"><label>Employé *</label>
-            <select value={eid} onChange={e=>setEid(e.target.value)} required>
-              <option value="">-- Sélectionner un employé --</option>
-              {emps.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}
+        <p className="modal-sub">Remplissez les informations ci-dessous</p>
+        <form onSubmit={submit}>
+          <div className="fg">
+            <label>Employé *</label>
+            <select value={empId} onChange={e => setEmpId(e.target.value)} required>
+              <option value="">— Sélectionner —</option>
+              {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
             </select>
           </div>
-          <div className="fg"><label>Type d'absence *</label>
-            <select value={tp} onChange={e=>setTp(e.target.value)}>
-              <option value="C">Congé payé</option>
-              <option value="SS">Sans solde</option>
-              <option value="M">Maladie</option>
-              <option value="F">Formation</option>
+          <div className="fg">
+            <label>Type d'absence *</label>
+            <select value={type} onChange={e => setType(e.target.value)}>
+              {Object.entries(ABS_TYPES).map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
-            <div className="fg"><label>Date de début *</label>
-              <input type="date" value={sd} onChange={e=>setSd(e.target.value)} required/>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".7rem"}}>
+            <div className="fg"><label>Début *</label>
+              <input type="date" value={startD} onChange={e => setStartD(e.target.value)} required />
             </div>
-            <div className="fg"><label>Date de fin *</label>
-              <input type="date" value={ed} onChange={e=>setEd(e.target.value)} required/>
+            <div className="fg"><label>Fin *</label>
+              <input type="date" value={endD} onChange={e => setEndD(e.target.value)} required />
             </div>
           </div>
-          <div className="fg"><label>Motif / Commentaire</label>
-            <textarea value={cmt} onChange={e=>setCmt(e.target.value)} placeholder="Ex: Vacances, RDV médical, congé parental…"/>
+          <div className="fg">
+            <label>Motif / Commentaire</label>
+            <textarea value={comment} onChange={e => setComment(e.target.value)}
+                      placeholder="Ex : Vacances, RDV médical, congé familial…" />
           </div>
-          <div className="mbtns">
-            <button type="button" className="bcnc" onClick={onClose}>Annuler</button>
-            <button type="submit" className="bsub">Soumettre la demande</button>
+          <div className="modal-btns">
+            <button type="button" className="btn-cancel" onClick={onClose}>Annuler</button>
+            <button type="submit" className="btn-submit">Soumettre</button>
           </div>
         </form>
       </div>
@@ -388,31 +712,47 @@ function ReqModal({emps, onSub, onClose}){
   );
 }
 
-/* ─── RESPONSE MODAL ─── */
-function RespModal({req, emps, onSub, onClose}){
-  const [resp,setResp]=useState("");
-  const [act,setAct]=useState(null);
-  const emp=emps.find(e=>e.id===req.employeeId);
+/* ══════════════════════════════════════════════════════
+   COMPOSANT : RespModal (traiter une demande)
+   ══════════════════════════════════════════════════════ */
+function RespModal({req, employees, onSubmit, onClose}) {
+  const [resp, setResp] = useState("");
+  const [action, setAction] = useState(null);
+  const emp = employees.find(e => e.id === req.employeeId);
+  const absType = ABS_TYPES[req.type];
+
   return (
-    <div className="movl" onClick={onClose}>
-      <div className="modal" onClick={e=>e.stopPropagation()}>
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
         <h2>📋 Traiter la demande</h2>
-        <div style={{background:"var(--bg)",padding:".875rem",borderRadius:"8px",marginBottom:"1rem",border:"1px solid var(--bd)"}}>
-          <div style={{fontWeight:700,color:"var(--t1)",marginBottom:".22rem"}}>{emp?.name}</div>
-          <div style={{fontSize:".8rem",color:"var(--t3)"}}>{ABS[req.type]?.label} · du {new Date(req.startDate).toLocaleDateString("fr-FR")} au {new Date(req.endDate).toLocaleDateString("fr-FR")}</div>
-          {req.comment&&<div style={{fontSize:".78rem",fontStyle:"italic",marginTop:".35rem",color:"var(--t2)"}}>"{req.comment}"</div>}
+        <div style={{background:"var(--bg)",padding:".85rem",borderRadius:"8px",marginBottom:"1rem",border:"1px solid var(--bd)"}}>
+          <div style={{fontWeight:700,color:"var(--t1)",marginBottom:".2rem"}}>{emp?.name}</div>
+          <div style={{fontSize:".78rem",color:"var(--t3)"}}>
+            {absType?.label} · du {new Date(req.startDate).toLocaleDateString("fr-FR")} au {new Date(req.endDate).toLocaleDateString("fr-FR")}
+          </div>
+          {req.comment && <div style={{fontSize:".76rem",fontStyle:"italic",marginTop:".3rem",color:"var(--t2)"}}>« {req.comment} »</div>}
         </div>
-        <div className="fg"><label>Réponse de la direction <span style={{fontWeight:400,color:"var(--t4)"}}>(optionnel)</span></label>
-          <textarea value={resp} onChange={e=>setResp(e.target.value)} placeholder="Ajouter un commentaire à la décision…"/>
+        <div className="fg">
+          <label>Réponse de la direction <span style={{fontWeight:400,color:"var(--t4)"}}>(optionnel)</span></label>
+          <textarea value={resp} onChange={e => setResp(e.target.value)} placeholder="Ajouter un commentaire…" />
         </div>
-        <div style={{display:"flex",gap:".5rem"}}>
-          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"1.5px solid var(--bd)",background:"var(--bg)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",color:"var(--t3)"}} onClick={onClose}>Annuler</button>
-          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"none",background:act==="refuse"?"linear-gradient(135deg,var(--danger),#a84a4a)":"rgba(199,90,90,.15)",color:act==="refuse"?"#fff":"var(--danger)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"all .2s"}} onClick={()=>setAct("refuse")}>❌ Refuser</button>
-          <button style={{flex:1,padding:".72rem",borderRadius:"8px",border:"none",background:act==="validate"?"linear-gradient(135deg,var(--ok),var(--sd))":"rgba(95,179,165,.15)",color:act==="validate"?"#fff":"var(--sd)",fontWeight:700,cursor:"pointer",fontFamily:"DM Sans,sans-serif",transition:"all .2s"}} onClick={()=>setAct("validate")}>✅ Valider</button>
+        <div style={{display:"flex",gap:".45rem"}}>
+          <button className="btn-cancel" style={{flex:1,padding:".68rem",borderRadius:"8px",fontWeight:700,cursor:"pointer",fontFamily:"inherit",border:"1.5px solid var(--bd)"}} onClick={onClose}>Annuler</button>
+          <button style={{flex:1,padding:".68rem",borderRadius:"8px",border:"none",fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s",
+            background:action==="refuse"?"linear-gradient(135deg,var(--red),var(--red-dk))":"var(--red-bg)",
+            color:action==="refuse"?"#fff":"var(--red)"
+          }} onClick={() => setAction("refuse")}>❌ Refuser</button>
+          <button style={{flex:1,padding:".68rem",borderRadius:"8px",border:"none",fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s",
+            background:action==="validate"?"linear-gradient(135deg,var(--teal),var(--teal-dk))":"var(--teal-bg)",
+            color:action==="validate"?"#fff":"var(--teal-dk)"
+          }} onClick={() => setAction("validate")}>✅ Valider</button>
         </div>
-        {act&&(
-          <button style={{marginTop:".875rem",width:"100%",padding:".85rem",borderRadius:"8px",border:"none",fontWeight:700,fontSize:".88rem",cursor:"pointer",fontFamily:"DM Sans,sans-serif",color:"#fff",background:act==="validate"?"linear-gradient(135deg,var(--ok),var(--sd))":"linear-gradient(135deg,var(--danger),#a84a4a)",boxShadow:act==="validate"?"0 4px 16px rgba(95,179,165,.4)":"0 4px 16px rgba(199,90,90,.4)"}} onClick={()=>onSub(req.id,act,resp)}>
-            Confirmer : {act==="validate"?"Valider la demande ✅":"Refuser la demande ❌"}
+        {action && (
+          <button style={{marginTop:".8rem",width:"100%",padding:".8rem",borderRadius:"8px",border:"none",fontWeight:700,fontSize:".86rem",cursor:"pointer",fontFamily:"inherit",color:"#fff",
+            background:action==="validate"?"linear-gradient(135deg,var(--teal),var(--teal-dk))":"linear-gradient(135deg,var(--red),var(--red-dk))",
+            boxShadow:action==="validate"?"0 4px 16px rgba(95,179,165,.35)":"0 4px 16px rgba(199,90,90,.35)"
+          }} onClick={() => onSubmit(req.id, action, resp)}>
+            Confirmer : {action==="validate" ? "Valider la demande ✅" : "Refuser la demande ❌"}
           </button>
         )}
       </div>
@@ -420,227 +760,300 @@ function RespModal({req, emps, onSub, onClose}){
   );
 }
 
-/* ─── APP ─── */
-function App(){
-  const [emps,  setEmps]  = useState(()=>lsGet("vz_emps_26",INIT_EMP));
-  const [abs,   setAbs]   = useState(()=>lsGet("vz_abs_26",{}));
-  const [reqs,  setReqs]  = useState(()=>lsGet("vz_reqs_26",[]));
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [loading, setLoading] = useState(false);
-  const [admin,  setAdmin]  = useState(()=>sessionStorage.getItem("vz_admin")==="true");
-  const [showLogin,  setShowLogin]  = useState(false);
-  const [showReqM,   setShowReqM]   = useState(false);
-  const [showRespM,  setShowRespM]  = useState(null);
-  const [tab,    setTab]    = useState("planning");
-  const [rfilt,  setRfilt]  = useState("all");
-  const [solDate,setSolDate]= useState(()=>localStorage.getItem("vz_sol_date")||null);
-  const [plDate, setPlDate] = useState(()=>localStorage.getItem("vz_pl_date")||null);
-  const [imsg,   setImsg]   = useState({pl:null,sol:null});
+/* ══════════════════════════════════════════════════════
+   COMPOSANT : Toast
+   ══════════════════════════════════════════════════════ */
+function Toast({message, type, onDone}) {
+  useEffect(() => { const t = setTimeout(onDone, 3500); return () => clearTimeout(t); }, []);
+  return <div className={"toast " + type}>{message}</div>;
+}
+
+/* ══════════════════════════════════════════════════════
+   APP PRINCIPALE
+   ══════════════════════════════════════════════════════ */
+function App() {
+  const [employees, setEmployees] = useState(() => lsGet("vz_emp_26", INIT_EMPLOYEES));
+  const [absences, setAbsences]   = useState(() => lsGet("vz_abs_26", {}));
+  const [requests, setRequests]   = useState(() => lsGet("vz_req_26", []));
+  const [month, setMonth]         = useState(new Date().getMonth());
+  const [loading, setLoading]     = useState(false);
+  const [admin, setAdmin]         = useState(() => sessionStorage.getItem("vz_admin") === "true");
+  const [tab, setTab]             = useState("planning");
+  const [reqFilter, setReqFilter] = useState("all");
+  const [toast, setToast]         = useState(null);
+
+  const [showLogin, setShowLogin]   = useState(false);
+  const [showReqModal, setShowReqModal] = useState(false);
+  const [showRespModal, setShowRespModal] = useState(null);
+
+  const [planDate, setPlanDate] = useState(() => localStorage.getItem("vz_plan_dt") || null);
+  const [solDate, setSolDate]   = useState(() => localStorage.getItem("vz_sol_dt") || null);
+  const [importMsg, setImportMsg] = useState({plan:null, sol:null});
 
   const today = new Date();
 
-  useEffect(()=>{ localStorage.setItem("vz_abs_26",  JSON.stringify(abs));  },[abs]);
-  useEffect(()=>{ localStorage.setItem("vz_emps_26", JSON.stringify(emps)); },[emps]);
-  useEffect(()=>{ localStorage.setItem("vz_reqs_26", JSON.stringify(reqs)); },[reqs]);
+  useEffect(() => { lsSet("vz_abs_26", absences); },  [absences]);
+  useEffect(() => { lsSet("vz_emp_26", employees); }, [employees]);
+  useEffect(() => { lsSet("vz_req_26", requests); },  [requests]);
 
-  const pendingN = useMemo(()=>reqs.filter(r=>r.status==="pending").length,[reqs]);
+  const pendingCount = useMemo(() => requests.filter(r => r.status === "pending").length, [requests]);
 
-  const cpris = useCallback((eid)=>{
-    const ea=abs[eid]||{};
-    let n=0;
-    Object.values(ea).forEach(md=>Object.values(md).forEach(t=>{if(t==="C")n++;}));
+  const cpTaken = useCallback((empId) => {
+    const ea = absences[empId] || {};
+    let n = 0;
+    Object.values(ea).forEach(md => Object.values(md).forEach(t => { if (t === "C") n++; }));
     return n;
-  },[abs]);
+  }, [absences]);
 
-  const solde = useCallback((emp)=>(emp.cpN1||0)+(emp.cpN||0)+(emp.rcc||0)-cpris(emp.id),[cpris]);
+  const soldeRestant = useCallback((emp) => {
+    return (emp.cpN1||0) + (emp.cpN||0) + (emp.rcc||0) - cpTaken(emp.id);
+  }, [cpTaken]);
 
-  const todayAbs = useMemo(()=>{
-    const m=today.getMonth(),d=today.getDate();
-    return emps.filter(e=>abs[e.id]?.[m]?.[d]).map(e=>({...e,at:abs[e.id][m][d]}));
-  },[abs,emps]);
+  const todayAbsents = useMemo(() => {
+    const m = today.getMonth(), d = today.getDate();
+    return employees.filter(e => absences[e.id]?.[m]?.[d])
+      .map(e => ({...e, absType: absences[e.id][m][d]}));
+  }, [absences, employees]);
 
-  const drPresent = !abs[1]?.[today.getMonth()]?.[today.getDate()];
+  const drPresent = !absences[1]?.[today.getMonth()]?.[today.getDate()];
 
-  const inRange=(m,d,s,e)=>{
-    const dt=new Date(YEAR,m,d);
-    return dt>=new Date(s)&&dt<=new Date(e);
+  const isInRange = (month, day, startDate, endDate) => {
+    const dt = new Date(YEAR, month, day);
+    return dt >= new Date(startDate) && dt <= new Date(endDate);
   };
-  const getPend=(eid,m,d)=>reqs.find(r=>r.employeeId===eid&&r.status==="pending"&&inRange(m,d,r.startDate,r.endDate));
+
+  const getPending = (empId, m, d) => {
+    return requests.find(r =>
+      r.employeeId === empId && r.status === "pending" && isInRange(m, d, r.startDate, r.endDate)
+    );
+  };
+
+  const showToast = (message, type = "ok") => setToast({message, type});
 
   /* ── Import Planning ── */
-  const importPlanning = async (e)=>{
-    const f=e.target.files[0]; if(!f) return;
+  const importPlanning = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     setLoading(true);
-    try{
-      const buf=await f.arrayBuffer();
-      const wb=XLSX.read(buf,{type:"array"});
-      const newAbs={...abs};
-      let entries=0,months=0;
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:"array"});
+      const newAbs = {...absences};
+      let entries = 0, monthsFound = 0;
 
-      for(let mi=0;mi<12;mi++){
-        const sn=MONTHS[mi];
-        const sheet=wb.Sheets[sn]||wb.Sheets[wb.SheetNames.find(n=>norm(n)===norm(sn))];
-        if(!sheet) continue;
+      for (let mi = 0; mi < 12; mi++) {
+        const sheetName = MONTHS[mi];
+        const sheet = wb.Sheets[sheetName] || wb.Sheets[wb.SheetNames.find(n => normalize(n) === normalize(sheetName))];
+        if (!sheet) continue;
 
-        const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
-        if(!rows||rows.length<9) continue;
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:null});
+        if (!rows || rows.length < 9) continue;
 
-        const hrow=rows[7];
-        if(!hrow) continue;
+        const hRow = rows[7];
+        if (!hRow) continue;
 
-        const dayMap={};
-        for(let c=2;c<hrow.length;c++){
-          const v=hrow[c];
-          if(v!==null&&v!==undefined){
-            const day=parseInt(v);
-            if(!isNaN(day)&&day>=1&&day<=31) dayMap[c]=day;
+        const dayMap = {};
+        for (let c = 2; c < hRow.length; c++) {
+          const v = hRow[c];
+          if (v != null) {
+            const day = parseInt(v);
+            if (!isNaN(day) && day >= 1 && day <= 31) dayMap[c] = day;
           }
         }
 
-        let found=false;
-        for(let ri=8;ri<=18&&ri<rows.length;ri++){
-          const row=rows[ri];
-          if(!row||!row[1]) continue;
-          const xn=row[1].toString().trim();
-          if(!xn||xn.toLowerCase().includes("total")) continue;
+        let found = false;
+        for (let ri = 8; ri <= 18 && ri < rows.length; ri++) {
+          const row = rows[ri];
+          if (!row || !row[1]) continue;
+          const rawName = row[1].toString().trim();
+          if (!rawName || rawName.toLowerCase().includes("total")) continue;
 
-          const emp=matchEmp(xn,emps);
-          if(!emp) continue;
+          const emp = matchEmployee(rawName, employees);
+          if (!emp) continue;
 
-          if(!newAbs[emp.id]) newAbs[emp.id]={};
-          if(!newAbs[emp.id][mi]) newAbs[emp.id][mi]={};
+          if (!newAbs[emp.id]) newAbs[emp.id] = {};
+          if (!newAbs[emp.id][mi]) newAbs[emp.id][mi] = {};
 
-          for(const [cs,day] of Object.entries(dayMap)){
-            const val=row[parseInt(cs)];
-            if(val&&typeof val==="string"&&val.trim()){
-              const code=val.trim().toUpperCase();
-              if(["C","SS","M","F"].includes(code)){
-                newAbs[emp.id][mi][day]=code;
+          for (const [colStr, day] of Object.entries(dayMap)) {
+            const val = row[parseInt(colStr)];
+            if (val && typeof val === "string" && val.trim()) {
+              const code = val.trim().toUpperCase();
+              if (["C","SS","M","F"].includes(code)) {
+                newAbs[emp.id][mi][day] = code;
                 entries++;
               }
             }
           }
-          found=true;
+          found = true;
         }
-        if(found) months++;
+        if (found) monthsFound++;
       }
-      setAbs(newAbs);
-      const dt=new Date().toLocaleDateString("fr-FR");
-      setPlDate(dt); localStorage.setItem("vz_pl_date",dt);
-      setImsg(prev=>({...prev,pl:{ok:true,txt:`✅ ${months} mois importés · ${entries} absences chargées`}}));
-    }catch(err){
+
+      setAbsences(newAbs);
+      const dt = new Date().toLocaleDateString("fr-FR");
+      setPlanDate(dt); localStorage.setItem("vz_plan_dt", dt);
+      setImportMsg(p => ({...p, plan:{ok:true, txt:`✅ ${monthsFound} mois importés · ${entries} absences chargées`}}));
+      showToast(`Planning importé : ${monthsFound} mois, ${entries} absences`);
+    } catch (err) {
       console.error(err);
-      setImsg(prev=>({...prev,pl:{ok:false,txt:"❌ Erreur lors de l'import du planning"}}));
+      setImportMsg(p => ({...p, plan:{ok:false, txt:"❌ Erreur lors de l'import"}}));
+      showToast("Erreur d'import du planning", "err");
     }
-    setLoading(false); e.target.value="";
+    setLoading(false);
+    e.target.value = "";
   };
 
   /* ── Import Soldes ── */
-  const importSoldes = async (e)=>{
-    const f=e.target.files[0]; if(!f) return;
+  const importSoldes = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     setLoading(true);
-    try{
-      const buf=await f.arrayBuffer();
-      const wb=XLSX.read(buf,{type:"array"});
-      const sheet=wb.Sheets[wb.SheetNames[0]];
-      const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:null});
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:"array"});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:null});
 
-      let hi=-1;
-      for(let i=0;i<rows.length;i++){
-        if(rows[i]&&rows[i][0]!=null&&rows[i][0].toString().trim()==="Matricule"){hi=i;break;}
+      let headerIdx = -1;
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i]?.[0] != null && rows[i][0].toString().trim() === "Matricule") {
+          headerIdx = i; break;
+        }
       }
-      if(hi===-1){setImsg(prev=>({...prev,sol:{ok:false,txt:"❌ En-tête 'Matricule' introuvable"}}));setLoading(false);e.target.value="";return;}
-
-      const hdrs=rows[hi];
-      let cN1=-1,cN=-1,cRcc=-1;
-      for(let c=0;c<hdrs.length;c++){
-        const h=((hdrs[c]||"")+"").toLowerCase().replace(/\s+/g," ").replace(/\n/g," ");
-        if(h.includes("solde")&&h.includes("n-1")) cN1=c;
-        else if(h.includes("solde")&&(h.includes("cp n")||h.includes("rcc")===false)&&!h.includes("n-1")&&h.includes("cp")) cN=c;
-        else if(h.includes("solde")&&h.includes("rcc")) cRcc=c;
+      if (headerIdx === -1) {
+        setImportMsg(p => ({...p, sol:{ok:false, txt:"❌ En-tête 'Matricule' introuvable"}}));
+        setLoading(false); e.target.value = ""; return;
       }
-      if(cN1===-1) cN1=5;
-      if(cN===-1)  cN=9;
-      if(cRcc===-1) cRcc=15;
 
-      const upd=[...emps];
-      let matched=0;
-      for(let ri=hi+1;ri<rows.length;ri++){
-        const row=rows[ri];
-        if(!row||!row[1]) continue;
-        const fn=row[1].toString().trim();
-        if(!fn||fn.toLowerCase().includes("total")) continue;
-        const emp=matchEmp(fn,upd);
-        if(!emp) continue;
-        const idx=upd.findIndex(x=>x.id===emp.id);
-        if(idx!==-1){
-          upd[idx]={...upd[idx],cpN1:parseFloat(row[cN1])||0,cpN:parseFloat(row[cN])||0,rcc:parseFloat(row[cRcc])||0};
+      const hdrs = rows[headerIdx];
+      let cN1 = -1, cN = -1, cRcc = -1;
+      for (let c = 0; c < hdrs.length; c++) {
+        const h = ((hdrs[c]||"") + "").toLowerCase().replace(/\s+/g," ").replace(/\n/g," ");
+        if (h.includes("solde") && h.includes("n-1")) cN1 = c;
+        else if (h.includes("solde") && h.includes("cp") && !h.includes("n-1") && !h.includes("rcc")) cN = c;
+        else if (h.includes("solde") && h.includes("rcc")) cRcc = c;
+      }
+      if (cN1 === -1) cN1 = 5;
+      if (cN === -1)  cN = 9;
+      if (cRcc === -1) cRcc = 15;
+
+      const updated = [...employees];
+      let matched = 0;
+
+      for (let ri = headerIdx + 1; ri < rows.length; ri++) {
+        const row = rows[ri];
+        if (!row || !row[1]) continue;
+        const rawName = row[1].toString().trim();
+        if (!rawName || rawName.toLowerCase().includes("total")) continue;
+
+        const emp = matchEmployee(rawName, updated);
+        if (!emp) continue;
+
+        const idx = updated.findIndex(x => x.id === emp.id);
+        if (idx !== -1) {
+          updated[idx] = {
+            ...updated[idx],
+            cpN1: parseFloat(row[cN1]) || 0,
+            cpN:  parseFloat(row[cN])  || 0,
+            rcc:  parseFloat(row[cRcc])|| 0
+          };
           matched++;
         }
       }
-      setEmps(upd);
-      const dt=new Date().toLocaleDateString("fr-FR");
-      setSolDate(dt); localStorage.setItem("vz_sol_date",dt);
-      setImsg(prev=>({...prev,sol:{ok:true,txt:`✅ ${matched} employés mis à jour`}}));
-    }catch(err){
+
+      setEmployees(updated);
+      const dt = new Date().toLocaleDateString("fr-FR");
+      setSolDate(dt); localStorage.setItem("vz_sol_dt", dt);
+      setImportMsg(p => ({...p, sol:{ok:true, txt:`✅ ${matched} employés mis à jour`}}));
+      showToast(`Soldes importés : ${matched} employés`);
+    } catch (err) {
       console.error(err);
-      setImsg(prev=>({...prev,sol:{ok:false,txt:"❌ Erreur lors de l'import des soldes"}}));
+      setImportMsg(p => ({...p, sol:{ok:false, txt:"❌ Erreur lors de l'import"}}));
+      showToast("Erreur d'import des soldes", "err");
     }
-    setLoading(false); e.target.value="";
+    setLoading(false);
+    e.target.value = "";
   };
 
-  const addReq = r=>{setReqs(prev=>[...prev,r]);setShowReqM(false);};
+  /* ── Demandes ── */
+  const addRequest = (req) => {
+    setRequests(prev => [...prev, req]);
+    setShowReqModal(false);
+    showToast("Demande soumise avec succès");
+  };
 
-  const handleResp = (rid,act,resp)=>{
-    const req=reqs.find(r=>r.id===rid);
-    const updated=reqs.map(r=>r.id!==rid?r:{...r,status:act==="validate"?"validated":"refused",response:resp,respondedAt:new Date().toISOString()});
-    if(act==="validate"&&req){
-      const na={...abs};
-      const s=new Date(req.startDate),en=new Date(req.endDate);
-      for(const d=new Date(s);d<=en;d.setDate(d.getDate()+1)){
-        const dow=d.getDay(); if(dow===0||dow===6) continue;
-        const m=d.getMonth(),day=d.getDate();
-        if(!na[req.employeeId]) na[req.employeeId]={};
-        if(!na[req.employeeId][m]) na[req.employeeId][m]={};
-        na[req.employeeId][m][day]=req.type;
+  const handleResponse = (reqId, action, response) => {
+    const req = requests.find(r => r.id === reqId);
+    const updated = requests.map(r =>
+      r.id !== reqId ? r : {
+        ...r,
+        status: action === "validate" ? "validated" : "refused",
+        response,
+        respondedAt: new Date().toISOString()
       }
-      setAbs(na);
+    );
+
+    if (action === "validate" && req) {
+      const newAbs = {...absences};
+      const start = new Date(req.startDate);
+      const end   = new Date(req.endDate);
+      for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        const dow = d.getDay();
+        if (dow === 0 || dow === 6) continue;
+        const m = d.getMonth(), day = d.getDate();
+        if (!newAbs[req.employeeId]) newAbs[req.employeeId] = {};
+        if (!newAbs[req.employeeId][m]) newAbs[req.employeeId][m] = {};
+        newAbs[req.employeeId][m][day] = req.type;
+      }
+      setAbsences(newAbs);
     }
-    setReqs(updated);
-    setShowRespM(null);
+
+    setRequests(updated);
+    setShowRespModal(null);
+    showToast(action === "validate" ? "Demande validée ✅" : "Demande refusée ❌");
   };
 
-  const dim=new Date(YEAR,month+1,0).getDate();
-  const filtReqs=useMemo(()=>rfilt==="all"?reqs:reqs.filter(r=>r.status===rfilt),[reqs,rfilt]);
+  /* ── Calendrier ── */
+  const daysInMonth = new Date(YEAR, month + 1, 0).getDate();
 
-  const renderCell=(emp,day)=>{
-    const dt=new Date(YEAR,month,day);
-    const dow=dt.getDay();
-    const isWe=dow===0||dow===6;
-    const isToday=today.getFullYear()===YEAR&&today.getMonth()===month&&today.getDate()===day;
-    const isOff=dt>new Date(YEAR,11,31);
-    const at=abs[emp.id]?.[month]?.[day];
-    const pend=admin&&!at&&getPend(emp.id,month,day);
+  const renderCell = (emp, day) => {
+    const dt  = new Date(YEAR, month, day);
+    const dow = dt.getDay();
+    const isWe = dow === 0 || dow === 6;
+    const isToday = today.getFullYear() === YEAR && today.getMonth() === month && today.getDate() === day;
 
-    let cls="ccell";
-    if(isWe) cls+=" we";
-    if(isToday) cls+=" td";
-    if(isOff) cls+=" off";
+    const absCode = absences[emp.id]?.[month]?.[day];
+    const pending = admin && !absCode && getPending(emp.id, month, day);
 
-    let badge=null;
-    if(at){
-      badge=<span className={"abg "+(ABS[at]?.cls||"")}>{at}</span>;
-    } else if(pend){
-      badge=<span className="abg pend" title="En attente de validation">?</span>;
+    let cls = "cal-cell";
+    if (isWe)    cls += " we";
+    if (isToday) cls += " td";
+
+    let badge = null;
+    if (absCode) {
+      const at = ABS_TYPES[absCode];
+      badge = <span className={"abg " + (at?.cls || "")}>{absCode}</span>;
+    } else if (pending) {
+      badge = <span className="abg pending" title="En attente de validation">?</span>;
     }
+
     return <div key={day} className={cls}>{badge}</div>;
   };
 
+  const filteredReqs = useMemo(() =>
+    reqFilter === "all" ? requests : requests.filter(r => r.status === reqFilter),
+    [requests, reqFilter]
+  );
+
+  /* ══════════════════════════════════════════════════
+     RENDER
+     ══════════════════════════════════════════════════ */
   return (
     <div className="app">
-      {showLogin && <LoginModal onLogin={()=>{setAdmin(true);sessionStorage.setItem("vz_admin","true");setShowLogin(false);}} onClose={()=>setShowLogin(false)}/>}
-      {showReqM  && <ReqModal emps={emps.filter(e=>!e.isDoc)} onSub={addReq} onClose={()=>setShowReqM(false)}/>}
-      {showRespM && <RespModal req={showRespM} emps={emps} onSub={handleResp} onClose={()=>setShowRespM(null)}/>}
+      {showLogin     && <LoginModal onLogin={() => {setAdmin(true);sessionStorage.setItem("vz_admin","true");setShowLogin(false);}} onClose={() => setShowLogin(false)} />}
+      {showReqModal  && <ReqModal employees={employees.filter(e => !e.isDoc)} onSubmit={addRequest} onClose={() => setShowReqModal(false)} />}
+      {showRespModal && <RespModal req={showRespModal} employees={employees} onSubmit={handleResponse} onClose={() => setShowRespModal(null)} />}
+      {toast         && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />}
 
       <div className="topbar">
         <span>📍 38 route de Savanna, 97460 Saint-Paul – La Réunion</span>
@@ -648,157 +1061,171 @@ function App(){
       </div>
 
       <div className="hdr">
-        <h1>Cabinet d'Orthodontie Dr François VERGEZ</h1>
-        <p>Planning des Congés · Équipe 2026</p>
+        <h1>Cabinet d'Orthodontie Dr François Vergez</h1>
+        <p>Planning des Congés · Équipe {YEAR}</p>
       </div>
 
       <nav className="nav">
-        <button className={"ntab"+(tab==="planning"?" on":"")} onClick={()=>setTab("planning")}>📅 Planning</button>
-        {admin&&<>
-          <button className={"ntab"+(tab==="requests"?" on":"")} onClick={()=>setTab("requests")}>
+        <button className={"ntab" + (tab === "planning" ? " on" : "")} onClick={() => setTab("planning")}>📅 Planning</button>
+        {admin && <>
+          <button className={"ntab" + (tab === "requests" ? " on" : "")} onClick={() => setTab("requests")}>
             📋 Demandes
-            {pendingN>0&&<span className="nbadge">{pendingN}</span>}
+            {pendingCount > 0 && <span className="nbadge">{pendingCount}</span>}
           </button>
-          <button className={"ntab"+(tab==="admin"?" on":"")} onClick={()=>setTab("admin")}>⚙️ Administration</button>
+          <button className={"ntab" + (tab === "admin" ? " on" : "")} onClick={() => setTab("admin")}>⚙️ Administration</button>
         </>}
         {admin
-          ? <button className="nadm out" onClick={()=>{setAdmin(false);sessionStorage.removeItem("vz_admin");setTab("planning");}}>🔓 Déconnexion</button>
-          : <button className="nadm" onClick={()=>setShowLogin(true)}>🔐 Admin</button>
+          ? <button className="nadm out" onClick={() => {setAdmin(false);sessionStorage.removeItem("vz_admin");setTab("planning");}}>🔓 Déconnexion</button>
+          : <button className="nadm" onClick={() => setShowLogin(true)}>🔐 Admin</button>
         }
       </nav>
 
       <div className="wrap">
 
-        {tab==="planning"&&<>
-          {!admin&&<div className="tbanner">ℹ️ Mode Équipe · Vue mensuelle du planning en lecture seule</div>}
+        {/* ═══ TAB : PLANNING ═══ */}
+        {tab === "planning" && <>
+          {!admin && <div className="team-banner">ℹ️ Mode Équipe · Vue mensuelle en lecture seule</div>}
 
-          <div className={"drbanner "+(drPresent?"pr":"ab")}>
-            <div className={"dricon "+(drPresent?"pr":"ab")}>{drPresent?"🩺":"🏖️"}</div>
+          <div className={"dr-banner " + (drPresent ? "present" : "absent")}>
+            <div className={"dr-icon " + (drPresent ? "present" : "absent")}>{drPresent ? "🩺" : "🏖️"}</div>
             <div>
-              <h3 className={drPresent?"pr":"ab"}>Dr VERGEZ – {drPresent?"Présent au cabinet aujourd'hui":"Absent du cabinet aujourd'hui"}</h3>
-              <p>{drPresent?"Le cabinet est ouvert · Consultations normales":"Cabinet fermé ou consultations réduites"}</p>
+              <h3 className={drPresent ? "present" : "absent"}>
+                Dr VERGEZ – {drPresent ? "Présent au cabinet" : "Absent du cabinet"}
+              </h3>
+              <p>{drPresent ? "Le cabinet est ouvert · Consultations normales" : "Cabinet fermé ou consultations réduites"}</p>
             </div>
           </div>
 
-          <div className="datebanner">
-            <h2>📆 {today.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</h2>
+          <div className="date-banner">
+            <h2>📆 {today.toLocaleDateString("fr-FR", {weekday:"long",day:"numeric",month:"long",year:"numeric"})}</h2>
             <div className="dstats">
-              <div className="dstat"><div className="dl">Absents</div><div className="dv">{todayAbs.length}</div></div>
-              <div className="dstat"><div className="dl">Présents</div><div className="dv">{emps.length-todayAbs.length}</div></div>
+              <div className="dstat"><div className="dl">Absents</div><div className="dv">{todayAbsents.length}</div></div>
+              <div className="dstat"><div className="dl">Présents</div><div className="dv">{employees.length - todayAbsents.length}</div></div>
             </div>
           </div>
 
-          <div className="todayabs">
-            <h3 className="sectitle">👥 Absents aujourd'hui <span className="sbadge">{todayAbs.length}</span></h3>
-            {todayAbs.length>0
-              ? <div className="ablist">
-                  {todayAbs.map(emp=>{const t=ABS[emp.at]; return(
-                    <div key={emp.id} className={"abchip "+(t?.cls||"")}>
-                      <div className="chav">{initials(emp.name)}</div>
+          <div className="today-abs">
+            <h3 className="sec-title">👥 Absents aujourd'hui <span className="sbadge">{todayAbsents.length}</span></h3>
+            {todayAbsents.length > 0 ? (
+              <div className="abs-list">
+                {todayAbsents.map(emp => {
+                  const t = ABS_TYPES[emp.absType];
+                  return (
+                    <div key={emp.id} className={"abs-chip " + (t?.cls || "")}>
+                      <div className="chip-av">{initials(emp.name)}</div>
                       <span>{emp.name}</span>
-                      <span className={"chtag "+(t?.cls||"")}>{t?.label}</span>
+                      <span className={"chip-tag " + (t?.cls || "")}>{t?.label}</span>
                     </div>
-                  );})}
-                </div>
-              : <div className="noabs">✅ Toute l'équipe est présente aujourd'hui !</div>
-            }
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="no-abs">✅ Toute l'équipe est présente aujourd'hui !</div>
+            )}
           </div>
 
-          <div className={"mlayout"+(admin?"":" team")}>
+          <div className={"main-layout" + (admin ? "" : " team-only")}>
             <div>
-              <h3 className="sectitle">📅 Calendrier mensuel <span className="sbadge">{YEAR}</span></h3>
-              <div className="mtabs">
-                {MONTHS.map((m,i)=><button key={m} className={"mtab"+(month===i?" on":"")} onClick={()=>setMonth(i)}>{MSHORT[i]}</button>)}
+              <h3 className="sec-title">📅 Calendrier mensuel <span className="sbadge">{YEAR}</span></h3>
+
+              <div className="month-tabs">
+                {MONTHS.map((m, i) => (
+                  <button key={m} className={"mtab" + (month === i ? " on" : "")} onClick={() => setMonth(i)}>
+                    {MO_SHORT[i]}
+                  </button>
+                ))}
               </div>
 
-              <div className="calwrap">
-                <div className="calhdr">
+              <div className="cal-wrap">
+                <div className="cal-hdr">
                   <div>Employé · {MONTHS[month]}</div>
-                  {Array.from({length:dim},(_,i)=>{
-                    const d=new Date(YEAR,month,i+1);
-                    const dow=d.getDay();
-                    const isWe=dow===0||dow===6;
-                    const isTd=today.getMonth()===month&&today.getDate()===i+1;
-                    return(
-                      <div key={i+1} className={"dhd"+(isWe?" wkhd":"")+(isTd?" thd":"")}>
-                        <span className="dnum">{i+1}</span>
-                        <span className="dltr">{DLTR[dow]}</span>
+                  {Array.from({length: daysInMonth}, (_, i) => {
+                    const d = new Date(YEAR, month, i + 1);
+                    const dow = d.getDay();
+                    const isWe = dow === 0 || dow === 6;
+                    const isTd = today.getMonth() === month && today.getDate() === i + 1;
+                    return (
+                      <div key={i+1} className={"d-hd" + (isWe ? " wk-hd" : "") + (isTd ? " td-hd" : "")}>
+                        <span className="d-num">{i + 1}</span>
+                        <span className="d-ltr">{DAY_LTR[dow]}</span>
                       </div>
                     );
                   })}
                 </div>
-                {emps.map(emp=>(
-                  <div key={emp.id} className="calrow">
-                    <div className="calemp">
-                      <div className={"mav"+(emp.isDoc?" dr":"")}>{initials(emp.name)}</div>
-                      <span className="ename">
-                        {emp.isDoc?"Dr "+emp.name.replace(/^Dr\s+/i,"").split(" ").slice(-1)[0]:emp.name.split(" ")[0]}
-                      </span>
+                {employees.map(emp => (
+                  <div key={emp.id} className="cal-row">
+                    <div className="cal-emp">
+                      <div className={"mini-av" + (emp.isDoc ? " dr" : "")}>{initials(emp.name)}</div>
+                      <span className="emp-name">{shortName(emp)}</span>
                     </div>
-                    {Array.from({length:dim},(_,i)=>renderCell(emp,i+1))}
+                    {Array.from({length: daysInMonth}, (_, i) => renderCell(emp, i + 1))}
                   </div>
                 ))}
               </div>
 
-              {admin&&<>
-                <h3 className="sectitle" style={{marginTop:"1.75rem"}}>📊 Soldes des Congés</h3>
-                <div className="solwrap">
-                  <div className="solhdr">
+              {admin && <>
+                <h3 className="sec-title" style={{marginTop:"1.7rem"}}>📊 Soldes des Congés</h3>
+                <div className="sol-wrap">
+                  <div className="sol-hdr">
                     <div>Employé</div><div>CP N-1</div><div>CP N</div><div>RCC</div><div>Solde restant</div>
                   </div>
-                  {emps.filter(e=>!e.isDoc).map(emp=>{
-                    const sr=solde(emp);
-                    const cls=sr>10?"ok":sr>5?"wa":"ba";
-                    return(
-                      <div key={emp.id} className="solrow">
-                        <div className="empinfo"><div className="empav">{initials(emp.name)}</div>{emp.name}</div>
-                        <div className="cval">{(emp.cpN1||0).toFixed(1)} j</div>
-                        <div className="cval">{(emp.cpN||0).toFixed(1)} j</div>
-                        <div className="cval">{(emp.rcc||0).toFixed(1)} j</div>
-                        <div><span className={"schip "+cls}>{cls==="ok"?"✅":cls==="wa"?"⚠️":"🔴"} {sr.toFixed(1)} j</span></div>
+                  {employees.filter(e => !e.isDoc).map(emp => {
+                    const sr = soldeRestant(emp);
+                    const cls = sr > 10 ? "ok" : sr > 5 ? "wa" : "ba";
+                    return (
+                      <div key={emp.id} className="sol-row">
+                        <div className="emp-info"><div className="emp-av">{initials(emp.name)}</div>{emp.name}</div>
+                        <div className="c-val">{(emp.cpN1||0).toFixed(1)} j</div>
+                        <div className="c-val">{(emp.cpN||0).toFixed(1)} j</div>
+                        <div className="c-val">{(emp.rcc||0).toFixed(1)} j</div>
+                        <div>
+                          <span className={"sol-chip " + cls}>
+                            {cls === "ok" ? "✅" : cls === "wa" ? "⚠️" : "🔴"} {sr.toFixed(1)} j
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
                 </div>
-                {solDate&&<div className="solupd">Soldes mis à jour le {solDate}</div>}
+                {solDate && <div className="sol-upd">Soldes mis à jour le {solDate}</div>}
               </>}
             </div>
 
-            {admin&&(
+            {admin && (
               <div className="sidebar">
                 <div className="scard">
                   <h3>🎨 Légende</h3>
-                  <div className="lgrid">
-                    <div className="litem"><div className="ldot conge"></div><span>C · Congé</span></div>
-                    <div className="litem"><div className="ldot ss"></div><span>SS · Sans solde</span></div>
-                    <div className="litem"><div className="ldot maladie"></div><span>M · Maladie</span></div>
-                    <div className="litem"><div className="ldot formation"></div><span>F · Formation</span></div>
+                  <div className="legend-grid">
+                    <div className="legend-item"><div className="legend-dot conge"></div><span>C · Congé</span></div>
+                    <div className="legend-item"><div className="legend-dot ss"></div><span>SS · Sans solde</span></div>
+                    <div className="legend-item"><div className="legend-dot maladie"></div><span>M · Maladie</span></div>
+                    <div className="legend-item"><div className="legend-dot formation"></div><span>F · Formation</span></div>
                   </div>
-                  <div className="lpend">⌛ ? = En attente de validation</div>
+                  <div className="legend-pending">⌛ ? = En attente de validation</div>
                 </div>
 
                 <div className="scard">
                   <h3>📋 Règles cabinet</h3>
-                  <ul className="rlist">
-                    <li><div className="rico war">⚠</div><span>Congés uniquement lorsque <strong>Dr VERGEZ est absent</strong></span></li>
-                    <li><div className="rico inf">i</div><span>3 semaines consécutives : <strong>1 fois/an</strong> maximum</span></li>
-                    <li><div className="rico inf">i</div><span>Vert &gt;10j · Orange &gt;5j · Rouge ≤5j</span></li>
+                  <ul className="rules-list">
+                    <li><div className="r-icon warn">⚠</div><span>Congés uniquement lorsque <strong>Dr VERGEZ est absent</strong></span></li>
+                    <li><div className="r-icon info">i</div><span>3 semaines consécutives : <strong>1 fois/an</strong> maximum</span></li>
+                    <li><div className="r-icon info">i</div><span>Vert &gt;10j · Orange &gt;5j · Rouge ≤5j</span></li>
                   </ul>
                 </div>
 
                 <div className="scard">
                   <h3>👨‍⚕️ Dr VERGEZ · Aujourd'hui</h3>
-                  <div className={"drpill "+(drPresent?"pr":"ab")}>
-                    <div className={"sdot "+(drPresent?"pr":"ab")}></div>
-                    {drPresent?"Présent au cabinet":"Absent · Cabinet fermé"}
+                  <div className={"dr-pill " + (drPresent ? "present" : "absent")}>
+                    <div className={"status-dot " + (drPresent ? "present" : "absent")}></div>
+                    {drPresent ? "Présent au cabinet" : "Absent · Cabinet fermé"}
                   </div>
                 </div>
 
-                {(plDate||solDate)&&(
+                {(planDate || solDate) && (
                   <div className="scard">
                     <h3>📁 Derniers imports</h3>
-                    {plDate&&<div style={{fontSize:".76rem",color:"var(--t3)",marginBottom:".2rem"}}>Planning : {plDate}</div>}
-                    {solDate&&<div style={{fontSize:".76rem",color:"var(--t3)"}}>Soldes : {solDate}</div>}
+                    {planDate && <div style={{fontSize:".74rem",color:"var(--t3)",marginBottom:".15rem"}}>Planning : {planDate}</div>}
+                    {solDate && <div style={{fontSize:".74rem",color:"var(--t3)"}}>Soldes : {solDate}</div>}
                   </div>
                 )}
               </div>
@@ -806,121 +1233,149 @@ function App(){
           </div>
         </>}
 
-        {tab==="requests"&&admin&&(
-          <div className="reqsec">
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.5rem",flexWrap:"wrap",gap:"1rem"}}>
-              <h3 className="sectitle" style={{margin:0}}>📋 Demandes de congés</h3>
-              <button className="ibtn pri" style={{width:"auto"}} onClick={()=>setShowReqM(true)}>➕ Nouvelle demande</button>
+        {/* ═══ TAB : REQUESTS ═══ */}
+        {tab === "requests" && admin && (
+          <div className="req-sec">
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.4rem",flexWrap:"wrap",gap:"1rem"}}>
+              <h3 className="sec-title" style={{margin:0}}>📋 Demandes de congés</h3>
+              <button className="action-btn violet" style={{width:"auto"}} onClick={() => setShowReqModal(true)}>➕ Nouvelle demande</button>
             </div>
-            <div className="rfilt">
-              {[["all","Toutes"],["pending","En attente"],["validated","Validées"],["refused","Refusées"]].map(([k,l])=>(
-                <button key={k} className={"rfbtn"+(rfilt===k?" on":"")} onClick={()=>setRfilt(k)}>
-                  {l}<span className="cnt">{k==="all"?reqs.length:reqs.filter(r=>r.status===k).length}</span>
+
+            <div className="req-filters">
+              {[["all","Toutes"],["pending","En attente"],["validated","Validées"],["refused","Refusées"]].map(([key, label]) => (
+                <button key={key} className={"rf-btn" + (reqFilter === key ? " on" : "")} onClick={() => setReqFilter(key)}>
+                  {label}<span className="cnt">{key === "all" ? requests.length : requests.filter(r => r.status === key).length}</span>
                 </button>
               ))}
             </div>
-            {filtReqs.length===0
-              ? <div className="noreq">Aucune demande {rfilt!=="all"?"dans cette catégorie":""}</div>
-              : [...filtReqs].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(req=>{
-                  const emp=emps.find(e=>e.id===req.employeeId);
-                  const t=ABS[req.type];
-                  return(
-                    <div key={req.id} className={"rcard "+req.status}>
-                      <div className="rchdr">
-                        <div className="rcemp">
-                          <div className="empav" style={{width:26,height:26,fontSize:".62rem"}}>{initials(emp?.name||"?")}</div>
-                          {emp?.name||"Employé inconnu"}
-                        </div>
-                        <span className={"rcst "+req.status}>
-                          {req.status==="pending"?"⏳ En attente":req.status==="validated"?"✅ Validée":"❌ Refusée"}
-                        </span>
+
+            {filteredReqs.length === 0 ? (
+              <div className="no-req">Aucune demande {reqFilter !== "all" ? "dans cette catégorie" : ""}</div>
+            ) : (
+              [...filteredReqs].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).map(req => {
+                const emp = employees.find(e => e.id === req.employeeId);
+                const t = ABS_TYPES[req.type];
+                return (
+                  <div key={req.id} className={"req-card " + req.status}>
+                    <div className="rc-header">
+                      <div className="rc-emp">
+                        <div className="emp-av" style={{width:26,height:26,fontSize:".6rem"}}>{initials(emp?.name || "?")}</div>
+                        {emp?.name || "Employé inconnu"}
                       </div>
-                      <div className="rcdet">
-                        <span><strong>Type :</strong> {t?.label}</span>
-                        <span><strong>Période :</strong> {new Date(req.startDate).toLocaleDateString("fr-FR")} → {new Date(req.endDate).toLocaleDateString("fr-FR")}</span>
-                        <span><strong>Soumis le :</strong> {new Date(req.createdAt).toLocaleDateString("fr-FR")}</span>
-                      </div>
-                      {req.comment&&(
-                        <div className="rccmt"><span className="lb">Motif</span>{req.comment}</div>
-                      )}
-                      {req.status==="pending"&&(
-                        <div className="rcact">
-                          <button className="bv" onClick={()=>setShowRespM(req)}>✅ Valider</button>
-                          <button className="br" onClick={()=>setShowRespM(req)}>❌ Refuser</button>
-                        </div>
-                      )}
-                      {req.response&&(
-                        <div className="rcresp"><span className="lb">Réponse direction</span>{req.response}</div>
-                      )}
+                      <span className={"rc-status " + req.status}>
+                        {req.status === "pending" ? "⏳ En attente" : req.status === "validated" ? "✅ Validée" : "❌ Refusée"}
+                      </span>
                     </div>
-                  );
-                })
-            }
+                    <div className="rc-details">
+                      <span><strong>Type :</strong> {t?.label}</span>
+                      <span><strong>Période :</strong> {new Date(req.startDate).toLocaleDateString("fr-FR")} → {new Date(req.endDate).toLocaleDateString("fr-FR")}</span>
+                      <span><strong>Soumis le :</strong> {new Date(req.createdAt).toLocaleDateString("fr-FR")}</span>
+                    </div>
+                    {req.comment && (
+                      <div className="rc-comment"><span className="lbl">Motif</span>{req.comment}</div>
+                    )}
+                    {req.status === "pending" && (
+                      <div className="rc-actions">
+                        <button className="btn-validate" onClick={() => setShowRespModal(req)}>✅ Valider</button>
+                        <button className="btn-refuse" onClick={() => setShowRespModal(req)}>❌ Refuser</button>
+                      </div>
+                    )}
+                    {req.response && (
+                      <div className="rc-response"><span className="lbl">Réponse direction</span>{req.response}</div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         )}
 
-        {tab==="admin"&&admin&&(
-          <div className="adminsec">
+        {/* ═══ TAB : ADMIN ═══ */}
+        {tab === "admin" && admin && (
+          <div className="admin-sec">
             <h2>⚙️ Administration</h2>
-            <div className="agrid">
+            <div className="admin-grid">
               <div className="acard">
                 <h4>📅 Importer le planning</h4>
-                <p>Fichier "Calendrier_d_absences_2026.xlsx" – 12 feuilles (Janvier…Décembre), ligne 8 = en-tête, lignes 9–19 = employés</p>
-                <input type="file" accept=".xlsx,.xls" onChange={importPlanning} className="fi" id="fi-pl"/>
-                <label htmlFor="fi-pl" className="ibtn acc">{loading?"⏳ Import…":"📁 Importer le planning Excel"}</label>
-                {imsg.pl&&<div className={"imsg "+(imsg.pl.ok?"ok":"er")}>{imsg.pl.txt}</div>}
+                <p>Fichier « Calendrier_d_absences_2026.xlsx » — 12 feuilles (Janvier…Décembre), ligne 8 = en-tête, lignes 9–19 = employés</p>
+                <input type="file" accept=".xlsx,.xls" onChange={importPlanning} className="file-input" id="fi-plan" />
+                <label htmlFor="fi-plan" className="action-btn gold">{loading ? "⏳ Import…" : "📁 Importer le planning Excel"}</label>
+                {importMsg.plan && <div className={"import-msg " + (importMsg.plan.ok ? "ok" : "er")}>{importMsg.plan.txt}</div>}
               </div>
 
               <div className="acard">
                 <h4>📊 Importer les soldes</h4>
-                <p>Fichier "Solde_Repos_…xlsx" – ligne 2 = en-tête "Matricule", colonnes auto-détectées (CP N-1, CP N, RCC)</p>
-                <input type="file" accept=".xlsx,.xls" onChange={importSoldes} className="fi" id="fi-sol"/>
-                <label htmlFor="fi-sol" className="ibtn">{loading?"⏳ Import…":"📁 Importer soldes Excel"}</label>
-                {imsg.sol&&<div className={"imsg "+(imsg.sol.ok?"ok":"er")}>{imsg.sol.txt}</div>}
+                <p>Fichier « Solde_Repos_…xlsx » — en-tête « Matricule », colonnes auto-détectées (CP N-1, CP N, RCC)</p>
+                <input type="file" accept=".xlsx,.xls" onChange={importSoldes} className="file-input" id="fi-sol" />
+                <label htmlFor="fi-sol" className="action-btn">{loading ? "⏳ Import…" : "📁 Importer soldes Excel"}</label>
+                {importMsg.sol && <div className={"import-msg " + (importMsg.sol.ok ? "ok" : "er")}>{importMsg.sol.txt}</div>}
               </div>
 
               <div className="acard">
                 <h4>➕ Saisir une demande</h4>
                 <p>Créer manuellement une demande de congé ou d'absence pour un membre de l'équipe</p>
-                <button className="ibtn pri" onClick={()=>setShowReqM(true)}>📝 Nouvelle demande</button>
+                <button className="action-btn violet" onClick={() => setShowReqModal(true)}>📝 Nouvelle demande</button>
               </div>
 
               <div className="acard">
                 <h4>🗑️ Réinitialiser congés</h4>
-                <p>Supprimer toutes les absences importées du planning (les demandes ne sont pas touchées)</p>
-                <button className="ibtn dan" onClick={()=>{if(window.confirm("Supprimer toutes les absences du planning ?")){ setAbs({});localStorage.removeItem("vz_abs_26");setPlDate(null);localStorage.removeItem("vz_pl_date");setImsg(p=>({...p,pl:null})); }}}>🗑️ Supprimer les congés</button>
+                <p>Supprimer toutes les absences importées du planning</p>
+                <button className="action-btn danger" onClick={() => {
+                  if (window.confirm("Supprimer toutes les absences du planning ?")) {
+                    setAbsences({});
+                    localStorage.removeItem("vz_abs_26");
+                    setPlanDate(null); localStorage.removeItem("vz_plan_dt");
+                    setImportMsg(p => ({...p, plan:null}));
+                    showToast("Planning réinitialisé");
+                  }
+                }}>🗑️ Supprimer les congés</button>
               </div>
 
               <div className="acard">
                 <h4>🗑️ Réinitialiser demandes</h4>
-                <p>Supprimer toutes les demandes de congés enregistrées dans le système</p>
-                <button className="ibtn dan" onClick={()=>{if(window.confirm("Supprimer toutes les demandes ?")){ setReqs([]);localStorage.removeItem("vz_reqs_26"); }}}>🗑️ Supprimer les demandes</button>
+                <p>Supprimer toutes les demandes enregistrées</p>
+                <button className="action-btn danger" onClick={() => {
+                  if (window.confirm("Supprimer toutes les demandes ?")) {
+                    setRequests([]);
+                    localStorage.removeItem("vz_req_26");
+                    showToast("Demandes réinitialisées");
+                  }
+                }}>🗑️ Supprimer les demandes</button>
               </div>
 
               <div className="acard">
-                <h4>🔄 Réinitialiser les soldes</h4>
-                <p>Remettre les soldes de congés aux valeurs par défaut (avant import)</p>
-                <button className="ibtn dan" onClick={()=>{if(window.confirm("Réinitialiser les soldes aux valeurs par défaut ?")){ setEmps(INIT_EMP);localStorage.removeItem("vz_emps_26");setSolDate(null);localStorage.removeItem("vz_sol_date");setImsg(p=>({...p,sol:null})); }}}>🔄 Réinitialiser les soldes</button>
+                <h4>🔄 Réinitialiser soldes</h4>
+                <p>Remettre les soldes aux valeurs par défaut</p>
+                <button className="action-btn danger" onClick={() => {
+                  if (window.confirm("Réinitialiser les soldes ?")) {
+                    setEmployees(INIT_EMPLOYEES);
+                    localStorage.removeItem("vz_emp_26");
+                    setSolDate(null); localStorage.removeItem("vz_sol_dt");
+                    setImportMsg(p => ({...p, sol:null}));
+                    showToast("Soldes réinitialisés");
+                  }
+                }}>🔄 Réinitialiser les soldes</button>
               </div>
             </div>
 
-            <div style={{marginTop:"1.5rem",background:"rgba(95,179,165,.06)",border:"1px solid rgba(95,179,165,.22)",borderRadius:"10px",padding:"1rem 1.25rem",fontSize:".78rem",color:"var(--t3)"}}>
-              <strong style={{color:"var(--sd)"}}>ℹ️ Structure attendue des fichiers</strong>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:".75rem",marginTop:".65rem"}}>
+            <div className="struct-info">
+              <strong>ℹ️ Structure attendue des fichiers</strong>
+              <div className="struct-grid">
                 <div><strong>Calendrier (planning) :</strong><br/>· 12 feuilles : Janvier … Décembre<br/>· Ligne 8 : en-têtes (col B = nom, col C+ = jours 1–31)<br/>· Lignes 9–19 : absences (codes C / SS / M / F)</div>
-                <div><strong>Solde des repos :</strong><br/>· Ligne 1 : titre du fichier paie<br/>· Ligne 2 : en-tête avec "Matricule" en col A<br/>· Colonnes détectées automatiquement : Solde CP N-1, Solde CP N, Solde RCC</div>
+                <div><strong>Solde des repos :</strong><br/>· En-tête avec « Matricule » en col A<br/>· Colonnes détectées auto : Solde CP N-1, Solde CP N, Solde RCC</div>
               </div>
             </div>
           </div>
         )}
 
       </div>
-      <div className="footer">© 2026 Cabinet d'Orthodontie Dr François VERGEZ · Saint-Paul, La Réunion · Application Gestion des Congés</div>
+
+      <div className="footer">© {YEAR} Cabinet d'Orthodontie Dr François VERGEZ · Saint-Paul, La Réunion · DBS360</div>
     </div>
   );
 }
 
-ReactDOM.render(<App/>, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
 </script>
 </body>
 </html>
